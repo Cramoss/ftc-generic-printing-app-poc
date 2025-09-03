@@ -11,6 +11,8 @@ using System.Windows.Forms;
 namespace FTC_Generic_Printing_App_POC
 {
     // TODO: Fix bug of sometimes the configuration erasing on restart
+    // Note: Apparently is not a bug. It may happen normally when changing and compiling
+    // the source code.
     public partial class Configuration : Form
     {
         private readonly ApiService apiService;
@@ -80,7 +82,7 @@ namespace FTC_Generic_Printing_App_POC
             storeComboBox.Enabled = false;
         }
 
-        // Reset all edit panel controls to default state
+        // Reset all edit panel controls to default values
         private void ResetEditConfigurationPanel()
         {
             try
@@ -94,7 +96,7 @@ namespace FTC_Generic_Printing_App_POC
                 ResetStoreComboBox();
                 disableEditTotemConfigurationPanel();
 
-                AppLogger.LogInfo("Edit configuration panel controls reset to default state");
+                AppLogger.LogInfo("Edit configuration panel controls reset to default values");
             }
             catch (Exception ex)
             {
@@ -143,7 +145,7 @@ namespace FTC_Generic_Printing_App_POC
                         else
                         {
                             // Default to first if saved store was not found
-                            storeComboBox.SelectedIndex = 0; 
+                            storeComboBox.SelectedIndex = 0;
                         }
                     }
                     else
@@ -180,6 +182,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        // TODO: Evaluate if countries and business have to keep being hardcoded or not
         private void PopulateComboBoxes()
         {
             try
@@ -197,11 +200,11 @@ namespace FTC_Generic_Printing_App_POC
                     "Falabella", "Sodimac", "Tottus"
                 });
                 businessComboBox.SelectedIndex = -1;
-                businessComboBox.Enabled = false; // Disabled until country is selected
+                businessComboBox.Enabled = false;
 
                 ResetStoreComboBox();
 
-                AppLogger.LogInfo("ComboBoxes populated with cascading behavior");
+                AppLogger.LogInfo("ComboBoxes populated");
             }
             catch (Exception ex)
             {
@@ -228,10 +231,10 @@ namespace FTC_Generic_Printing_App_POC
                 if (!string.IsNullOrEmpty(config.Business) && countryComboBox.SelectedIndex != -1)
                 {
                     businessComboBox.Text = config.Business;
-                    // Stores will be loaded automatically via OnBusinessChanged event
+                    // Stores will be loaded automatically on the OnBusinessChanged event
                 }
 
-                // Store selection will be handled after stores are loaded in LoadStoresAsync
+                // Store selection will be handled after stores are loaded in the LoadStoresAsync method
 
                 currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
                 currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
@@ -239,12 +242,13 @@ namespace FTC_Generic_Printing_App_POC
                 currentStore.Text = !string.IsNullOrEmpty(config.Store) ? config.Store : "No configurado";
                 currentStoreId.Text = !string.IsNullOrEmpty(config.StoreId) ? config.StoreId : "No configurado";
 
-                AppLogger.LogInfo("Configuration loaded into form and display labels updated");
+                AppLogger.LogInfo("Configuration loaded into the form and labels updated");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error loading configuration into form", ex);
+                AppLogger.LogError("Error loading configuration into the form", ex);
 
+                // TODO: Use constant ERROR
                 currentTotemId.Text = "Error";
                 currentCountry.Text = "Error";
                 currentBusiness.Text = "Error";
@@ -257,7 +261,7 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                AppLogger.LogInfo("User clicked Save Configuration");
+                AppLogger.LogInfo("User clicked Save Configuration button");
 
                 string idTotem = idTotemTextBox.Text.Trim();
                 string selectedCountry = countryComboBox.SelectedItem?.ToString() ?? "";
@@ -268,7 +272,7 @@ namespace FTC_Generic_Printing_App_POC
                 string selectedStoreId = selectedStoreObj?.id ?? "";
 
                 // Required fields validation
-                // TODO: Additional Totem ID value validations
+                // TODO: Additional Totem ID value validations??
                 if (string.IsNullOrEmpty(idTotem))
                 {
                     AppLogger.LogWarning("Validation failed: ID Totem is empty");
@@ -316,7 +320,7 @@ namespace FTC_Generic_Printing_App_POC
 
                 ConfigurationManager.SaveConfiguration(config);
 
-                AppLogger.LogInfo($"Configuration saved - StoreId: {selectedStoreId}, Store: {selectedStore}");
+                AppLogger.LogInfo($"Configuration saved with StoreId: {selectedStoreId}, Store: {selectedStore}");
                 this.Hide();
             }
             catch (Exception ex)
@@ -338,31 +342,114 @@ namespace FTC_Generic_Printing_App_POC
 
         private async void testConnectivityButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("User clicked Test Connectivity");
+            AppLogger.LogInfo("User clicked Test Connectivity button");
 
             try
             {
-                // TODO: Test network connectivity
-                // TODO: Set INPUT as OK if successful
+                networkStatusLabel.Text = "...";
+                storesApiStatusLabel.Text = "...";
+                firebaseStatusLabel.Text = "...";
 
-                // Test Store API connectivity
-                // TODO: Set INPUT as OK if successful
-                string token = await apiService.GetAccessTokenAsync();
+                testConnectivityButton.Text = "Probando...";
+                testConnectivityButton.Enabled = false;
 
-                // TODO: Test Firebase connectivity
-                // TODO: Set INPUT as OK if successful
+                AppLogger.LogInfo("Starting network connectivity test");
+                using (var client = new System.Net.NetworkInformation.Ping())
+                {
+                    var reply = await Task.Run(() => client.Send("8.8.8.8", 3000));
+                    if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
+                    {
+                        networkStatusLabel.Text = "ERROR";
+                        AppLogger.LogError("Network connectivity test failed");
+                        throw new Exception("Network connectivity test failed");
+                    }
+                    else
+                    {
+                        networkStatusLabel.Text = "OK";
+                        AppLogger.LogInfo("✓ Network connectivity test passed");
+                    }
+                }
 
+                AppLogger.LogInfo("Starting Store API connectivity test");
+                try
+                {
+                    string token = await apiService.GetAccessTokenAsync();
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        throw new Exception("Store API returned empty token");
+                    }
+                    storesApiStatusLabel.Text = "OK";
+                    AppLogger.LogInfo("Store API connectivity test passed");
+                }
+                catch (Exception ex)
+                {
+                    storesApiStatusLabel.Text = "ERROR";
+                    AppLogger.LogError("Store API connectivity test failed", ex);
+                    throw new Exception($"Store API test failed: {ex.Message}");
+                }
+
+                AppLogger.LogInfo("Starting Firebase connectivity tests");
+                var firebaseManager = new FirebaseManager();
+
+                try
+                {
+                    bool firebaseConnectionTest = await firebaseManager.TestConnectionAsync();
+                    if (!firebaseConnectionTest)
+                    {
+                        firebaseStatusLabel.Text = "ERROR";
+                        throw new Exception("Firebase basic connection test failed");
+                    }
+
+                    bool firebaseAuthTest = await firebaseManager.TestAuthenticationAsync();
+                    if (!firebaseAuthTest)
+                    {
+                        firebaseStatusLabel.Text = "ERROR";
+                        throw new Exception("Firebase API key authentication failed");
+                    }
+
+                    bool firebasePathTest = await firebaseManager.TestDocumentPathAsync();
+                    if (!firebasePathTest)
+                    {
+                        firebaseStatusLabel.Text = "WARN";
+                        AppLogger.LogWarning("Firebase path test failed. Document may not exist yet, but this can be normal");
+                    }
+                    else
+                    {
+                        AppLogger.LogInfo("Firebase path test passed");
+                    }
+
+                    firebaseStatusLabel.Text = "OK";
+                    AppLogger.LogInfo("Firebase connectivity tests passed");
+                }
+                catch (Exception ex)
+                {
+                    firebaseStatusLabel.Text = "ERROR";
+                    AppLogger.LogError("Firebase connectivity test failed", ex);
+                    throw new Exception($"Firebase test failed: {ex.Message}");
+                }
+                finally
+                {
+                    firebaseManager.Dispose();
+                }
+
+                testConnectivityButton.Text = "Probar conectividad";
+                testConnectivityButton.Enabled = true;
+
+                AppLogger.LogInfo("All connectivity tests completed successfully");
             }
             catch (Exception ex)
             {
-                // TODO: Log should specify which test failed
+                testConnectivityButton.Text = "Probar conectividad";
+                testConnectivityButton.Enabled = true;
+
+                string errorDetails = ex.Message;
                 AppLogger.LogError("Connectivity test failed", ex);
             }
         }
 
         private void testTicketPrintButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("User clicked Test Ticket Print");
+            AppLogger.LogInfo("User clicked Test Ticket Print button");
             try
             {
                 AppLogger.LogPrintEvent("TEST", "Test ticket print requested by user");
@@ -415,7 +502,7 @@ namespace FTC_Generic_Printing_App_POC
         {
             ResetEditConfigurationPanel();
             this.Hide();
-            AppLogger.LogInfo("Configuration form hidden and edit panel reset");
+            AppLogger.LogInfo("Configuration form hidden and edit panel reset values");
         }
 
         private void enableEditTotemConfigurationPanel()

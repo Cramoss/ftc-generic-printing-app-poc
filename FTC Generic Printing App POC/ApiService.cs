@@ -11,11 +11,28 @@ namespace FTC_Generic_Printing_App_POC
     {
         private static readonly HttpClient httpClient = new HttpClient();
 
-        // TODO: Handle and encrypt these hardcoded values.
-        private const string AUTH_URL = "https://api-prod-ftc-sc.falabella.com/stro-dgsp-store-info/v1/authorization";
-        private const string STORES_URL = "https://api-prod-ftc-sc.falabella.com/stro-dgsp-store-info/v1/api/v1/stores";
-        private const string CLIENT_ID = "test";
-        private const string CLIENT_SECRET = "test";
+        private readonly string AUTH_URL;
+        private readonly string STORES_URL;
+        private readonly string CLIENT_ID;
+        private readonly string CLIENT_SECRET;
+
+        public ApiService()
+        {
+            // Load configuration from app.config using System.Configuration.ConfigurationManager
+            AUTH_URL = System.Configuration.ConfigurationManager.AppSettings["StoreApi_AuthUrl"] ??
+                throw new InvalidOperationException("StoreApi_AuthUrl not configured");
+
+            STORES_URL = System.Configuration.ConfigurationManager.AppSettings["StoreApi_StoresUrl"] ??
+                throw new InvalidOperationException("StoreApi_StoresUrl not configured");
+
+            CLIENT_ID = System.Configuration.ConfigurationManager.AppSettings["StoreApi_ClientId"] ??
+                throw new InvalidOperationException("StoreApi_ClientId not configured");
+
+            CLIENT_SECRET = System.Configuration.ConfigurationManager.AppSettings["StoreApi_ClientSecret"] ??
+                throw new InvalidOperationException("StoreApi_ClientSecret not configured");
+
+            AppLogger.LogInfo("ApiService initialized with configuration values");
+        }
 
         public async Task<string> GetAccessTokenAsync()
         {

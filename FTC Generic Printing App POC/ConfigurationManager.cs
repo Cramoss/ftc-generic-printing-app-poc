@@ -1,5 +1,4 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -10,23 +9,19 @@ namespace FTC_Generic_Printing_App_POC
 {
     public static class ConfigurationManager
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public static void SaveConfiguration(ConfigurationData config)
         {
             try
             {
-                logger.Info("Saving configuration...");
+                AppLogger.LogInfo("Saving configuration...");
                 var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-                // Remove existing keys if they exist
                 configFile.AppSettings.Settings.Remove("IdTotem");
                 configFile.AppSettings.Settings.Remove("Country");
                 configFile.AppSettings.Settings.Remove("Business");
                 configFile.AppSettings.Settings.Remove("Store");
                 configFile.AppSettings.Settings.Remove("StoreId");
 
-                // Add new values
                 configFile.AppSettings.Settings.Add("IdTotem", config.IdTotem);
                 configFile.AppSettings.Settings.Add("Country", config.Country);
                 configFile.AppSettings.Settings.Add("Business", config.Business);
@@ -36,11 +31,17 @@ namespace FTC_Generic_Printing_App_POC
                 configFile.Save(ConfigurationSaveMode.Modified);
                 System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
-                logger.Info($"Configuration saved successfully - IdTotem: {config.IdTotem}, Country: {config.Country}, Business: {config.Business}, Store: {config.Store}, StoreId: {config.StoreId}");
+                AppLogger.LogInfo($"Configuration saved successfully. " +
+                    $"IdTotem: {config.IdTotem}, " +
+                    $"Country: {config.Country}, " +
+                    $"Business: {config.Business}, " +
+                    $"Store: {config.Store}, " +
+                    $"StoreId: {config.StoreId}"
+                    );
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Error saving configuration");
+                AppLogger.LogError("Error saving configuration", ex);
                 throw;
             }
         }
@@ -49,7 +50,7 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                logger.Info("Loading configuration...");
+                AppLogger.LogInfo("Loading configuration...");
                 var config = new ConfigurationData
                 {
                     IdTotem = System.Configuration.ConfigurationManager.AppSettings["IdTotem"] ?? "",
@@ -59,12 +60,12 @@ namespace FTC_Generic_Printing_App_POC
                     StoreId = System.Configuration.ConfigurationManager.AppSettings["StoreId"] ?? ""
                 };
 
-                logger.Info($"Configuration loaded - IdTotem: {config.IdTotem}, Country: {config.Country}, Business: {config.Business}, Store: {config.Store}, StoreId: {config.StoreId}");
+                AppLogger.LogInfo($"Configuration loaded - IdTotem: {config.IdTotem}, Country: {config.Country}, Business: {config.Business}, Store: {config.Store}, StoreId: {config.StoreId}");
                 return config;
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Error loading configuration, returning defaults");
+                AppLogger.LogError("Error loading configuration. Returning default values", ex);
                 return new ConfigurationData();
             }
         }
@@ -77,7 +78,7 @@ namespace FTC_Generic_Printing_App_POC
                           !string.IsNullOrWhiteSpace(config.Store) &&
                           !string.IsNullOrWhiteSpace(config.StoreId);
 
-            logger.Info($"Configuration validation: {(isValid ? "VALID" : "INVALID")}");
+            AppLogger.LogInfo($"Configuration validation: {(isValid ? "VALID" : "INVALID")}");
             return isValid;
         }
     }

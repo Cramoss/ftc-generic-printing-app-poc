@@ -62,6 +62,9 @@
             this.totemIdEditLabel = new System.Windows.Forms.Label();
             this.editTotemConfigurationButton = new System.Windows.Forms.Button();
             this.exitConfigurationButton = new System.Windows.Forms.Button();
+            this.networkStatusLabel = new System.Windows.Forms.Label();
+            this.storesApiStatusLabel = new System.Windows.Forms.Label();
+            this.firebaseStatusLabel = new System.Windows.Forms.Label();
             this.totemPanel.SuspendLayout();
             this.connectivityPanel.SuspendLayout();
             this.printPanel.SuspendLayout();
@@ -102,6 +105,9 @@
             // connectivityPanel
             // 
             this.connectivityPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.connectivityPanel.Controls.Add(this.firebaseStatusLabel);
+            this.connectivityPanel.Controls.Add(this.storesApiStatusLabel);
+            this.connectivityPanel.Controls.Add(this.networkStatusLabel);
             this.connectivityPanel.Controls.Add(this.storesApiTestLabel);
             this.connectivityPanel.Controls.Add(this.testConnectivityButton);
             this.connectivityPanel.Controls.Add(this.firebaseTestLabel);
@@ -127,9 +133,9 @@
             this.firebaseTestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.firebaseTestLabel.Location = new System.Drawing.Point(9, 121);
             this.firebaseTestLabel.Name = "firebaseTestLabel";
-            this.firebaseTestLabel.Size = new System.Drawing.Size(109, 29);
+            this.firebaseTestLabel.Size = new System.Drawing.Size(115, 29);
             this.firebaseTestLabel.TabIndex = 1;
-            this.firebaseTestLabel.Text = "Firebase";
+            this.firebaseTestLabel.Text = "Firebase:";
             // 
             // internetTestLabel
             // 
@@ -137,9 +143,9 @@
             this.internetTestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.internetTestLabel.Location = new System.Drawing.Point(9, 19);
             this.internetTestLabel.Name = "internetTestLabel";
-            this.internetTestLabel.Size = new System.Drawing.Size(93, 29);
+            this.internetTestLabel.Size = new System.Drawing.Size(99, 29);
             this.internetTestLabel.TabIndex = 0;
-            this.internetTestLabel.Text = "Internet";
+            this.internetTestLabel.Text = "Internet:";
             // 
             // printPanel
             // 
@@ -174,11 +180,11 @@
             // 
             this.storesApiTestLabel.AutoSize = true;
             this.storesApiTestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storesApiTestLabel.Location = new System.Drawing.Point(9, 69);
+            this.storesApiTestLabel.Location = new System.Drawing.Point(9, 68);
             this.storesApiTestLabel.Name = "storesApiTestLabel";
-            this.storesApiTestLabel.Size = new System.Drawing.Size(126, 29);
+            this.storesApiTestLabel.Size = new System.Drawing.Size(132, 29);
             this.storesApiTestLabel.TabIndex = 10;
-            this.storesApiTestLabel.Text = "Stores API";
+            this.storesApiTestLabel.Text = "Stores API:";
             // 
             // currentConfigurationPanel
             // 
@@ -426,6 +432,36 @@
             this.exitConfigurationButton.UseVisualStyleBackColor = true;
             this.exitConfigurationButton.Click += new System.EventHandler(this.exitConfigurationButton_Click);
             // 
+            // networkStatusLabel
+            // 
+            this.networkStatusLabel.AutoSize = true;
+            this.networkStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.networkStatusLabel.Location = new System.Drawing.Point(197, 22);
+            this.networkStatusLabel.Name = "networkStatusLabel";
+            this.networkStatusLabel.Size = new System.Drawing.Size(46, 25);
+            this.networkStatusLabel.TabIndex = 11;
+            this.networkStatusLabel.Text = "N/A";
+            // 
+            // storesApiStatusLabel
+            // 
+            this.storesApiStatusLabel.AutoSize = true;
+            this.storesApiStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.storesApiStatusLabel.Location = new System.Drawing.Point(197, 71);
+            this.storesApiStatusLabel.Name = "storesApiStatusLabel";
+            this.storesApiStatusLabel.Size = new System.Drawing.Size(46, 25);
+            this.storesApiStatusLabel.TabIndex = 12;
+            this.storesApiStatusLabel.Text = "N/A";
+            // 
+            // firebaseStatusLabel
+            // 
+            this.firebaseStatusLabel.AutoSize = true;
+            this.firebaseStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.firebaseStatusLabel.Location = new System.Drawing.Point(197, 125);
+            this.firebaseStatusLabel.Name = "firebaseStatusLabel";
+            this.firebaseStatusLabel.Size = new System.Drawing.Size(46, 25);
+            this.firebaseStatusLabel.TabIndex = 13;
+            this.firebaseStatusLabel.Text = "N/A";
+            // 
             // Configuration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -491,5 +527,8 @@
         private System.Windows.Forms.Label totemIdEditLabel;
         private System.Windows.Forms.Button editTotemConfigurationButton;
         private System.Windows.Forms.Button exitConfigurationButton;
+        private System.Windows.Forms.Label firebaseStatusLabel;
+        private System.Windows.Forms.Label storesApiStatusLabel;
+        private System.Windows.Forms.Label networkStatusLabel;
     }
 }
