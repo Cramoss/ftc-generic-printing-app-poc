@@ -83,6 +83,12 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TotemConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TotemConfiguration.Designer.cs">
+      <DependentUpon>TotemConfiguration.cs</DependentUpon>
+    </Compile>
     <Compile Include="TrayApplicationContext.cs" />
     <EmbeddedResource Include="Configuration.resx">
       <DependentUpon>Configuration.cs</DependentUpon>
@@ -96,6 +102,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TotemConfiguration.resx">
+      <DependentUpon>TotemConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
