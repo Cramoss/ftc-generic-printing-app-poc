@@ -30,6 +30,8 @@ namespace FTC_Generic_Printing_App_POC
             SetupEventHandlers();
         }
 
+        #region Load configuration
+
         private void Configuration_Load(object sender, EventArgs e)
         {
             this.ShowInTaskbar = false;
@@ -61,8 +63,10 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
 
-        // Display current configuration
+        #region Display current configuration
+
         private void LoadSavedConfiguration()
         {
             try
@@ -134,8 +138,10 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
 
-        // Edit Totem configuration
+        #region Edit Totem configuration
+
         private async Task LoadStoresAsync()
         {
             if (isLoadingStores) return;
@@ -259,7 +265,6 @@ namespace FTC_Generic_Printing_App_POC
                 string selectedStoreId = selectedStoreObj?.id ?? "";
 
                 // Required fields validation
-                // TODO: Additional Totem ID value validations??
                 if (string.IsNullOrEmpty(idTotem))
                 {
                     AppLogger.LogWarning("Validation failed: ID Totem is empty");
@@ -305,14 +310,15 @@ namespace FTC_Generic_Printing_App_POC
                     StoreId = selectedStoreId
                 };
 
-                ConfigurationManager.SaveConfiguration(config);
+                // Use the new section-based saving method
+                ConfigurationManager.SaveTotemConfiguration(config);
 
-                AppLogger.LogInfo($"Configuration saved with StoreId: {selectedStoreId}, Store: {selectedStore}");
+                AppLogger.LogInfo($"Totem configuration saved with StoreId: {selectedStoreId}, Store: {selectedStore}");
                 this.Hide();
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error saving configuration", ex);
+                AppLogger.LogError("Error saving Totem configuration", ex);
                 MessageBox.Show("Error al guardar configuración: " + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -357,12 +363,73 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
 
-        // Edit Stores API configuration
+        #region Edit Stores API configuration
+
         private void saveStoresApiConfigurationButton_Click(object sender, EventArgs e)
         {
-            SaveTotemConfiguration();
+            SaveStoresApiConfiguration();
             ResetEditTotemConfigurationPanel();
+        }
+
+        private void SaveStoresApiConfiguration()
+        {
+            try
+            {
+                AppLogger.LogInfo("User clicked Save Stores API Configuration button");
+
+                string storesApiUrl = storesApiUrlTextBox.Text.Trim();
+                string storesApiKey = storesApiKeyTextBox.Text.Trim();
+                string storesApiClientId = storesApiClientIdTextBox.Text.Trim();
+                string storesApiClientSecret = storesApiClientSecretTextBox.Text.Trim();
+
+                // Required fields validation
+                if (string.IsNullOrEmpty(storesApiUrl))
+                {
+                    AppLogger.LogWarning("Validation failed: Stores API URL is empty");
+                    MessageBox.Show("Por favor ingrese una URL válida.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    storesApiUrlTextBox.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(storesApiClientId))
+                {
+                    AppLogger.LogWarning("Validation failed: Stores API Client ID is empty");
+                    MessageBox.Show("Por favor ingrese un Client ID válido.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    storesApiClientIdTextBox.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(storesApiClientSecret))
+                {
+                    AppLogger.LogWarning("Validation failed: Stores API Client Secret is empty");
+                    MessageBox.Show("Por favor ingrese un Client Secret válido.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    storesApiClientSecretTextBox.Focus();
+                    return;
+                }
+
+                ConfigurationManager.SaveStoreApiConfiguration(
+                    storesApiUrl, 
+                    storesApiUrl, // TODO: Handle edit of Auth URL
+                    storesApiClientId, 
+                    storesApiClientSecret
+                );
+
+                apiService.ReloadConfiguration();
+
+                AppLogger.LogInfo($"Store API configuration saved with URL: {storesApiUrl}");
+                this.Hide();
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error saving Store API configuration", ex);
+                MessageBox.Show("Error al guardar configuración: " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
@@ -398,8 +465,10 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
 
-        // Testing
+        #region Testing connectivity
+
         private async void testConnectivityButton_Click(object sender, EventArgs e)
         {
             AppLogger.LogInfo("User clicked Test Connectivity button");
@@ -431,6 +500,8 @@ namespace FTC_Generic_Printing_App_POC
                 }
 
                 AppLogger.LogInfo("Starting Store API connectivity test");
+
+                apiService.ReloadConfiguration();
                 try
                 {
                     string token = await apiService.GetAccessTokenAsync();
@@ -524,8 +595,10 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
 
-        // Event handlers
+        #region Event handlers
+
         private void SetupEventHandlers()
         {
             countryComboBox.SelectedIndexChanged += OnCountryChanged;
@@ -562,8 +635,10 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
 
-        // Window management
+        #region Window management
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             e.Cancel = true;
@@ -579,8 +654,10 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo("Configuration form hidden and edit panel reset values");
         }
 
+        #endregion
 
-        // Reset values
+        #region Reset values
+
         private void ResetStoreComboBox()
         {
             storeComboBox.Items.Clear();
@@ -616,7 +693,7 @@ namespace FTC_Generic_Printing_App_POC
             {
                 storesApiUrlTextBox.Text = "";
                 storesApiKeyTextBox.Text = "";
-                storesApiCliendIdTextBox.Text = "";
+                storesApiClientIdTextBox.Text = "";
                 storesApiClientSecretTextBox.Text = "";
 
                 disableEditStoresApiConfigurationPanel();
@@ -628,5 +705,7 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogError("Error resetting Stores API edit configuration panel", ex);
             }
         }
+
+        #endregion
     }
 }

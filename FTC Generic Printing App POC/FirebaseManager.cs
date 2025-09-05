@@ -11,11 +11,9 @@ namespace FTC_Generic_Printing_App_POC
     public class FirebaseManager
     {
         private FirebaseClient firebaseClient;
-        // TODO: Maybe change readonly vars to allow full Firebase configuration edit in the future
-        // through the Configuration panel. For now, not implemented.
-        private readonly string firebaseUrl;
-        private readonly string projectId;
-        private readonly string apiKey;
+        private string firebaseUrl;
+        private string projectId;
+        private string apiKey;
         private readonly String databaseDocumentParentPath = "tickets";
         private readonly String databaseDocumentTestingPath = "connection-test";
         private ConfigurationData currentConfig;
@@ -24,38 +22,34 @@ namespace FTC_Generic_Printing_App_POC
 
         public FirebaseManager()
         {
-            // Try to load from app.config first, then fall back to default values from defaultConfig.xml
-            firebaseUrl = LoadConfigurationWithFallback("Firebase_DatabaseUrl", 
-                DefaultConfigKeys.COFIG_DEFAULT_FIREBASE_DB_URL);
-
-            projectId = LoadConfigurationWithFallback("Firebase_ProjectId", 
-                DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_PROJECT_ID);
-
-            apiKey = LoadConfigurationWithFallback("Firebase_ApiKey", 
-                DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_API_KEY);
-
+            var config = ConfigurationManager.LoadFirebaseConfiguration();
+            firebaseUrl = config.DatabaseUrl;
+            projectId = config.ProjectId;
+            apiKey = config.ApiKey;
+            databaseDocumentParentPath = config.DocumentPath;
             LoadCurrentConfiguration();
             InitializeFirebase();
             AppLogger.LogInfo($"FirebaseManager initialized for project: {projectId}");
         }
 
+        #region Load configuration
         private string LoadConfigurationWithFallback(string key, string defaultKeyName)
         {
             string value = System.Configuration.ConfigurationManager.AppSettings[key];
-            
+
             if (string.IsNullOrEmpty(value))
             {
                 try
                 {
                     string defaultConfigPath = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory, 
+                        AppDomain.CurrentDomain.BaseDirectory,
                         "defaultConfig.xml");
-                        
+
                     if (System.IO.File.Exists(defaultConfigPath))
                     {
                         var configXml = new System.Xml.XmlDocument();
                         configXml.Load(defaultConfigPath);
-                        
+
                         var node = configXml.SelectSingleNode($"//appSettings/add[@key='{defaultKeyName}']");
                         if (node != null)
                         {
@@ -69,12 +63,12 @@ namespace FTC_Generic_Printing_App_POC
                     AppLogger.LogWarning($"Could not load default value for {key} from defaultConfig.xml: {ex.Message}");
                 }
             }
-            
+
             if (string.IsNullOrEmpty(value))
             {
                 throw new InvalidOperationException($"{key} not configured");
             }
-            
+
             return value;
         }
 
@@ -112,15 +106,30 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private bool ConfigurationEquals(ConfigurationData config1, ConfigurationData config2)
+        public void ReloadConfiguration()
         {
-            if (config1 == null || config2 == null) return false;
-            return config1.IdTotem == config2.IdTotem &&
-                   config1.Country == config2.Country &&
-                   config1.Business == config2.Business &&
-                   config1.StoreId == config2.StoreId;
+            try
+            {
+                AppLogger.LogInfo("Reloading Firebase configuration");
+                var config = ConfigurationManager.LoadFirebaseConfiguration();
+
+                firebaseUrl = config.DatabaseUrl;
+                projectId = config.ProjectId;
+                apiKey = config.ApiKey;
+
+                InitializeFirebase();
+
+                AppLogger.LogInfo("Firebase configuration reloaded successfully");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Failed to reload Firebase configuration", ex);
+            }
         }
 
+        #endregion
+
+        #region Listener
         private void InitializeFirebase()
         {
             try
@@ -140,6 +149,94 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        public async Task StartListeningAsync()
+        {
+            try
+            {
+                if (isListening)
+                {
+                    AppLogger.LogWarning("Firebase listener already active");
+                    return;
+                }
+
+                if (!IsConfigurationValid())
+                {
+                    AppLogger.LogError("Cannot start Firebase listener. Configuration is invalid");
+                    throw new InvalidOperationException("Cannot start Firebase listener. Configuration is invalid");
+                }
+
+                string fullPath = BuildDocumentPath();
+                AppLogger.LogInfo($"Starting Firebase listener on path: {fullPath}");
+
+                var observable = firebaseClient
+                    .Child(fullPath)
+                    .AsObservable<Dictionary<string, object>>();
+
+                // TODO: Implement listener call on new ticket 
+
+                //currentSubscription = observable.Subscribe(
+                //    onNext: (firebaseEvent) =>
+                //    {
+                //        OnFirebaseDataChanged(firebaseEvent);
+                //    },
+                //    onError: (error) =>
+                //    {
+                //        AppLogger.LogError("Firebase listener error", error);
+                //        isListening = false;
+                //        currentSubscription?.Dispose();
+                //    }
+                //);
+
+                isListening = true;
+                AppLogger.LogFirebaseEvent("LISTENER_STARTED", $"Listening on path: {fullPath}");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error starting Firebase listener", ex);
+                isListening = false;
+                throw;
+            }
+        }
+
+        public void StopListening()
+        {
+            try
+            {
+                if (!isListening)
+                {
+                    AppLogger.LogInfo("Firebase listener not active");
+                    return;
+                }
+
+                currentSubscription?.Dispose();
+                currentSubscription = null;
+
+                isListening = false;
+                AppLogger.LogFirebaseEvent("LISTENER_STOPPED", "Firebase listener stopped");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error stopping Firebase listener", ex);
+            }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                StopListening();
+                firebaseClient?.Dispose();
+                AppLogger.LogInfo("FirebaseManager disposed");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error disposing FirebaseManager", ex);
+            }
+        }
+
+        #endregion
+
+        #region Tests
         public async Task<bool> TestConnectionAsync()
         {
             try
@@ -288,6 +385,18 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
+
+        #region Helper methods
+        private bool ConfigurationEquals(ConfigurationData config1, ConfigurationData config2)
+        {
+            if (config1 == null || config2 == null) return false;
+            return config1.IdTotem == config2.IdTotem &&
+                   config1.Country == config2.Country &&
+                   config1.Business == config2.Business &&
+                   config1.StoreId == config2.StoreId;
+        }
+
         public string BuildDocumentPath()
         {
             try
@@ -307,78 +416,6 @@ namespace FTC_Generic_Printing_App_POC
                 throw;
             }
         }
-
-        public async Task StartListeningAsync()
-        {
-            try
-            {
-                if (isListening)
-                {
-                    AppLogger.LogWarning("Firebase listener already active");
-                    return;
-                }
-
-                if (!IsConfigurationValid())
-                {
-                    AppLogger.LogError("Cannot start Firebase listener. Configuration is invalid");
-                    throw new InvalidOperationException("Cannot start Firebase listener. Configuration is invalid");
-                }
-
-                string fullPath = BuildDocumentPath();
-                AppLogger.LogInfo($"Starting Firebase listener on path: {fullPath}");
-
-                var observable = firebaseClient
-                    .Child(fullPath)
-                    .AsObservable<Dictionary<string, object>>();
-
-                // TODO: Implement listener call on new ticket 
-
-                //currentSubscription = observable.Subscribe(
-                //    onNext: (firebaseEvent) =>
-                //    {
-                //        OnFirebaseDataChanged(firebaseEvent);
-                //    },
-                //    onError: (error) =>
-                //    {
-                //        AppLogger.LogError("Firebase listener error", error);
-                //        isListening = false;
-                //        currentSubscription?.Dispose();
-                //    }
-                //);
-
-                isListening = true;
-                AppLogger.LogFirebaseEvent("LISTENER_STARTED", $"Listening on path: {fullPath}");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error starting Firebase listener", ex);
-                isListening = false;
-                throw;
-            }
-        }
-
-        public void StopListening()
-        {
-            try
-            {
-                if (!isListening)
-                {
-                    AppLogger.LogInfo("Firebase listener not active");
-                    return;
-                }
-
-                currentSubscription?.Dispose();
-                currentSubscription = null;
-
-                isListening = false;
-                AppLogger.LogFirebaseEvent("LISTENER_STOPPED", "Firebase listener stopped");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error stopping Firebase listener", ex);
-            }
-        }
-      
         private bool IsConfigurationValid()
         {
             return currentConfig != null &&
@@ -388,25 +425,13 @@ namespace FTC_Generic_Printing_App_POC
                    !string.IsNullOrWhiteSpace(currentConfig.StoreId);
         }
 
+        #endregion
+
         public bool IsListening => isListening;
 
         public ConfigurationData GetCurrentConfiguration()
         {
             return currentConfig;
-        }
-
-        public void Dispose()
-        {
-            try
-            {
-                StopListening();
-                firebaseClient?.Dispose();
-                AppLogger.LogInfo("FirebaseManager disposed");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error disposing FirebaseManager", ex);
-            }
         }
     }
 }

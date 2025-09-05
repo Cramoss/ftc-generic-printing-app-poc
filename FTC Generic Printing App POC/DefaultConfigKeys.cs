@@ -13,7 +13,7 @@ namespace FTC_Generic_Printing_App_POC
         public const string CONFIG_DEFAULT_STORES_API_CLIENT_ID = "configDefaultStoresApiClientId";
         public const string CONFIG_DEFAULT_STORES_API_CLIENT_SECRET = "configDefaultStoresApiClientSecret";
 
-        public const string COFIG_DEFAULT_FIREBASE_DB_URL = "configDefaultFirebaseDbUrl";
+        public const string CONFIG_DEFAULT_FIREBASE_DB_URL = "configDefaultFirebaseDbUrl";
         public const string CONFIG_DEFAULT_FIREBASE_PROJECT_ID = "configDefaultFirebaseProjectId";
         public const string CONFIG_DEFAULT_FIREBASE_API_KEY = "configDefaultFirebaseApiKey";
     }

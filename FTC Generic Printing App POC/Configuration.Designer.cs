@@ -70,7 +70,7 @@
             this.saveStoresApiConfigurationButton = new System.Windows.Forms.Button();
             this.storesApiClientSecretTextBox = new System.Windows.Forms.TextBox();
             this.storesApiClientSecretEditLabel = new System.Windows.Forms.Label();
-            this.storesApiCliendIdTextBox = new System.Windows.Forms.TextBox();
+            this.storesApiClientIdTextBox = new System.Windows.Forms.TextBox();
             this.storesApiClientIdEditLabel = new System.Windows.Forms.Label();
             this.storesApiKeyTextBox = new System.Windows.Forms.TextBox();
             this.storesApiKeyEditLabel = new System.Windows.Forms.Label();
@@ -78,6 +78,7 @@
             this.storesApiUrlEditLabel = new System.Windows.Forms.Label();
             this.editStoresApiConfigurationButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.totemPanel.SuspendLayout();
             this.editTotemConfigurationPanel.SuspendLayout();
             this.connectivityPanel.SuspendLayout();
@@ -323,7 +324,7 @@
             // 
             this.printPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.printPanel.Controls.Add(this.printTestButton);
-            this.printPanel.Location = new System.Drawing.Point(408, 889);
+            this.printPanel.Location = new System.Drawing.Point(402, 1058);
             this.printPanel.Name = "printPanel";
             this.printPanel.Size = new System.Drawing.Size(353, 73);
             this.printPanel.TabIndex = 4;
@@ -342,7 +343,7 @@
             // 
             this.printLabel.AutoSize = true;
             this.printLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.printLabel.Location = new System.Drawing.Point(403, 857);
+            this.printLabel.Location = new System.Drawing.Point(397, 1026);
             this.printLabel.Name = "printLabel";
             this.printLabel.Size = new System.Drawing.Size(120, 29);
             this.printLabel.TabIndex = 5;
@@ -363,7 +364,7 @@
             this.currentConfigurationPanel.Controls.Add(this.currentTotemIdLabel);
             this.currentConfigurationPanel.Location = new System.Drawing.Point(12, 12);
             this.currentConfigurationPanel.Name = "currentConfigurationPanel";
-            this.currentConfigurationPanel.Size = new System.Drawing.Size(749, 255);
+            this.currentConfigurationPanel.Size = new System.Drawing.Size(954, 255);
             this.currentConfigurationPanel.TabIndex = 9;
             // 
             // currentStoreId
@@ -492,7 +493,7 @@
             this.editStoresApiConfigurationPanel.Controls.Add(this.saveStoresApiConfigurationButton);
             this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientSecretTextBox);
             this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientSecretEditLabel);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiCliendIdTextBox);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientIdTextBox);
             this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientIdEditLabel);
             this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiKeyTextBox);
             this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiKeyEditLabel);
@@ -533,13 +534,13 @@
             this.storesApiClientSecretEditLabel.TabIndex = 23;
             this.storesApiClientSecretEditLabel.Text = "Client Secret";
             // 
-            // storesApiCliendIdTextBox
+            // storesApiClientIdTextBox
             // 
-            this.storesApiCliendIdTextBox.Enabled = false;
-            this.storesApiCliendIdTextBox.Location = new System.Drawing.Point(17, 217);
-            this.storesApiCliendIdTextBox.Name = "storesApiCliendIdTextBox";
-            this.storesApiCliendIdTextBox.Size = new System.Drawing.Size(286, 26);
-            this.storesApiCliendIdTextBox.TabIndex = 22;
+            this.storesApiClientIdTextBox.Enabled = false;
+            this.storesApiClientIdTextBox.Location = new System.Drawing.Point(17, 217);
+            this.storesApiClientIdTextBox.Name = "storesApiClientIdTextBox";
+            this.storesApiClientIdTextBox.Size = new System.Drawing.Size(286, 26);
+            this.storesApiClientIdTextBox.TabIndex = 22;
             // 
             // storesApiClientIdEditLabel
             // 
@@ -610,11 +611,19 @@
             this.label1.TabIndex = 22;
             this.label1.Text = "Stores API";
             // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(786, 328);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(384, 504);
+            this.panel1.TabIndex = 23;
+            // 
             // Configuration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(778, 1201);
+            this.ClientSize = new System.Drawing.Size(1200, 1201);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.storesApiPanel);
             this.Controls.Add(this.exitConfigurationButton);
@@ -687,7 +696,7 @@
         private System.Windows.Forms.Panel editStoresApiConfigurationPanel;
         private System.Windows.Forms.Button editStoresApiConfigurationButton;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox storesApiCliendIdTextBox;
+        private System.Windows.Forms.TextBox storesApiClientIdTextBox;
         private System.Windows.Forms.Label storesApiClientIdEditLabel;
         private System.Windows.Forms.TextBox storesApiKeyTextBox;
         private System.Windows.Forms.Label storesApiKeyEditLabel;
@@ -696,5 +705,6 @@
         private System.Windows.Forms.Label storesApiClientSecretEditLabel;
         private System.Windows.Forms.Button saveStoresApiConfigurationButton;
         private System.Windows.Forms.TextBox storesApiClientSecretTextBox;
+        private System.Windows.Forms.Panel panel1;
     }
 }

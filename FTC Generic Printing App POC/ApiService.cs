@@ -11,48 +11,40 @@ namespace FTC_Generic_Printing_App_POC
     {
         private static readonly HttpClient httpClient = new HttpClient();
 
-        private readonly string AUTH_URL;
-        private readonly string STORES_URL;
-        private readonly string CLIENT_ID;
-        private readonly string CLIENT_SECRET;
+        private string AUTH_URL;
+        private string STORES_URL;
+        private string CLIENT_ID;
+        private string CLIENT_SECRET;
 
-        // Load configuration from app.config using System.Configuration.ConfigurationManager
         public ApiService()
         {
-            // Try to load from app.config first, then fall back to default values from defaultConfig.xml
-            // if no config was found.
-            AUTH_URL = LoadConfigurationWithFallback("StoreApi_AuthUrl", 
-                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
-            
-            STORES_URL = LoadConfigurationWithFallback("StoreApi_StoresUrl", 
-                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_URL);
-            
-            CLIENT_ID = LoadConfigurationWithFallback("StoreApi_ClientId",
-                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_ID);
-            
-            CLIENT_SECRET = LoadConfigurationWithFallback("StoreApi_ClientSecret",
-                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_SECRET);
-
+            var config = ConfigurationManager.LoadStoreApiConfiguration();
+            AUTH_URL = config.AuthUrl;
+            STORES_URL = config.StoresUrl;
+            CLIENT_ID = config.ClientId;
+            CLIENT_SECRET = config.ClientSecret;
             AppLogger.LogInfo("ApiService initialized with configuration values");
         }
+
+        #region Load configuration
 
         private string LoadConfigurationWithFallback(string key, string defaultKeyName)
         {
             string value = System.Configuration.ConfigurationManager.AppSettings[key];
-            
+
             if (string.IsNullOrEmpty(value))
             {
                 try
                 {
                     string defaultConfigPath = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory, 
+                        AppDomain.CurrentDomain.BaseDirectory,
                         "defaultConfig.xml");
-                        
+
                     if (System.IO.File.Exists(defaultConfigPath))
                     {
                         var configXml = new System.Xml.XmlDocument();
                         configXml.Load(defaultConfigPath);
-                        
+
                         var node = configXml.SelectSingleNode($"//appSettings/add[@key='{defaultKeyName}']");
                         if (node != null)
                         {
@@ -66,9 +58,33 @@ namespace FTC_Generic_Printing_App_POC
                     AppLogger.LogWarning($"Could not load default value for {key} from defaultConfig.xml: {ex.Message}");
                 }
             }
-            
+
             return value ?? string.Empty;
         }
+
+        public void ReloadConfiguration()
+        {
+            try
+            {
+                AppLogger.LogInfo("Reloading API service configuration");
+                var config = ConfigurationManager.LoadStoreApiConfiguration();
+
+                AUTH_URL = config.AuthUrl;
+                STORES_URL = config.StoresUrl;
+                CLIENT_ID = config.ClientId;
+                CLIENT_SECRET = config.ClientSecret;
+
+                AppLogger.LogInfo("API service configuration reloaded successfully");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Failed to reload API service configuration", ex);
+            }
+        }
+
+        #endregion
+
+        #region API calls
 
         public async Task<string> GetAccessTokenAsync()
         {
@@ -141,6 +157,9 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        #endregion
+
+        #region Helper methods
         private string BuildEcommName(string country, string business)
         {
             string countryCode = "";
@@ -179,6 +198,8 @@ namespace FTC_Generic_Printing_App_POC
 
             return $"{businessCode}-{countryCode}";
         }
+
+        #endregion
     }
 
     public class AuthResponse
@@ -191,17 +212,9 @@ namespace FTC_Generic_Printing_App_POC
     public class Store
     {
         public string id { get; set; }
-        public string nodeId { get; set; }
         public string name { get; set; }
-        public string streetAddress { get; set; }
-        public string city { get; set; }
-        public string state { get; set; }
-        public string regionName { get; set; }
         public string country { get; set; }
         public string buName { get; set; }
-        public string isActive { get; set; }
-
-        // Override to display store name in configuration ComboBox
         public override string ToString()
         {
             return name;
