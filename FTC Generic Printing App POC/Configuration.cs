@@ -10,15 +10,13 @@ using System.Windows.Forms;
 
 namespace FTC_Generic_Printing_App_POC
 {
-    // TODO: Fix bug of sometimes the configuration erasing on restart
-    // Note: Apparently is not a bug. It may happen normally when changing and compiling
-    // the source code.
     public partial class Configuration : Form
     {
         private readonly ApiService apiService;
         private List<Store> availableStores;
         private bool isLoadingStores = false;
         private bool isCurrentlyEditingTotemConfiguration = false;
+        private bool isCurrentlyEditingStoresApiConfiguration = false;
 
         public Configuration()
         {
@@ -26,7 +24,8 @@ namespace FTC_Generic_Printing_App_POC
             apiService = new ApiService();
             availableStores = new List<Store>();
             PopulateComboBoxes();
-            ResetEditConfigurationPanel();
+            ResetEditTotemConfigurationPanel();
+            ResetEditStoresApiConfigurationPanel();
             LoadSavedConfiguration();
             SetupEventHandlers();
         }
@@ -37,73 +36,106 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo("Configuration form opened");
         }
 
-        private void SetupEventHandlers()
+        public ConfigurationData GetConfiguration()
         {
-            // Event handlers for cascading ComboBox behavior
-            countryComboBox.SelectedIndexChanged += OnCountryChanged;
-            businessComboBox.SelectedIndexChanged += OnBusinessChanged;
+            Store selectedStoreObj = storeComboBox.SelectedItem as Store;
+
+            return new ConfigurationData
+            {
+                IdTotem = idTotemTextBox.Text.Trim(),
+                Country = countryComboBox.SelectedItem?.ToString() ?? "",
+                Business = businessComboBox.SelectedItem?.ToString() ?? "",
+                Store = selectedStoreObj?.name ?? "",
+                StoreId = selectedStoreObj?.id ?? ""
+            };
         }
 
-        private void OnCountryChanged(object sender, EventArgs e)
+        protected override void SetVisibleCore(bool value)
         {
-            if (countryComboBox.SelectedIndex != -1)
-            {
-                businessComboBox.Enabled = true;
-                businessComboBox.SelectedIndex = -1;
-                ResetStoreComboBox();
-            }
-            else
-            {
-                // No country selected
-                businessComboBox.Enabled = false;
-                businessComboBox.SelectedIndex = -1;
-                ResetStoreComboBox();
-            }
-        }
+            base.SetVisibleCore(value);
 
-        private async void OnBusinessChanged(object sender, EventArgs e)
-        {
-            if (businessComboBox.SelectedIndex != -1 && countryComboBox.SelectedIndex != -1)
+            if (value)
             {
-                await LoadStoresAsync();
-            }
-            else
-            {
-                // Business not selected
-                ResetStoreComboBox();
+                RefreshConfigurationLabels();
+                ResetEditTotemConfigurationPanel();
             }
         }
 
-        private void ResetStoreComboBox()
-        {
-            storeComboBox.Items.Clear();
-            storeComboBox.Items.Add("Seleccione país y negocio primero");
-            storeComboBox.SelectedIndex = 0;
-            storeComboBox.Enabled = false;
-        }
 
-        // Reset all edit panel controls to default values
-        private void ResetEditConfigurationPanel()
+        // Display current configuration
+        private void LoadSavedConfiguration()
         {
             try
             {
-                idTotemTextBox.Text = "";
+                AppLogger.LogInfo("Loading saved configuration..");
+                var config = ConfigurationManager.LoadConfiguration();
 
-                countryComboBox.SelectedIndex = -1;
-                businessComboBox.SelectedIndex = -1;
-                businessComboBox.Enabled = false;
+                idTotemTextBox.Text = config.IdTotem;
 
-                ResetStoreComboBox();
-                disableEditTotemConfigurationPanel();
+                if (!string.IsNullOrEmpty(config.Country))
+                {
+                    countryComboBox.Text = config.Country;
+                    businessComboBox.Enabled = true;
+                }
 
-                AppLogger.LogInfo("Edit configuration panel controls reset to default values");
+                // Load business second (only if country was loaded and selected)
+                if (!string.IsNullOrEmpty(config.Business) && countryComboBox.SelectedIndex != -1)
+                {
+                    businessComboBox.Text = config.Business;
+                    // Stores will be loaded automatically on the OnBusinessChanged event
+                }
+
+                // Store selection will be handled after stores are loaded in the LoadStoresAsync method
+
+                currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
+                currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
+                currentBusiness.Text = !string.IsNullOrEmpty(config.Business) ? config.Business : "No configurado";
+                currentStore.Text = !string.IsNullOrEmpty(config.Store) ? config.Store : "No configurado";
+                currentStoreId.Text = !string.IsNullOrEmpty(config.StoreId) ? config.StoreId : "No configurado";
+
+                AppLogger.LogInfo("Configuration loaded into the form and labels updated");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error resetting edit configuration panel", ex);
+                AppLogger.LogError("Error loading configuration into the form", ex);
+
+                // TODO: Use constant ERROR
+                currentTotemId.Text = "Error";
+                currentCountry.Text = "Error";
+                currentBusiness.Text = "Error";
+                currentStore.Text = "Error";
+                currentStoreId.Text = "Error";
             }
         }
 
+        private void RefreshConfigurationLabels()
+        {
+            try
+            {
+                var config = ConfigurationManager.LoadConfiguration();
+
+                currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
+                currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
+                currentBusiness.Text = !string.IsNullOrEmpty(config.Business) ? config.Business : "No configurado";
+                currentStore.Text = !string.IsNullOrEmpty(config.Store) ? config.Store : "No configurado";
+                currentStoreId.Text = !string.IsNullOrEmpty(config.StoreId) ? config.StoreId : "No configurado";
+
+                AppLogger.LogInfo("Configuration labels refreshed");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error refreshing configuration labels", ex);
+
+                currentTotemId.Text = "Error";
+                currentCountry.Text = "Error";
+                currentBusiness.Text = "Error";
+                currentStore.Text = "Error";
+                currentStoreId.Text = "Error";
+            }
+        }
+
+
+        // Edit Totem configuration
         private async Task LoadStoresAsync()
         {
             if (isLoadingStores) return;
@@ -182,9 +214,9 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        // TODO: Evaluate if countries and business have to keep being hardcoded or not
         private void PopulateComboBoxes()
         {
+            // TODO: Evaluate if countries and business have to keep being hardcoded or not
             try
             {
                 countryComboBox.Items.Clear();
@@ -212,56 +244,11 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void LoadSavedConfiguration()
+        private void SaveTotemConfiguration()
         {
             try
             {
-                AppLogger.LogInfo("Loading saved configuration..");
-                var config = ConfigurationManager.LoadConfiguration();
-
-                idTotemTextBox.Text = config.IdTotem;
-
-                if (!string.IsNullOrEmpty(config.Country))
-                {
-                    countryComboBox.Text = config.Country;
-                    businessComboBox.Enabled = true;
-                }
-
-                // Load business second (only if country was loaded and selected)
-                if (!string.IsNullOrEmpty(config.Business) && countryComboBox.SelectedIndex != -1)
-                {
-                    businessComboBox.Text = config.Business;
-                    // Stores will be loaded automatically on the OnBusinessChanged event
-                }
-
-                // Store selection will be handled after stores are loaded in the LoadStoresAsync method
-
-                currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
-                currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
-                currentBusiness.Text = !string.IsNullOrEmpty(config.Business) ? config.Business : "No configurado";
-                currentStore.Text = !string.IsNullOrEmpty(config.Store) ? config.Store : "No configurado";
-                currentStoreId.Text = !string.IsNullOrEmpty(config.StoreId) ? config.StoreId : "No configurado";
-
-                AppLogger.LogInfo("Configuration loaded into the form and labels updated");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error loading configuration into the form", ex);
-
-                // TODO: Use constant ERROR
-                currentTotemId.Text = "Error";
-                currentCountry.Text = "Error";
-                currentBusiness.Text = "Error";
-                currentStore.Text = "Error";
-                currentStoreId.Text = "Error";
-            }
-        }
-
-        private void SaveConfiguration()
-        {
-            try
-            {
-                AppLogger.LogInfo("User clicked Save Configuration button");
+                AppLogger.LogInfo("User clicked Save Totem Configuration button");
 
                 string idTotem = idTotemTextBox.Text.Trim();
                 string selectedCountry = countryComboBox.SelectedItem?.ToString() ?? "";
@@ -331,15 +318,88 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        // Event handlers
-        private void label2_Click(object sender, EventArgs e) { }
-
-        private void saveConfigurationButton_Click(object sender, EventArgs e)
+        private void saveTotemConfigurationButton_Click(object sender, EventArgs e)
         {
-            SaveConfiguration();
-            ResetEditConfigurationPanel();
+            SaveTotemConfiguration();
+            ResetEditTotemConfigurationPanel();
         }
 
+        private void editTotemConfigurationButton_Click(object sender, EventArgs e)
+        {
+            if (isCurrentlyEditingTotemConfiguration)
+            {
+                disableEditTotemConfigurationPanel();
+                ResetEditTotemConfigurationPanel();
+            }
+            else
+            {
+                enableEditTotemConfigurationPanel();
+            }
+        }
+
+        private void enableEditTotemConfigurationPanel()
+        {
+            isCurrentlyEditingTotemConfiguration = true;
+            editTotemConfigurationButton.Text = "Cancelar edición";
+            foreach (Control control in editTotemConfigurationPanel.Controls)
+            {
+                control.Enabled = true;
+            }
+        }
+
+        private void disableEditTotemConfigurationPanel()
+        {
+            isCurrentlyEditingTotemConfiguration = false;
+            editTotemConfigurationButton.Text = "Editar configuración";
+            foreach (Control control in editTotemConfigurationPanel.Controls)
+            {
+                control.Enabled = false;
+            }
+        }
+
+
+        // Edit Stores API configuration
+        private void saveStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            SaveTotemConfiguration();
+            ResetEditTotemConfigurationPanel();
+        }
+
+        private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            if (isCurrentlyEditingStoresApiConfiguration)
+            {
+                disableEditStoresApiConfigurationPanel();
+                ResetEditStoresApiConfigurationPanel();
+            }
+            else
+            {
+                enableEditStoresApiConfigurationPanel();
+            }
+        }
+
+        private void enableEditStoresApiConfigurationPanel()
+        {
+            isCurrentlyEditingStoresApiConfiguration = true;
+            editStoresApiConfigurationButton.Text = "Cancelar edición";
+            foreach (Control control in editStoresApiConfigurationPanel.Controls)
+            {
+                control.Enabled = true;
+            }
+        }
+
+        private void disableEditStoresApiConfigurationPanel()
+        {
+            isCurrentlyEditingStoresApiConfiguration = false;
+            editStoresApiConfigurationButton.Text = "Editar configuración";
+            foreach (Control control in editStoresApiConfigurationPanel.Controls)
+            {
+                control.Enabled = false;
+            }
+        }
+
+
+        // Testing
         private async void testConnectivityButton_Click(object sender, EventArgs e)
         {
             AppLogger.LogInfo("User clicked Test Connectivity button");
@@ -366,7 +426,7 @@ namespace FTC_Generic_Printing_App_POC
                     else
                     {
                         networkStatusLabel.Text = "OK";
-                        AppLogger.LogInfo("✓ Network connectivity test passed");
+                        AppLogger.LogInfo("Network connectivity test passed");
                     }
                 }
 
@@ -464,6 +524,46 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+
+        // Event handlers
+        private void SetupEventHandlers()
+        {
+            countryComboBox.SelectedIndexChanged += OnCountryChanged;
+            businessComboBox.SelectedIndexChanged += OnBusinessChanged;
+        }
+
+        private void OnCountryChanged(object sender, EventArgs e)
+        {
+            if (countryComboBox.SelectedIndex != -1)
+            {
+                businessComboBox.Enabled = true;
+                businessComboBox.SelectedIndex = -1;
+                ResetStoreComboBox();
+            }
+            else
+            {
+                // No country selected
+                businessComboBox.Enabled = false;
+                businessComboBox.SelectedIndex = -1;
+                ResetStoreComboBox();
+            }
+        }
+
+        private async void OnBusinessChanged(object sender, EventArgs e)
+        {
+            if (businessComboBox.SelectedIndex != -1 && countryComboBox.SelectedIndex != -1)
+            {
+                await LoadStoresAsync();
+            }
+            else
+            {
+                // Business not selected
+                ResetStoreComboBox();
+            }
+        }
+
+
+        // Window management
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             e.Cancel = true;
@@ -471,95 +571,61 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo("Configuration form hidden");
         }
 
-        public ConfigurationData GetConfiguration()
-        {
-            Store selectedStoreObj = storeComboBox.SelectedItem as Store;
-
-            return new ConfigurationData
-            {
-                IdTotem = idTotemTextBox.Text.Trim(),
-                Country = countryComboBox.SelectedItem?.ToString() ?? "",
-                Business = businessComboBox.SelectedItem?.ToString() ?? "",
-                Store = selectedStoreObj?.name ?? "",
-                StoreId = selectedStoreObj?.id ?? ""
-            };
-        }
-
-        // Toggle all controls in the edit totem configuration panel
-        private void editTotemConfigurationButton_Click(object sender, EventArgs e)
-        {
-            if (isCurrentlyEditingTotemConfiguration)
-            {
-                disableEditTotemConfigurationPanel();
-            }
-            else
-            {
-                enableEditTotemConfigurationPanel();
-            }
-        }
-
         private void exitConfigurationButton_Click(object sender, EventArgs e)
         {
-            ResetEditConfigurationPanel();
+            ResetEditTotemConfigurationPanel();
+            ResetEditStoresApiConfigurationPanel();
             this.Hide();
             AppLogger.LogInfo("Configuration form hidden and edit panel reset values");
         }
 
-        private void enableEditTotemConfigurationPanel()
+
+        // Reset values
+        private void ResetStoreComboBox()
         {
-            isCurrentlyEditingTotemConfiguration = true;
-            editTotemConfigurationButton.Text = "Cancelar edición";
-            foreach (Control control in editTotemConfigurationPanel.Controls)
-            {
-                control.Enabled = true;
-            }
+            storeComboBox.Items.Clear();
+            storeComboBox.Items.Add("Seleccione país y negocio primero");
+            storeComboBox.SelectedIndex = 0;
+            storeComboBox.Enabled = false;
         }
 
-        private void disableEditTotemConfigurationPanel()
-        {
-            isCurrentlyEditingTotemConfiguration = false;
-            editTotemConfigurationButton.Text = "Editar configuración";
-            foreach (Control control in editTotemConfigurationPanel.Controls)
-            {
-                control.Enabled = false;
-            }
-        }
-
-        // When form becomes visible again
-        protected override void SetVisibleCore(bool value)
-        {
-            base.SetVisibleCore(value);
-
-            if (value)
-            {
-                RefreshConfigurationLabels();
-                ResetEditConfigurationPanel();
-            }
-        }
-
-        private void RefreshConfigurationLabels()
+        private void ResetEditTotemConfigurationPanel()
         {
             try
             {
-                var config = ConfigurationManager.LoadConfiguration();
+                idTotemTextBox.Text = "";
 
-                currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
-                currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
-                currentBusiness.Text = !string.IsNullOrEmpty(config.Business) ? config.Business : "No configurado";
-                currentStore.Text = !string.IsNullOrEmpty(config.Store) ? config.Store : "No configurado";
-                currentStoreId.Text = !string.IsNullOrEmpty(config.StoreId) ? config.StoreId : "No configurado";
+                countryComboBox.SelectedIndex = -1;
+                businessComboBox.SelectedIndex = -1;
+                businessComboBox.Enabled = false;
 
-                AppLogger.LogInfo("Configuration labels refreshed");
+                ResetStoreComboBox();
+                disableEditTotemConfigurationPanel();
+
+                AppLogger.LogInfo("Totem edit configuration panel controls reset to default values");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error refreshing configuration labels", ex);
+                AppLogger.LogError("Error resetting Totem edit configuration panel", ex);
+            }
+        }
 
-                currentTotemId.Text = "Error";
-                currentCountry.Text = "Error";
-                currentBusiness.Text = "Error";
-                currentStore.Text = "Error";
-                currentStoreId.Text = "Error";
+        private void ResetEditStoresApiConfigurationPanel()
+        {
+            try
+            {
+                storesApiUrlTextBox.Text = "";
+                storesApiKeyTextBox.Text = "";
+                storesApiCliendIdTextBox.Text = "";
+                storesApiClientSecretTextBox.Text = "";
+
+                disableEditStoresApiConfigurationPanel();
+
+                AppLogger.LogInfo("Stores API edit configuration panel controls reset to default values");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error resetting Stores API edit configuration panel", ex);
             }
         }
     }

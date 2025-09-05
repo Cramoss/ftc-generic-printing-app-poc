@@ -11,31 +11,71 @@ namespace FTC_Generic_Printing_App_POC
     public class FirebaseManager
     {
         private FirebaseClient firebaseClient;
+        // TODO: Maybe change readonly vars to allow full Firebase configuration edit in the future
+        // through the Configuration panel. For now, not implemented.
         private readonly string firebaseUrl;
         private readonly string projectId;
         private readonly string apiKey;
-        private readonly string documentPath;
+        private readonly String databaseDocumentParentPath = "tickets";
+        private readonly String databaseDocumentTestingPath = "connection-test";
         private ConfigurationData currentConfig;
         private bool isListening = false;
         private IDisposable currentSubscription;
 
         public FirebaseManager()
         {
-            firebaseUrl = System.Configuration.ConfigurationManager.AppSettings["Firebase_DatabaseUrl"] ??
-                throw new InvalidOperationException("Firebase_DatabaseUrl not configured");
+            // Try to load from app.config first, then fall back to default values from defaultConfig.xml
+            firebaseUrl = LoadConfigurationWithFallback("Firebase_DatabaseUrl", 
+                DefaultConfigKeys.COFIG_DEFAULT_FIREBASE_DB_URL);
 
-            projectId = System.Configuration.ConfigurationManager.AppSettings["Firebase_ProjectId"] ??
-                throw new InvalidOperationException("Firebase_ProjectId not configured");
+            projectId = LoadConfigurationWithFallback("Firebase_ProjectId", 
+                DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_PROJECT_ID);
 
-            apiKey = System.Configuration.ConfigurationManager.AppSettings["Firebase_ApiKey"] ??
-                throw new InvalidOperationException("Firebase_ApiKey not configured");
-
-            documentPath = System.Configuration.ConfigurationManager.AppSettings["Firebase_DocumentPath"] ??
-                throw new InvalidOperationException("Firebase_DocumentPath not configured");
+            apiKey = LoadConfigurationWithFallback("Firebase_ApiKey", 
+                DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_API_KEY);
 
             LoadCurrentConfiguration();
             InitializeFirebase();
             AppLogger.LogInfo($"FirebaseManager initialized for project: {projectId}");
+        }
+
+        private string LoadConfigurationWithFallback(string key, string defaultKeyName)
+        {
+            string value = System.Configuration.ConfigurationManager.AppSettings[key];
+            
+            if (string.IsNullOrEmpty(value))
+            {
+                try
+                {
+                    string defaultConfigPath = System.IO.Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory, 
+                        "defaultConfig.xml");
+                        
+                    if (System.IO.File.Exists(defaultConfigPath))
+                    {
+                        var configXml = new System.Xml.XmlDocument();
+                        configXml.Load(defaultConfigPath);
+                        
+                        var node = configXml.SelectSingleNode($"//appSettings/add[@key='{defaultKeyName}']");
+                        if (node != null)
+                        {
+                            value = node.Attributes["value"]?.Value;
+                            AppLogger.LogInfo($"Loaded default value for {key} from defaultConfig.xml");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogWarning($"Could not load default value for {key} from defaultConfig.xml: {ex.Message}");
+                }
+            }
+            
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new InvalidOperationException($"{key} not configured");
+            }
+            
+            return value;
         }
 
         private void LoadCurrentConfiguration()
@@ -108,7 +148,7 @@ namespace FTC_Generic_Printing_App_POC
 
                 using (var httpClient = new System.Net.Http.HttpClient())
                 {
-                    var testUrl = $"{firebaseUrl}connection-test.json?auth={apiKey}";
+                    var testUrl = $"{firebaseUrl}/{databaseDocumentTestingPath}.json?auth={apiKey}";
                     AppLogger.LogInfo($"Testing Firebase REST API: {firebaseUrl}");
 
                     var response = await httpClient.GetAsync(testUrl);
@@ -122,7 +162,7 @@ namespace FTC_Generic_Printing_App_POC
                     AppLogger.LogInfo($"Firebase REST API response: {content.Substring(0, Math.Min(200, content.Length))}...");
                 }
 
-                var testPath = $"connection-test-{DateTime.Now.Ticks}";
+                var testPath = $"{databaseDocumentTestingPath}-{DateTime.Now.Ticks}";
                 var testData = new
                 {
                     timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -257,7 +297,7 @@ namespace FTC_Generic_Printing_App_POC
                     throw new InvalidOperationException("Configuration is not valid for building Firebase path");
                 }
 
-                string path = $"{documentPath}/{currentConfig.Country.ToLower()}/{currentConfig.Business.ToLower()}/{currentConfig.StoreId}/{currentConfig.IdTotem}";
+                string path = $"{databaseDocumentParentPath}/{currentConfig.Country.ToLower()}/{currentConfig.Business.ToLower()}/{currentConfig.StoreId}/{currentConfig.IdTotem}";
                 AppLogger.LogInfo($"Built Firebase document path: {path}");
                 return path;
             }

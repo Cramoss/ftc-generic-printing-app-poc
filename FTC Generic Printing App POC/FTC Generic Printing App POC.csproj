@@ -78,6 +78,7 @@
       <DependentUpon>Configuration.cs</DependentUpon>
     </Compile>
     <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="DefaultConfigKeys.cs" />
     <Compile Include="FirebaseManager.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />

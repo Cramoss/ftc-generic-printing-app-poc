@@ -29,29 +29,9 @@
         private void InitializeComponent()
         {
             this.totemPanel = new System.Windows.Forms.Panel();
-            this.totemConfigurationLabel = new System.Windows.Forms.Label();
-            this.connectivityLabel = new System.Windows.Forms.Label();
-            this.connectivityPanel = new System.Windows.Forms.Panel();
-            this.testConnectivityButton = new System.Windows.Forms.Button();
-            this.firebaseTestLabel = new System.Windows.Forms.Label();
-            this.internetTestLabel = new System.Windows.Forms.Label();
-            this.printPanel = new System.Windows.Forms.Panel();
-            this.printTestButton = new System.Windows.Forms.Button();
-            this.printLabel = new System.Windows.Forms.Label();
-            this.storesApiTestLabel = new System.Windows.Forms.Label();
-            this.currentConfigurationPanel = new System.Windows.Forms.Panel();
-            this.currentTotemIdLabel = new System.Windows.Forms.Label();
-            this.currentCountryLabel = new System.Windows.Forms.Label();
-            this.currentBusinessLabel = new System.Windows.Forms.Label();
-            this.currentStoreNameLabel = new System.Windows.Forms.Label();
-            this.currentStoreIdLabel = new System.Windows.Forms.Label();
-            this.currentTotemId = new System.Windows.Forms.Label();
-            this.currentCountry = new System.Windows.Forms.Label();
-            this.currentBusiness = new System.Windows.Forms.Label();
-            this.currentStore = new System.Windows.Forms.Label();
-            this.currentStoreId = new System.Windows.Forms.Label();
+            this.editTotemConfigurationButton = new System.Windows.Forms.Button();
             this.editTotemConfigurationPanel = new System.Windows.Forms.Panel();
-            this.saveConfigurationButton = new System.Windows.Forms.Button();
+            this.saveTotemConfigurationButton = new System.Windows.Forms.Button();
             this.storeComboBox = new System.Windows.Forms.ComboBox();
             this.storeEditLabel = new System.Windows.Forms.Label();
             this.businessComboBox = new System.Windows.Forms.ComboBox();
@@ -60,16 +40,51 @@
             this.countryEditLabel = new System.Windows.Forms.Label();
             this.idTotemTextBox = new System.Windows.Forms.TextBox();
             this.totemIdEditLabel = new System.Windows.Forms.Label();
-            this.editTotemConfigurationButton = new System.Windows.Forms.Button();
-            this.exitConfigurationButton = new System.Windows.Forms.Button();
-            this.networkStatusLabel = new System.Windows.Forms.Label();
-            this.storesApiStatusLabel = new System.Windows.Forms.Label();
+            this.totemConfigurationLabel = new System.Windows.Forms.Label();
+            this.connectivityLabel = new System.Windows.Forms.Label();
+            this.connectivityPanel = new System.Windows.Forms.Panel();
             this.firebaseStatusLabel = new System.Windows.Forms.Label();
+            this.storesApiStatusLabel = new System.Windows.Forms.Label();
+            this.networkStatusLabel = new System.Windows.Forms.Label();
+            this.storesApiTestLabel = new System.Windows.Forms.Label();
+            this.testConnectivityButton = new System.Windows.Forms.Button();
+            this.firebaseTestLabel = new System.Windows.Forms.Label();
+            this.internetTestLabel = new System.Windows.Forms.Label();
+            this.printPanel = new System.Windows.Forms.Panel();
+            this.printTestButton = new System.Windows.Forms.Button();
+            this.printLabel = new System.Windows.Forms.Label();
+            this.currentConfigurationPanel = new System.Windows.Forms.Panel();
+            this.currentStoreId = new System.Windows.Forms.Label();
+            this.currentStore = new System.Windows.Forms.Label();
+            this.currentBusiness = new System.Windows.Forms.Label();
+            this.currentCountry = new System.Windows.Forms.Label();
+            this.currentTotemId = new System.Windows.Forms.Label();
+            this.currentStoreIdLabel = new System.Windows.Forms.Label();
+            this.currentStoreNameLabel = new System.Windows.Forms.Label();
+            this.currentBusinessLabel = new System.Windows.Forms.Label();
+            this.currentCountryLabel = new System.Windows.Forms.Label();
+            this.currentTotemIdLabel = new System.Windows.Forms.Label();
+            this.exitConfigurationButton = new System.Windows.Forms.Button();
+            this.storesApiPanel = new System.Windows.Forms.Panel();
+            this.editStoresApiConfigurationPanel = new System.Windows.Forms.Panel();
+            this.saveStoresApiConfigurationButton = new System.Windows.Forms.Button();
+            this.storesApiClientSecretTextBox = new System.Windows.Forms.TextBox();
+            this.storesApiClientSecretEditLabel = new System.Windows.Forms.Label();
+            this.storesApiCliendIdTextBox = new System.Windows.Forms.TextBox();
+            this.storesApiClientIdEditLabel = new System.Windows.Forms.Label();
+            this.storesApiKeyTextBox = new System.Windows.Forms.TextBox();
+            this.storesApiKeyEditLabel = new System.Windows.Forms.Label();
+            this.storesApiUrlTextBox = new System.Windows.Forms.TextBox();
+            this.storesApiUrlEditLabel = new System.Windows.Forms.Label();
+            this.editStoresApiConfigurationButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.totemPanel.SuspendLayout();
+            this.editTotemConfigurationPanel.SuspendLayout();
             this.connectivityPanel.SuspendLayout();
             this.printPanel.SuspendLayout();
             this.currentConfigurationPanel.SuspendLayout();
-            this.editTotemConfigurationPanel.SuspendLayout();
+            this.storesApiPanel.SuspendLayout();
+            this.editStoresApiConfigurationPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // totemPanel
@@ -77,16 +92,133 @@
             this.totemPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.totemPanel.Controls.Add(this.editTotemConfigurationButton);
             this.totemPanel.Controls.Add(this.editTotemConfigurationPanel);
-            this.totemPanel.Location = new System.Drawing.Point(17, 349);
+            this.totemPanel.Location = new System.Drawing.Point(17, 328);
             this.totemPanel.Name = "totemPanel";
-            this.totemPanel.Size = new System.Drawing.Size(364, 483);
+            this.totemPanel.Size = new System.Drawing.Size(364, 504);
             this.totemPanel.TabIndex = 0;
+            // 
+            // editTotemConfigurationButton
+            // 
+            this.editTotemConfigurationButton.Location = new System.Drawing.Point(14, 12);
+            this.editTotemConfigurationButton.Name = "editTotemConfigurationButton";
+            this.editTotemConfigurationButton.Size = new System.Drawing.Size(328, 38);
+            this.editTotemConfigurationButton.TabIndex = 19;
+            this.editTotemConfigurationButton.Text = "Editar configuración";
+            this.editTotemConfigurationButton.UseVisualStyleBackColor = true;
+            this.editTotemConfigurationButton.Click += new System.EventHandler(this.editTotemConfigurationButton_Click);
+            // 
+            // editTotemConfigurationPanel
+            // 
+            this.editTotemConfigurationPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.editTotemConfigurationPanel.Controls.Add(this.saveTotemConfigurationButton);
+            this.editTotemConfigurationPanel.Controls.Add(this.storeComboBox);
+            this.editTotemConfigurationPanel.Controls.Add(this.storeEditLabel);
+            this.editTotemConfigurationPanel.Controls.Add(this.businessComboBox);
+            this.editTotemConfigurationPanel.Controls.Add(this.businessEditLabel);
+            this.editTotemConfigurationPanel.Controls.Add(this.countryComboBox);
+            this.editTotemConfigurationPanel.Controls.Add(this.countryEditLabel);
+            this.editTotemConfigurationPanel.Controls.Add(this.idTotemTextBox);
+            this.editTotemConfigurationPanel.Controls.Add(this.totemIdEditLabel);
+            this.editTotemConfigurationPanel.Location = new System.Drawing.Point(14, 68);
+            this.editTotemConfigurationPanel.Name = "editTotemConfigurationPanel";
+            this.editTotemConfigurationPanel.Size = new System.Drawing.Size(328, 410);
+            this.editTotemConfigurationPanel.TabIndex = 10;
+            // 
+            // saveTotemConfigurationButton
+            // 
+            this.saveTotemConfigurationButton.Enabled = false;
+            this.saveTotemConfigurationButton.Location = new System.Drawing.Point(9, 354);
+            this.saveTotemConfigurationButton.Name = "saveTotemConfigurationButton";
+            this.saveTotemConfigurationButton.Size = new System.Drawing.Size(299, 38);
+            this.saveTotemConfigurationButton.TabIndex = 17;
+            this.saveTotemConfigurationButton.Text = "Guardar";
+            this.saveTotemConfigurationButton.UseVisualStyleBackColor = true;
+            this.saveTotemConfigurationButton.Click += new System.EventHandler(this.saveTotemConfigurationButton_Click);
+            // 
+            // storeComboBox
+            // 
+            this.storeComboBox.Enabled = false;
+            this.storeComboBox.FormattingEnabled = true;
+            this.storeComboBox.Location = new System.Drawing.Point(9, 296);
+            this.storeComboBox.Name = "storeComboBox";
+            this.storeComboBox.Size = new System.Drawing.Size(299, 28);
+            this.storeComboBox.TabIndex = 16;
+            // 
+            // storeEditLabel
+            // 
+            this.storeEditLabel.AutoSize = true;
+            this.storeEditLabel.Enabled = false;
+            this.storeEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storeEditLabel.Location = new System.Drawing.Point(4, 264);
+            this.storeEditLabel.Name = "storeEditLabel";
+            this.storeEditLabel.Size = new System.Drawing.Size(89, 29);
+            this.storeEditLabel.TabIndex = 15;
+            this.storeEditLabel.Text = "Tienda";
+            // 
+            // businessComboBox
+            // 
+            this.businessComboBox.Enabled = false;
+            this.businessComboBox.FormattingEnabled = true;
+            this.businessComboBox.Location = new System.Drawing.Point(9, 213);
+            this.businessComboBox.Name = "businessComboBox";
+            this.businessComboBox.Size = new System.Drawing.Size(299, 28);
+            this.businessComboBox.TabIndex = 14;
+            // 
+            // businessEditLabel
+            // 
+            this.businessEditLabel.AutoSize = true;
+            this.businessEditLabel.Enabled = false;
+            this.businessEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.businessEditLabel.Location = new System.Drawing.Point(4, 181);
+            this.businessEditLabel.Name = "businessEditLabel";
+            this.businessEditLabel.Size = new System.Drawing.Size(105, 29);
+            this.businessEditLabel.TabIndex = 13;
+            this.businessEditLabel.Text = "Negocio";
+            // 
+            // countryComboBox
+            // 
+            this.countryComboBox.Enabled = false;
+            this.countryComboBox.FormattingEnabled = true;
+            this.countryComboBox.Location = new System.Drawing.Point(9, 132);
+            this.countryComboBox.Name = "countryComboBox";
+            this.countryComboBox.Size = new System.Drawing.Size(299, 28);
+            this.countryComboBox.TabIndex = 12;
+            // 
+            // countryEditLabel
+            // 
+            this.countryEditLabel.AutoSize = true;
+            this.countryEditLabel.Enabled = false;
+            this.countryEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.countryEditLabel.Location = new System.Drawing.Point(4, 100);
+            this.countryEditLabel.Name = "countryEditLabel";
+            this.countryEditLabel.Size = new System.Drawing.Size(60, 29);
+            this.countryEditLabel.TabIndex = 11;
+            this.countryEditLabel.Text = "País";
+            // 
+            // idTotemTextBox
+            // 
+            this.idTotemTextBox.Enabled = false;
+            this.idTotemTextBox.Location = new System.Drawing.Point(9, 48);
+            this.idTotemTextBox.Name = "idTotemTextBox";
+            this.idTotemTextBox.Size = new System.Drawing.Size(299, 26);
+            this.idTotemTextBox.TabIndex = 10;
+            // 
+            // totemIdEditLabel
+            // 
+            this.totemIdEditLabel.AutoSize = true;
+            this.totemIdEditLabel.Enabled = false;
+            this.totemIdEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.totemIdEditLabel.Location = new System.Drawing.Point(4, 16);
+            this.totemIdEditLabel.Name = "totemIdEditLabel";
+            this.totemIdEditLabel.Size = new System.Drawing.Size(112, 29);
+            this.totemIdEditLabel.TabIndex = 9;
+            this.totemIdEditLabel.Text = "ID Tótem";
             // 
             // totemConfigurationLabel
             // 
             this.totemConfigurationLabel.AutoSize = true;
             this.totemConfigurationLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.totemConfigurationLabel.Location = new System.Drawing.Point(15, 317);
+            this.totemConfigurationLabel.Location = new System.Drawing.Point(12, 296);
             this.totemConfigurationLabel.Name = "totemConfigurationLabel";
             this.totemConfigurationLabel.Size = new System.Drawing.Size(83, 29);
             this.totemConfigurationLabel.TabIndex = 1;
@@ -96,7 +228,7 @@
             // 
             this.connectivityLabel.AutoSize = true;
             this.connectivityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.connectivityLabel.Location = new System.Drawing.Point(427, 317);
+            this.connectivityLabel.Location = new System.Drawing.Point(7, 857);
             this.connectivityLabel.Name = "connectivityLabel";
             this.connectivityLabel.Size = new System.Drawing.Size(153, 29);
             this.connectivityLabel.TabIndex = 2;
@@ -112,10 +244,50 @@
             this.connectivityPanel.Controls.Add(this.testConnectivityButton);
             this.connectivityPanel.Controls.Add(this.firebaseTestLabel);
             this.connectivityPanel.Controls.Add(this.internetTestLabel);
-            this.connectivityPanel.Location = new System.Drawing.Point(432, 349);
+            this.connectivityPanel.Location = new System.Drawing.Point(17, 889);
             this.connectivityPanel.Name = "connectivityPanel";
-            this.connectivityPanel.Size = new System.Drawing.Size(279, 242);
+            this.connectivityPanel.Size = new System.Drawing.Size(364, 242);
             this.connectivityPanel.TabIndex = 3;
+            // 
+            // firebaseStatusLabel
+            // 
+            this.firebaseStatusLabel.AutoSize = true;
+            this.firebaseStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.firebaseStatusLabel.Location = new System.Drawing.Point(197, 125);
+            this.firebaseStatusLabel.Name = "firebaseStatusLabel";
+            this.firebaseStatusLabel.Size = new System.Drawing.Size(46, 25);
+            this.firebaseStatusLabel.TabIndex = 13;
+            this.firebaseStatusLabel.Text = "N/A";
+            // 
+            // storesApiStatusLabel
+            // 
+            this.storesApiStatusLabel.AutoSize = true;
+            this.storesApiStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.storesApiStatusLabel.Location = new System.Drawing.Point(197, 71);
+            this.storesApiStatusLabel.Name = "storesApiStatusLabel";
+            this.storesApiStatusLabel.Size = new System.Drawing.Size(46, 25);
+            this.storesApiStatusLabel.TabIndex = 12;
+            this.storesApiStatusLabel.Text = "N/A";
+            // 
+            // networkStatusLabel
+            // 
+            this.networkStatusLabel.AutoSize = true;
+            this.networkStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.networkStatusLabel.Location = new System.Drawing.Point(197, 22);
+            this.networkStatusLabel.Name = "networkStatusLabel";
+            this.networkStatusLabel.Size = new System.Drawing.Size(46, 25);
+            this.networkStatusLabel.TabIndex = 11;
+            this.networkStatusLabel.Text = "N/A";
+            // 
+            // storesApiTestLabel
+            // 
+            this.storesApiTestLabel.AutoSize = true;
+            this.storesApiTestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storesApiTestLabel.Location = new System.Drawing.Point(9, 68);
+            this.storesApiTestLabel.Name = "storesApiTestLabel";
+            this.storesApiTestLabel.Size = new System.Drawing.Size(132, 29);
+            this.storesApiTestLabel.TabIndex = 10;
+            this.storesApiTestLabel.Text = "Stores API:";
             // 
             // testConnectivityButton
             // 
@@ -151,14 +323,14 @@
             // 
             this.printPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.printPanel.Controls.Add(this.printTestButton);
-            this.printPanel.Location = new System.Drawing.Point(432, 661);
+            this.printPanel.Location = new System.Drawing.Point(408, 889);
             this.printPanel.Name = "printPanel";
-            this.printPanel.Size = new System.Drawing.Size(279, 73);
+            this.printPanel.Size = new System.Drawing.Size(353, 73);
             this.printPanel.TabIndex = 4;
             // 
             // printTestButton
             // 
-            this.printTestButton.Location = new System.Drawing.Point(14, 19);
+            this.printTestButton.Location = new System.Drawing.Point(71, 17);
             this.printTestButton.Name = "printTestButton";
             this.printTestButton.Size = new System.Drawing.Size(221, 38);
             this.printTestButton.TabIndex = 0;
@@ -170,21 +342,11 @@
             // 
             this.printLabel.AutoSize = true;
             this.printLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.printLabel.Location = new System.Drawing.Point(427, 629);
+            this.printLabel.Location = new System.Drawing.Point(403, 857);
             this.printLabel.Name = "printLabel";
             this.printLabel.Size = new System.Drawing.Size(120, 29);
             this.printLabel.TabIndex = 5;
             this.printLabel.Text = "Impresión";
-            // 
-            // storesApiTestLabel
-            // 
-            this.storesApiTestLabel.AutoSize = true;
-            this.storesApiTestLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storesApiTestLabel.Location = new System.Drawing.Point(9, 68);
-            this.storesApiTestLabel.Name = "storesApiTestLabel";
-            this.storesApiTestLabel.Size = new System.Drawing.Size(132, 29);
-            this.storesApiTestLabel.TabIndex = 10;
-            this.storesApiTestLabel.Text = "Stores API:";
             // 
             // currentConfigurationPanel
             // 
@@ -204,85 +366,15 @@
             this.currentConfigurationPanel.Size = new System.Drawing.Size(749, 255);
             this.currentConfigurationPanel.TabIndex = 9;
             // 
-            // currentTotemIdLabel
+            // currentStoreId
             // 
-            this.currentTotemIdLabel.AutoSize = true;
-            this.currentTotemIdLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.currentTotemIdLabel.Location = new System.Drawing.Point(21, 28);
-            this.currentTotemIdLabel.Name = "currentTotemIdLabel";
-            this.currentTotemIdLabel.Size = new System.Drawing.Size(118, 29);
-            this.currentTotemIdLabel.TabIndex = 0;
-            this.currentTotemIdLabel.Text = "ID Tótem:";
-            // 
-            // currentCountryLabel
-            // 
-            this.currentCountryLabel.AutoSize = true;
-            this.currentCountryLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.currentCountryLabel.Location = new System.Drawing.Point(21, 67);
-            this.currentCountryLabel.Name = "currentCountryLabel";
-            this.currentCountryLabel.Size = new System.Drawing.Size(66, 29);
-            this.currentCountryLabel.TabIndex = 1;
-            this.currentCountryLabel.Text = "País:";
-            // 
-            // currentBusinessLabel
-            // 
-            this.currentBusinessLabel.AutoSize = true;
-            this.currentBusinessLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.currentBusinessLabel.Location = new System.Drawing.Point(21, 109);
-            this.currentBusinessLabel.Name = "currentBusinessLabel";
-            this.currentBusinessLabel.Size = new System.Drawing.Size(111, 29);
-            this.currentBusinessLabel.TabIndex = 2;
-            this.currentBusinessLabel.Text = "Negocio:";
-            // 
-            // currentStoreNameLabel
-            // 
-            this.currentStoreNameLabel.AutoSize = true;
-            this.currentStoreNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.currentStoreNameLabel.Location = new System.Drawing.Point(21, 153);
-            this.currentStoreNameLabel.Name = "currentStoreNameLabel";
-            this.currentStoreNameLabel.Size = new System.Drawing.Size(95, 29);
-            this.currentStoreNameLabel.TabIndex = 3;
-            this.currentStoreNameLabel.Text = "Tienda:";
-            // 
-            // currentStoreIdLabel
-            // 
-            this.currentStoreIdLabel.AutoSize = true;
-            this.currentStoreIdLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.currentStoreIdLabel.Location = new System.Drawing.Point(21, 201);
-            this.currentStoreIdLabel.Name = "currentStoreIdLabel";
-            this.currentStoreIdLabel.Size = new System.Drawing.Size(124, 29);
-            this.currentStoreIdLabel.TabIndex = 4;
-            this.currentStoreIdLabel.Text = "ID Tienda:";
-            // 
-            // currentTotemId
-            // 
-            this.currentTotemId.AutoSize = true;
-            this.currentTotemId.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.currentTotemId.Location = new System.Drawing.Point(168, 28);
-            this.currentTotemId.Name = "currentTotemId";
-            this.currentTotemId.Size = new System.Drawing.Size(46, 25);
-            this.currentTotemId.TabIndex = 5;
-            this.currentTotemId.Text = "N/A";
-            // 
-            // currentCountry
-            // 
-            this.currentCountry.AutoSize = true;
-            this.currentCountry.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.currentCountry.Location = new System.Drawing.Point(168, 71);
-            this.currentCountry.Name = "currentCountry";
-            this.currentCountry.Size = new System.Drawing.Size(46, 25);
-            this.currentCountry.TabIndex = 6;
-            this.currentCountry.Text = "N/A";
-            // 
-            // currentBusiness
-            // 
-            this.currentBusiness.AutoSize = true;
-            this.currentBusiness.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.currentBusiness.Location = new System.Drawing.Point(168, 113);
-            this.currentBusiness.Name = "currentBusiness";
-            this.currentBusiness.Size = new System.Drawing.Size(46, 25);
-            this.currentBusiness.TabIndex = 7;
-            this.currentBusiness.Text = "N/A";
+            this.currentStoreId.AutoSize = true;
+            this.currentStoreId.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.currentStoreId.Location = new System.Drawing.Point(168, 205);
+            this.currentStoreId.Name = "currentStoreId";
+            this.currentStoreId.Size = new System.Drawing.Size(46, 25);
+            this.currentStoreId.TabIndex = 9;
+            this.currentStoreId.Text = "N/A";
             // 
             // currentStore
             // 
@@ -294,179 +386,237 @@
             this.currentStore.TabIndex = 8;
             this.currentStore.Text = "N/A";
             // 
-            // currentStoreId
+            // currentBusiness
             // 
-            this.currentStoreId.AutoSize = true;
-            this.currentStoreId.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.currentStoreId.Location = new System.Drawing.Point(168, 205);
-            this.currentStoreId.Name = "currentStoreId";
-            this.currentStoreId.Size = new System.Drawing.Size(46, 25);
-            this.currentStoreId.TabIndex = 9;
-            this.currentStoreId.Text = "N/A";
+            this.currentBusiness.AutoSize = true;
+            this.currentBusiness.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.currentBusiness.Location = new System.Drawing.Point(168, 113);
+            this.currentBusiness.Name = "currentBusiness";
+            this.currentBusiness.Size = new System.Drawing.Size(46, 25);
+            this.currentBusiness.TabIndex = 7;
+            this.currentBusiness.Text = "N/A";
             // 
-            // editTotemConfigurationPanel
+            // currentCountry
             // 
-            this.editTotemConfigurationPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.editTotemConfigurationPanel.Controls.Add(this.saveConfigurationButton);
-            this.editTotemConfigurationPanel.Controls.Add(this.storeComboBox);
-            this.editTotemConfigurationPanel.Controls.Add(this.storeEditLabel);
-            this.editTotemConfigurationPanel.Controls.Add(this.businessComboBox);
-            this.editTotemConfigurationPanel.Controls.Add(this.businessEditLabel);
-            this.editTotemConfigurationPanel.Controls.Add(this.countryComboBox);
-            this.editTotemConfigurationPanel.Controls.Add(this.countryEditLabel);
-            this.editTotemConfigurationPanel.Controls.Add(this.idTotemTextBox);
-            this.editTotemConfigurationPanel.Controls.Add(this.totemIdEditLabel);
-            this.editTotemConfigurationPanel.Location = new System.Drawing.Point(14, 68);
-            this.editTotemConfigurationPanel.Name = "editTotemConfigurationPanel";
-            this.editTotemConfigurationPanel.Size = new System.Drawing.Size(328, 410);
-            this.editTotemConfigurationPanel.TabIndex = 10;
+            this.currentCountry.AutoSize = true;
+            this.currentCountry.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.currentCountry.Location = new System.Drawing.Point(168, 71);
+            this.currentCountry.Name = "currentCountry";
+            this.currentCountry.Size = new System.Drawing.Size(46, 25);
+            this.currentCountry.TabIndex = 6;
+            this.currentCountry.Text = "N/A";
             // 
-            // saveConfigurationButton
+            // currentTotemId
             // 
-            this.saveConfigurationButton.Enabled = false;
-            this.saveConfigurationButton.Location = new System.Drawing.Point(9, 354);
-            this.saveConfigurationButton.Name = "saveConfigurationButton";
-            this.saveConfigurationButton.Size = new System.Drawing.Size(299, 38);
-            this.saveConfigurationButton.TabIndex = 17;
-            this.saveConfigurationButton.Text = "Guardar y salir";
-            this.saveConfigurationButton.UseVisualStyleBackColor = true;
-            this.saveConfigurationButton.Click += new System.EventHandler(this.saveConfigurationButton_Click);
+            this.currentTotemId.AutoSize = true;
+            this.currentTotemId.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.currentTotemId.Location = new System.Drawing.Point(168, 28);
+            this.currentTotemId.Name = "currentTotemId";
+            this.currentTotemId.Size = new System.Drawing.Size(46, 25);
+            this.currentTotemId.TabIndex = 5;
+            this.currentTotemId.Text = "N/A";
             // 
-            // storeComboBox
+            // currentStoreIdLabel
             // 
-            this.storeComboBox.Enabled = false;
-            this.storeComboBox.FormattingEnabled = true;
-            this.storeComboBox.Location = new System.Drawing.Point(9, 296);
-            this.storeComboBox.Name = "storeComboBox";
-            this.storeComboBox.Size = new System.Drawing.Size(205, 28);
-            this.storeComboBox.TabIndex = 16;
+            this.currentStoreIdLabel.AutoSize = true;
+            this.currentStoreIdLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.currentStoreIdLabel.Location = new System.Drawing.Point(24, 205);
+            this.currentStoreIdLabel.Name = "currentStoreIdLabel";
+            this.currentStoreIdLabel.Size = new System.Drawing.Size(124, 29);
+            this.currentStoreIdLabel.TabIndex = 4;
+            this.currentStoreIdLabel.Text = "ID Tienda:";
             // 
-            // storeEditLabel
+            // currentStoreNameLabel
             // 
-            this.storeEditLabel.AutoSize = true;
-            this.storeEditLabel.Enabled = false;
-            this.storeEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storeEditLabel.Location = new System.Drawing.Point(4, 264);
-            this.storeEditLabel.Name = "storeEditLabel";
-            this.storeEditLabel.Size = new System.Drawing.Size(89, 29);
-            this.storeEditLabel.TabIndex = 15;
-            this.storeEditLabel.Text = "Tienda";
+            this.currentStoreNameLabel.AutoSize = true;
+            this.currentStoreNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.currentStoreNameLabel.Location = new System.Drawing.Point(24, 157);
+            this.currentStoreNameLabel.Name = "currentStoreNameLabel";
+            this.currentStoreNameLabel.Size = new System.Drawing.Size(95, 29);
+            this.currentStoreNameLabel.TabIndex = 3;
+            this.currentStoreNameLabel.Text = "Tienda:";
             // 
-            // businessComboBox
+            // currentBusinessLabel
             // 
-            this.businessComboBox.Enabled = false;
-            this.businessComboBox.FormattingEnabled = true;
-            this.businessComboBox.Location = new System.Drawing.Point(9, 213);
-            this.businessComboBox.Name = "businessComboBox";
-            this.businessComboBox.Size = new System.Drawing.Size(205, 28);
-            this.businessComboBox.TabIndex = 14;
+            this.currentBusinessLabel.AutoSize = true;
+            this.currentBusinessLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.currentBusinessLabel.Location = new System.Drawing.Point(21, 109);
+            this.currentBusinessLabel.Name = "currentBusinessLabel";
+            this.currentBusinessLabel.Size = new System.Drawing.Size(111, 29);
+            this.currentBusinessLabel.TabIndex = 2;
+            this.currentBusinessLabel.Text = "Negocio:";
             // 
-            // businessEditLabel
+            // currentCountryLabel
             // 
-            this.businessEditLabel.AutoSize = true;
-            this.businessEditLabel.Enabled = false;
-            this.businessEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.businessEditLabel.Location = new System.Drawing.Point(4, 181);
-            this.businessEditLabel.Name = "businessEditLabel";
-            this.businessEditLabel.Size = new System.Drawing.Size(105, 29);
-            this.businessEditLabel.TabIndex = 13;
-            this.businessEditLabel.Text = "Negocio";
+            this.currentCountryLabel.AutoSize = true;
+            this.currentCountryLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.currentCountryLabel.Location = new System.Drawing.Point(21, 67);
+            this.currentCountryLabel.Name = "currentCountryLabel";
+            this.currentCountryLabel.Size = new System.Drawing.Size(66, 29);
+            this.currentCountryLabel.TabIndex = 1;
+            this.currentCountryLabel.Text = "País:";
             // 
-            // countryComboBox
+            // currentTotemIdLabel
             // 
-            this.countryComboBox.Enabled = false;
-            this.countryComboBox.FormattingEnabled = true;
-            this.countryComboBox.Location = new System.Drawing.Point(9, 132);
-            this.countryComboBox.Name = "countryComboBox";
-            this.countryComboBox.Size = new System.Drawing.Size(205, 28);
-            this.countryComboBox.TabIndex = 12;
-            // 
-            // countryEditLabel
-            // 
-            this.countryEditLabel.AutoSize = true;
-            this.countryEditLabel.Enabled = false;
-            this.countryEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.countryEditLabel.Location = new System.Drawing.Point(4, 100);
-            this.countryEditLabel.Name = "countryEditLabel";
-            this.countryEditLabel.Size = new System.Drawing.Size(60, 29);
-            this.countryEditLabel.TabIndex = 11;
-            this.countryEditLabel.Text = "País";
-            // 
-            // idTotemTextBox
-            // 
-            this.idTotemTextBox.Enabled = false;
-            this.idTotemTextBox.Location = new System.Drawing.Point(9, 48);
-            this.idTotemTextBox.Name = "idTotemTextBox";
-            this.idTotemTextBox.Size = new System.Drawing.Size(205, 26);
-            this.idTotemTextBox.TabIndex = 10;
-            // 
-            // totemIdEditLabel
-            // 
-            this.totemIdEditLabel.AutoSize = true;
-            this.totemIdEditLabel.Enabled = false;
-            this.totemIdEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.totemIdEditLabel.Location = new System.Drawing.Point(4, 16);
-            this.totemIdEditLabel.Name = "totemIdEditLabel";
-            this.totemIdEditLabel.Size = new System.Drawing.Size(112, 29);
-            this.totemIdEditLabel.TabIndex = 9;
-            this.totemIdEditLabel.Text = "ID Tótem";
-            // 
-            // editTotemConfigurationButton
-            // 
-            this.editTotemConfigurationButton.Location = new System.Drawing.Point(14, 12);
-            this.editTotemConfigurationButton.Name = "editTotemConfigurationButton";
-            this.editTotemConfigurationButton.Size = new System.Drawing.Size(328, 38);
-            this.editTotemConfigurationButton.TabIndex = 19;
-            this.editTotemConfigurationButton.Text = "Editar configuración";
-            this.editTotemConfigurationButton.UseVisualStyleBackColor = true;
-            this.editTotemConfigurationButton.Click += new System.EventHandler(this.editTotemConfigurationButton_Click);
+            this.currentTotemIdLabel.AutoSize = true;
+            this.currentTotemIdLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.currentTotemIdLabel.Location = new System.Drawing.Point(21, 28);
+            this.currentTotemIdLabel.Name = "currentTotemIdLabel";
+            this.currentTotemIdLabel.Size = new System.Drawing.Size(118, 29);
+            this.currentTotemIdLabel.TabIndex = 0;
+            this.currentTotemIdLabel.Text = "ID Tótem:";
             // 
             // exitConfigurationButton
             // 
-            this.exitConfigurationButton.Location = new System.Drawing.Point(676, 793);
+            this.exitConfigurationButton.Location = new System.Drawing.Point(310, 1151);
             this.exitConfigurationButton.Name = "exitConfigurationButton";
-            this.exitConfigurationButton.Size = new System.Drawing.Size(90, 38);
+            this.exitConfigurationButton.Size = new System.Drawing.Size(150, 38);
             this.exitConfigurationButton.TabIndex = 20;
             this.exitConfigurationButton.Text = "Salir";
-            this.exitConfigurationButton.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.exitConfigurationButton.UseVisualStyleBackColor = true;
             this.exitConfigurationButton.Click += new System.EventHandler(this.exitConfigurationButton_Click);
             // 
-            // networkStatusLabel
+            // storesApiPanel
             // 
-            this.networkStatusLabel.AutoSize = true;
-            this.networkStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.networkStatusLabel.Location = new System.Drawing.Point(197, 22);
-            this.networkStatusLabel.Name = "networkStatusLabel";
-            this.networkStatusLabel.Size = new System.Drawing.Size(46, 25);
-            this.networkStatusLabel.TabIndex = 11;
-            this.networkStatusLabel.Text = "N/A";
+            this.storesApiPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.storesApiPanel.Controls.Add(this.editStoresApiConfigurationPanel);
+            this.storesApiPanel.Controls.Add(this.editStoresApiConfigurationButton);
+            this.storesApiPanel.Location = new System.Drawing.Point(408, 328);
+            this.storesApiPanel.Name = "storesApiPanel";
+            this.storesApiPanel.Size = new System.Drawing.Size(353, 504);
+            this.storesApiPanel.TabIndex = 21;
             // 
-            // storesApiStatusLabel
+            // editStoresApiConfigurationPanel
             // 
-            this.storesApiStatusLabel.AutoSize = true;
-            this.storesApiStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.storesApiStatusLabel.Location = new System.Drawing.Point(197, 71);
-            this.storesApiStatusLabel.Name = "storesApiStatusLabel";
-            this.storesApiStatusLabel.Size = new System.Drawing.Size(46, 25);
-            this.storesApiStatusLabel.TabIndex = 12;
-            this.storesApiStatusLabel.Text = "N/A";
+            this.editStoresApiConfigurationPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.editStoresApiConfigurationPanel.Controls.Add(this.saveStoresApiConfigurationButton);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientSecretTextBox);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientSecretEditLabel);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiCliendIdTextBox);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientIdEditLabel);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiKeyTextBox);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiKeyEditLabel);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiUrlTextBox);
+            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiUrlEditLabel);
+            this.editStoresApiConfigurationPanel.Location = new System.Drawing.Point(14, 69);
+            this.editStoresApiConfigurationPanel.Name = "editStoresApiConfigurationPanel";
+            this.editStoresApiConfigurationPanel.Size = new System.Drawing.Size(328, 410);
+            this.editStoresApiConfigurationPanel.TabIndex = 21;
             // 
-            // firebaseStatusLabel
+            // saveStoresApiConfigurationButton
             // 
-            this.firebaseStatusLabel.AutoSize = true;
-            this.firebaseStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.firebaseStatusLabel.Location = new System.Drawing.Point(197, 125);
-            this.firebaseStatusLabel.Name = "firebaseStatusLabel";
-            this.firebaseStatusLabel.Size = new System.Drawing.Size(46, 25);
-            this.firebaseStatusLabel.TabIndex = 13;
-            this.firebaseStatusLabel.Text = "N/A";
+            this.saveStoresApiConfigurationButton.Enabled = false;
+            this.saveStoresApiConfigurationButton.Location = new System.Drawing.Point(17, 356);
+            this.saveStoresApiConfigurationButton.Name = "saveStoresApiConfigurationButton";
+            this.saveStoresApiConfigurationButton.Size = new System.Drawing.Size(286, 38);
+            this.saveStoresApiConfigurationButton.TabIndex = 18;
+            this.saveStoresApiConfigurationButton.Text = "Guardar";
+            this.saveStoresApiConfigurationButton.UseVisualStyleBackColor = true;
+            this.saveStoresApiConfigurationButton.Click += new System.EventHandler(this.saveStoresApiConfigurationButton_Click);
+            // 
+            // storesApiClientSecretTextBox
+            // 
+            this.storesApiClientSecretTextBox.Enabled = false;
+            this.storesApiClientSecretTextBox.Location = new System.Drawing.Point(17, 300);
+            this.storesApiClientSecretTextBox.Name = "storesApiClientSecretTextBox";
+            this.storesApiClientSecretTextBox.Size = new System.Drawing.Size(286, 26);
+            this.storesApiClientSecretTextBox.TabIndex = 24;
+            // 
+            // storesApiClientSecretEditLabel
+            // 
+            this.storesApiClientSecretEditLabel.AutoSize = true;
+            this.storesApiClientSecretEditLabel.Enabled = false;
+            this.storesApiClientSecretEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storesApiClientSecretEditLabel.Location = new System.Drawing.Point(12, 266);
+            this.storesApiClientSecretEditLabel.Name = "storesApiClientSecretEditLabel";
+            this.storesApiClientSecretEditLabel.Size = new System.Drawing.Size(151, 29);
+            this.storesApiClientSecretEditLabel.TabIndex = 23;
+            this.storesApiClientSecretEditLabel.Text = "Client Secret";
+            // 
+            // storesApiCliendIdTextBox
+            // 
+            this.storesApiCliendIdTextBox.Enabled = false;
+            this.storesApiCliendIdTextBox.Location = new System.Drawing.Point(17, 217);
+            this.storesApiCliendIdTextBox.Name = "storesApiCliendIdTextBox";
+            this.storesApiCliendIdTextBox.Size = new System.Drawing.Size(286, 26);
+            this.storesApiCliendIdTextBox.TabIndex = 22;
+            // 
+            // storesApiClientIdEditLabel
+            // 
+            this.storesApiClientIdEditLabel.AutoSize = true;
+            this.storesApiClientIdEditLabel.Enabled = false;
+            this.storesApiClientIdEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storesApiClientIdEditLabel.Location = new System.Drawing.Point(12, 183);
+            this.storesApiClientIdEditLabel.Name = "storesApiClientIdEditLabel";
+            this.storesApiClientIdEditLabel.Size = new System.Drawing.Size(104, 29);
+            this.storesApiClientIdEditLabel.TabIndex = 21;
+            this.storesApiClientIdEditLabel.Text = "Client ID";
+            // 
+            // storesApiKeyTextBox
+            // 
+            this.storesApiKeyTextBox.Enabled = false;
+            this.storesApiKeyTextBox.Location = new System.Drawing.Point(17, 136);
+            this.storesApiKeyTextBox.Name = "storesApiKeyTextBox";
+            this.storesApiKeyTextBox.Size = new System.Drawing.Size(286, 26);
+            this.storesApiKeyTextBox.TabIndex = 20;
+            // 
+            // storesApiKeyEditLabel
+            // 
+            this.storesApiKeyEditLabel.AutoSize = true;
+            this.storesApiKeyEditLabel.Enabled = false;
+            this.storesApiKeyEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storesApiKeyEditLabel.Location = new System.Drawing.Point(12, 102);
+            this.storesApiKeyEditLabel.Name = "storesApiKeyEditLabel";
+            this.storesApiKeyEditLabel.Size = new System.Drawing.Size(97, 29);
+            this.storesApiKeyEditLabel.TabIndex = 19;
+            this.storesApiKeyEditLabel.Text = "API Key";
+            // 
+            // storesApiUrlTextBox
+            // 
+            this.storesApiUrlTextBox.Enabled = false;
+            this.storesApiUrlTextBox.Location = new System.Drawing.Point(17, 50);
+            this.storesApiUrlTextBox.Name = "storesApiUrlTextBox";
+            this.storesApiUrlTextBox.Size = new System.Drawing.Size(286, 26);
+            this.storesApiUrlTextBox.TabIndex = 18;
+            // 
+            // storesApiUrlEditLabel
+            // 
+            this.storesApiUrlEditLabel.AutoSize = true;
+            this.storesApiUrlEditLabel.Enabled = false;
+            this.storesApiUrlEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storesApiUrlEditLabel.Location = new System.Drawing.Point(12, 18);
+            this.storesApiUrlEditLabel.Name = "storesApiUrlEditLabel";
+            this.storesApiUrlEditLabel.Size = new System.Drawing.Size(60, 29);
+            this.storesApiUrlEditLabel.TabIndex = 10;
+            this.storesApiUrlEditLabel.Text = "URL";
+            // 
+            // editStoresApiConfigurationButton
+            // 
+            this.editStoresApiConfigurationButton.Location = new System.Drawing.Point(14, 13);
+            this.editStoresApiConfigurationButton.Name = "editStoresApiConfigurationButton";
+            this.editStoresApiConfigurationButton.Size = new System.Drawing.Size(328, 38);
+            this.editStoresApiConfigurationButton.TabIndex = 20;
+            this.editStoresApiConfigurationButton.Text = "Editar configuración";
+            this.editStoresApiConfigurationButton.UseVisualStyleBackColor = true;
+            this.editStoresApiConfigurationButton.Click += new System.EventHandler(this.editStoresApiConfigurationButton_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(397, 296);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(126, 29);
+            this.label1.TabIndex = 22;
+            this.label1.Text = "Stores API";
             // 
             // Configuration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(778, 844);
+            this.ClientSize = new System.Drawing.Size(778, 1201);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.storesApiPanel);
             this.Controls.Add(this.exitConfigurationButton);
             this.Controls.Add(this.printLabel);
             this.Controls.Add(this.currentConfigurationPanel);
@@ -479,13 +629,16 @@
             this.Text = "Configuration";
             this.Load += new System.EventHandler(this.Configuration_Load);
             this.totemPanel.ResumeLayout(false);
+            this.editTotemConfigurationPanel.ResumeLayout(false);
+            this.editTotemConfigurationPanel.PerformLayout();
             this.connectivityPanel.ResumeLayout(false);
             this.connectivityPanel.PerformLayout();
             this.printPanel.ResumeLayout(false);
             this.currentConfigurationPanel.ResumeLayout(false);
             this.currentConfigurationPanel.PerformLayout();
-            this.editTotemConfigurationPanel.ResumeLayout(false);
-            this.editTotemConfigurationPanel.PerformLayout();
+            this.storesApiPanel.ResumeLayout(false);
+            this.editStoresApiConfigurationPanel.ResumeLayout(false);
+            this.editStoresApiConfigurationPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -516,7 +669,7 @@
         private System.Windows.Forms.Label currentCountry;
         private System.Windows.Forms.Label currentTotemId;
         private System.Windows.Forms.Panel editTotemConfigurationPanel;
-        private System.Windows.Forms.Button saveConfigurationButton;
+        private System.Windows.Forms.Button saveTotemConfigurationButton;
         private System.Windows.Forms.ComboBox storeComboBox;
         private System.Windows.Forms.Label storeEditLabel;
         private System.Windows.Forms.ComboBox businessComboBox;
@@ -530,5 +683,18 @@
         private System.Windows.Forms.Label firebaseStatusLabel;
         private System.Windows.Forms.Label storesApiStatusLabel;
         private System.Windows.Forms.Label networkStatusLabel;
+        private System.Windows.Forms.Panel storesApiPanel;
+        private System.Windows.Forms.Panel editStoresApiConfigurationPanel;
+        private System.Windows.Forms.Button editStoresApiConfigurationButton;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox storesApiCliendIdTextBox;
+        private System.Windows.Forms.Label storesApiClientIdEditLabel;
+        private System.Windows.Forms.TextBox storesApiKeyTextBox;
+        private System.Windows.Forms.Label storesApiKeyEditLabel;
+        private System.Windows.Forms.TextBox storesApiUrlTextBox;
+        private System.Windows.Forms.Label storesApiUrlEditLabel;
+        private System.Windows.Forms.Label storesApiClientSecretEditLabel;
+        private System.Windows.Forms.Button saveStoresApiConfigurationButton;
+        private System.Windows.Forms.TextBox storesApiClientSecretTextBox;
     }
 }

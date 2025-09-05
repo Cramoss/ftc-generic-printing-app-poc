@@ -16,29 +16,65 @@ namespace FTC_Generic_Printing_App_POC
         private readonly string CLIENT_ID;
         private readonly string CLIENT_SECRET;
 
+        // Load configuration from app.config using System.Configuration.ConfigurationManager
         public ApiService()
         {
-            // Load configuration from app.config using System.Configuration.ConfigurationManager
-            AUTH_URL = System.Configuration.ConfigurationManager.AppSettings["StoreApi_AuthUrl"] ??
-                throw new InvalidOperationException("StoreApi_AuthUrl not configured");
-
-            STORES_URL = System.Configuration.ConfigurationManager.AppSettings["StoreApi_StoresUrl"] ??
-                throw new InvalidOperationException("StoreApi_StoresUrl not configured");
-
-            CLIENT_ID = System.Configuration.ConfigurationManager.AppSettings["StoreApi_ClientId"] ??
-                throw new InvalidOperationException("StoreApi_ClientId not configured");
-
-            CLIENT_SECRET = System.Configuration.ConfigurationManager.AppSettings["StoreApi_ClientSecret"] ??
-                throw new InvalidOperationException("StoreApi_ClientSecret not configured");
+            // Try to load from app.config first, then fall back to default values from defaultConfig.xml
+            // if no config was found.
+            AUTH_URL = LoadConfigurationWithFallback("StoreApi_AuthUrl", 
+                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
+            
+            STORES_URL = LoadConfigurationWithFallback("StoreApi_StoresUrl", 
+                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_URL);
+            
+            CLIENT_ID = LoadConfigurationWithFallback("StoreApi_ClientId",
+                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_ID);
+            
+            CLIENT_SECRET = LoadConfigurationWithFallback("StoreApi_ClientSecret",
+                DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_SECRET);
 
             AppLogger.LogInfo("ApiService initialized with configuration values");
+        }
+
+        private string LoadConfigurationWithFallback(string key, string defaultKeyName)
+        {
+            string value = System.Configuration.ConfigurationManager.AppSettings[key];
+            
+            if (string.IsNullOrEmpty(value))
+            {
+                try
+                {
+                    string defaultConfigPath = System.IO.Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory, 
+                        "defaultConfig.xml");
+                        
+                    if (System.IO.File.Exists(defaultConfigPath))
+                    {
+                        var configXml = new System.Xml.XmlDocument();
+                        configXml.Load(defaultConfigPath);
+                        
+                        var node = configXml.SelectSingleNode($"//appSettings/add[@key='{defaultKeyName}']");
+                        if (node != null)
+                        {
+                            value = node.Attributes["value"]?.Value;
+                            AppLogger.LogInfo($"Loaded default value for {key} from defaultConfig.xml");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogWarning($"Could not load default value for {key} from defaultConfig.xml: {ex.Message}");
+                }
+            }
+            
+            return value ?? string.Empty;
         }
 
         public async Task<string> GetAccessTokenAsync()
         {
             try
             {
-                AppLogger.LogInfo("Requesting access token from Stores API");
+                AppLogger.LogInfo($"Requesting access token from Stores API. Using URL: {AUTH_URL}");
 
                 var content = new FormUrlEncodedContent(new[]
                 {
@@ -76,7 +112,7 @@ namespace FTC_Generic_Printing_App_POC
                 string accessToken = await GetAccessTokenAsync();
                 string xEcommName = BuildEcommName(country, business);
 
-                AppLogger.LogInfo($"Fetching stores for {xEcommName}");
+                AppLogger.LogInfo($"Fetching stores for {xEcommName} at URL: {STORES_URL}");
 
                 var request = new HttpRequestMessage(HttpMethod.Get, STORES_URL);
                 request.Headers.Add("x-environment", "PROD");
