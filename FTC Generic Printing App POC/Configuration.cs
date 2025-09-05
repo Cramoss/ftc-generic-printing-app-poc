@@ -125,116 +125,139 @@ namespace FTC_Generic_Printing_App_POC
 
         #region Testing connectivity
 
-        // TODO: Refactor this method to separated testing methods
-        private async void testConnectivityButton_Click(object sender, EventArgs e)
+        private async void testNetworkConnectivityButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("User clicked Test Connectivity button");
+            networkStatus.Text = "Probando...";
+            testNetworkConnectivityButton.Text = "Probando...";
+            testNetworkConnectivityButton.Enabled = false;
 
             try
             {
-                networkStatusLabel.Text = "...";
-                storesApiStatusLabel.Text = "...";
-                firebaseStatusLabel.Text = "...";
-
-                testConnectivityButton.Text = "Probando...";
-                testConnectivityButton.Enabled = false;
-
                 AppLogger.LogInfo("Starting network connectivity test");
                 using (var client = new System.Net.NetworkInformation.Ping())
                 {
                     var reply = await Task.Run(() => client.Send("8.8.8.8", 3000));
                     if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
                     {
-                        networkStatusLabel.Text = "ERROR";
+                        networkStatus.Text = "ERROR";
+                        networkStatus.BackColor = Color.LightCoral;
                         AppLogger.LogError("Network connectivity test failed");
                         throw new Exception("Network connectivity test failed");
                     }
                     else
                     {
-                        networkStatusLabel.Text = "OK";
+                        networkStatus.Text = "OK";
+                        networkStatus.BackColor = Color.LightGreen;
                         AppLogger.LogInfo("Network connectivity test passed");
                     }
                 }
-
-                AppLogger.LogInfo("Starting Store API connectivity test");
-
-                apiService.ReloadConfiguration();
-                try
-                {
-                    string token = await apiService.GetAccessTokenAsync();
-                    if (string.IsNullOrEmpty(token))
-                    {
-                        throw new Exception("Store API returned empty token");
-                    }
-                    storesApiStatusLabel.Text = "OK";
-                    AppLogger.LogInfo("Store API connectivity test passed");
-                }
-                catch (Exception ex)
-                {
-                    storesApiStatusLabel.Text = "ERROR";
-                    AppLogger.LogError("Store API connectivity test failed", ex);
-                    throw new Exception($"Store API test failed: {ex.Message}");
-                }
-
-                AppLogger.LogInfo("Starting Firebase connectivity tests");
-                var firebaseManager = new FirebaseManager();
-
-                try
-                {
-                    bool firebaseConnectionTest = await firebaseManager.TestConnectionAsync();
-                    if (!firebaseConnectionTest)
-                    {
-                        firebaseStatusLabel.Text = "ERROR";
-                        throw new Exception("Firebase basic connection test failed");
-                    }
-
-                    bool firebaseAuthTest = await firebaseManager.TestAuthenticationAsync();
-                    if (!firebaseAuthTest)
-                    {
-                        firebaseStatusLabel.Text = "ERROR";
-                        throw new Exception("Firebase API key authentication failed");
-                    }
-
-                    bool firebasePathTest = await firebaseManager.TestDocumentPathAsync();
-                    if (!firebasePathTest)
-                    {
-                        firebaseStatusLabel.Text = "WARN";
-                        AppLogger.LogWarning("Firebase path test failed. Document may not exist yet, but this can be normal");
-                    }
-                    else
-                    {
-                        AppLogger.LogInfo("Firebase path test passed");
-                    }
-
-                    firebaseStatusLabel.Text = "OK";
-                    AppLogger.LogInfo("Firebase connectivity tests passed");
-                }
-                catch (Exception ex)
-                {
-                    firebaseStatusLabel.Text = "ERROR";
-                    AppLogger.LogError("Firebase connectivity test failed", ex);
-                    throw new Exception($"Firebase test failed: {ex.Message}");
-                }
-                finally
-                {
-                    firebaseManager.Dispose();
-                }
-
-                testConnectivityButton.Text = "Probar conectividad";
-                testConnectivityButton.Enabled = true;
-
-                AppLogger.LogInfo("All connectivity tests completed successfully");
             }
             catch (Exception ex)
             {
-                testConnectivityButton.Text = "Probar conectividad";
-                testConnectivityButton.Enabled = true;
-
                 string errorDetails = ex.Message;
                 AppLogger.LogError("Connectivity test failed", ex);
             }
+            finally
+            {
+                testNetworkConnectivityButton.Text = "Probar conectividad";
+                testNetworkConnectivityButton.Enabled = true;
+            }
+
         }
 
+        private async void testStoresApiConnectivityButton_Click(object sender, EventArgs e)
+        {
+            storesApiStatus.Text = "Probando...";
+            testStoresApiConnectivityButton.Text = "Probando...";
+            testStoresApiConnectivityButton.Enabled = false;
+
+            try
+            {
+                AppLogger.LogInfo("Starting Store API connectivity test");
+                apiService.ReloadConfiguration();
+
+                string token = await apiService.GetAccessTokenAsync();
+                if (string.IsNullOrEmpty(token))
+                {
+                    throw new Exception("Store API returned empty token");
+                }
+                storesApiStatus.Text = "OK";
+                storesApiStatus.BackColor = Color.LightGreen;
+                AppLogger.LogInfo("Store API connectivity test passed");
+            }
+            catch (Exception ex)
+            {
+                storesApiStatus.Text = "ERROR";
+                storesApiStatus.BackColor = Color.LightCoral;
+                AppLogger.LogError("Store API connectivity test failed", ex);
+            }
+            finally
+            {
+                testStoresApiConnectivityButton.Text = "Probar conectividad";
+                testStoresApiConnectivityButton.Enabled = true;
+            }
+        }
+
+        private async void testFirebaseConnectivityButton_Click(object sender, EventArgs e)
+        {
+            firebaseStatus.Text = "Probando...";
+            testFirebaseConnectivityButton.Text = "Probando...";
+            testFirebaseConnectivityButton.Enabled = false;
+
+            FirebaseManager firebaseManager = null;
+
+            try
+            {
+                AppLogger.LogInfo("Starting Firebase connectivity tests");
+                firebaseManager = new FirebaseManager();
+
+                bool firebaseConnectionTest = await firebaseManager.TestConnectionAsync();
+                if (!firebaseConnectionTest)
+                {
+                    firebaseStatus.Text = "ERROR";
+                    firebaseStatus.BackColor = Color.LightGreen;
+                    throw new Exception("Firebase basic connection test failed");
+                }
+
+                bool firebaseAuthTest = await firebaseManager.TestAuthenticationAsync();
+                if (!firebaseAuthTest)
+                {
+                    firebaseStatus.Text = "ERROR";
+                    firebaseStatus.BackColor = Color.LightGreen;
+                    throw new Exception("Firebase API key authentication failed");
+                }
+
+                bool firebasePathTest = await firebaseManager.TestDocumentPathAsync();
+                if (!firebasePathTest)
+                {
+                    firebaseStatus.Text = "WARN";
+                    firebaseStatus.BackColor = Color.Khaki;
+                    AppLogger.LogWarning("Firebase path test failed. Document may not exist yet, but this can be normal");
+                }
+                else
+                {
+                    AppLogger.LogInfo("Firebase path test passed");
+                }
+
+                firebaseStatus.Text = "OK";
+                firebaseStatus.BackColor = Color.LightGreen;
+                AppLogger.LogInfo("Firebase connectivity tests passed");
+            }
+            catch (Exception ex)
+            {
+                firebaseStatus.Text = "ERROR";
+                AppLogger.LogError("Firebase connectivity test failed", ex);
+                throw new Exception($"Firebase test failed: {ex.Message}");
+            }
+            finally
+            {
+                firebaseManager.Dispose();
+                testFirebaseConnectivityButton.Text = "Probar conectividad";
+                testFirebaseConnectivityButton.Enabled = true;
+            }
+        }
+
+        // TODO: Implement printing test.
         private void testTicketPrintButton_Click(object sender, EventArgs e)
         {
             AppLogger.LogInfo("User clicked Test Ticket Print button");
