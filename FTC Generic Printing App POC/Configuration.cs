@@ -16,9 +16,8 @@ namespace FTC_Generic_Printing_App_POC
 
         public Configuration()
         {
+            apiService = new ApiService();
             InitializeComponent();
-
-            ResetEditStoresApiConfigurationPanel();
             LoadSavedConfiguration();
         }
 
@@ -50,8 +49,6 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogInfo("Loading saved configuration..");
                 var config = ConfigurationManager.LoadConfiguration();
-
-                // Store selection will be handled after stores are loaded in the LoadStoresAsync method
 
                 currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
                 currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
@@ -108,9 +105,8 @@ namespace FTC_Generic_Printing_App_POC
         {
             AppLogger.LogInfo("Opening Totem Configuration form");
             TotemConfiguration totemConfigForm = new TotemConfiguration();
-            totemConfigForm.ShowDialog(); // Shows the form as a modal dialog
+            totemConfigForm.ShowDialog();
 
-            // Refresh the configuration labels after the dialog is closed
             RefreshConfigurationLabels();
         }
 
@@ -118,84 +114,18 @@ namespace FTC_Generic_Printing_App_POC
 
         #region Edit Stores API configuration
 
-        private void saveStoresApiConfigurationButton_Click(object sender, EventArgs e)
-        {
-            SaveStoresApiConfiguration();
-        }
-
-        private void saveTotemConfigurationButton_Click(object sender, EventArgs e)
-        {
-            SaveStoresApiConfiguration();
-        }
-
-        private void SaveStoresApiConfiguration()
-        {
-            try
-            {
-                AppLogger.LogInfo("User clicked Save Stores API Configuration button");
-
-                string storesApiUrl = storesApiUrlTextBox.Text.Trim();
-                string storesApiKey = storesApiKeyTextBox.Text.Trim();
-                string storesApiClientId = storesApiClientIdTextBox.Text.Trim();
-                string storesApiClientSecret = storesApiClientSecretTextBox.Text.Trim();
-
-                // Required fields validation
-                if (string.IsNullOrEmpty(storesApiUrl))
-                {
-                    AppLogger.LogWarning("Validation failed: Stores API URL is empty");
-                    MessageBox.Show("Por favor ingrese una URL válida.", "Error de validación",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    storesApiUrlTextBox.Focus();
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(storesApiClientId))
-                {
-                    AppLogger.LogWarning("Validation failed: Stores API Client ID is empty");
-                    MessageBox.Show("Por favor ingrese un Client ID válido.", "Error de validación",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    storesApiClientIdTextBox.Focus();
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(storesApiClientSecret))
-                {
-                    AppLogger.LogWarning("Validation failed: Stores API Client Secret is empty");
-                    MessageBox.Show("Por favor ingrese un Client Secret válido.", "Error de validación",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    storesApiClientSecretTextBox.Focus();
-                    return;
-                }
-
-                ConfigurationManager.SaveStoreApiConfiguration(
-                    storesApiUrl, 
-                    storesApiUrl, // TODO: Handle edit of Auth URL
-                    storesApiClientId, 
-                    storesApiClientSecret
-                );
-
-                apiService.ReloadConfiguration();
-
-                AppLogger.LogInfo($"Store API configuration saved with URL: {storesApiUrl}");
-                this.Hide();
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error saving Store API configuration", ex);
-                MessageBox.Show("Error al guardar configuración: " + ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
         {
-            // TODO: Opeen Stores API Configuration form
+            AppLogger.LogInfo("Opening Stores API Configuration panel");
+            StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
+            storeApiConfigForm.ShowDialog();
         }
 
         #endregion
 
         #region Testing connectivity
 
+        // TODO: Refactor this method to separated testing methods
         private async void testConnectivityButton_Click(object sender, EventArgs e)
         {
             AppLogger.LogInfo("User clicked Test Connectivity button");
@@ -324,7 +254,6 @@ namespace FTC_Generic_Printing_App_POC
 
         #endregion
 
-
         #region Window management
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -336,34 +265,8 @@ namespace FTC_Generic_Printing_App_POC
 
         private void exitConfigurationButton_Click(object sender, EventArgs e)
         {
-            ResetEditStoresApiConfigurationPanel();
             this.Hide();
-            AppLogger.LogInfo("Configuration form hidden and edit panel reset values");
-        }
-
-        #endregion
-
-        #region Reset values
-
-   
-
-        
-
-        private void ResetEditStoresApiConfigurationPanel()
-        {
-            try
-            {
-                storesApiUrlTextBox.Text = "";
-                storesApiKeyTextBox.Text = "";
-                storesApiClientIdTextBox.Text = "";
-                storesApiClientSecretTextBox.Text = "";
-
-                AppLogger.LogInfo("Stores API edit configuration panel controls reset to default values");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error resetting Stores API edit configuration panel", ex);
-            }
+            AppLogger.LogInfo("Configuration form hidden");
         }
 
         #endregion

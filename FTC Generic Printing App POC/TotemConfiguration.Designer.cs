@@ -129,7 +129,7 @@
             this.saveTotemConfigurationButton.Location = new System.Drawing.Point(76, 536);
             this.saveTotemConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveTotemConfigurationButton.Name = "saveTotemConfigurationButton";
-            this.saveTotemConfigurationButton.Size = new System.Drawing.Size(199, 34);
+            this.saveTotemConfigurationButton.Size = new System.Drawing.Size(200, 40);
             this.saveTotemConfigurationButton.TabIndex = 17;
             this.saveTotemConfigurationButton.Text = "Guardar";
             this.saveTotemConfigurationButton.UseVisualStyleBackColor = true;
@@ -165,10 +165,10 @@
             // cancelTotemConfgurationButton
             // 
             this.cancelTotemConfgurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.cancelTotemConfgurationButton.Location = new System.Drawing.Point(76, 612);
+            this.cancelTotemConfgurationButton.Location = new System.Drawing.Point(77, 624);
             this.cancelTotemConfgurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.cancelTotemConfgurationButton.Name = "cancelTotemConfgurationButton";
-            this.cancelTotemConfgurationButton.Size = new System.Drawing.Size(199, 34);
+            this.cancelTotemConfgurationButton.Size = new System.Drawing.Size(200, 40);
             this.cancelTotemConfgurationButton.TabIndex = 18;
             this.cancelTotemConfgurationButton.Text = "Cancelar";
             this.cancelTotemConfgurationButton.UseVisualStyleBackColor = true;
@@ -177,10 +177,10 @@
             // cleanTotemConfigurationButton
             // 
             this.cleanTotemConfigurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.cleanTotemConfigurationButton.Location = new System.Drawing.Point(76, 574);
+            this.cleanTotemConfigurationButton.Location = new System.Drawing.Point(76, 580);
             this.cleanTotemConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.cleanTotemConfigurationButton.Name = "cleanTotemConfigurationButton";
-            this.cleanTotemConfigurationButton.Size = new System.Drawing.Size(199, 34);
+            this.cleanTotemConfigurationButton.Size = new System.Drawing.Size(200, 40);
             this.cleanTotemConfigurationButton.TabIndex = 19;
             this.cleanTotemConfigurationButton.Text = "Limpiar campos";
             this.cleanTotemConfigurationButton.UseVisualStyleBackColor = true;
@@ -198,6 +198,7 @@
             this.Controls.Add(this.editTotemConfigurationPanel);
             this.Name = "TotemConfiguration";
             this.Text = "TotemConfiguration";
+            this.Load += new System.EventHandler(this.TotemConfiguration_Load_1);
             this.editTotemConfigurationPanel.ResumeLayout(false);
             this.editTotemConfigurationPanel.PerformLayout();
             this.ResumeLayout(false);

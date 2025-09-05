@@ -56,16 +56,6 @@
             this.currentTotemIdLabel = new System.Windows.Forms.Label();
             this.exitConfigurationButton = new System.Windows.Forms.Button();
             this.storesApiPanel = new System.Windows.Forms.Panel();
-            this.editStoresApiConfigurationPanel = new System.Windows.Forms.Panel();
-            this.saveStoresApiConfigurationButton = new System.Windows.Forms.Button();
-            this.storesApiClientSecretTextBox = new System.Windows.Forms.TextBox();
-            this.storesApiClientSecretEditLabel = new System.Windows.Forms.Label();
-            this.storesApiClientIdTextBox = new System.Windows.Forms.TextBox();
-            this.storesApiClientIdEditLabel = new System.Windows.Forms.Label();
-            this.storesApiKeyTextBox = new System.Windows.Forms.TextBox();
-            this.storesApiKeyEditLabel = new System.Windows.Forms.Label();
-            this.storesApiUrlTextBox = new System.Windows.Forms.TextBox();
-            this.storesApiUrlEditLabel = new System.Windows.Forms.Label();
             this.editStoresApiConfigurationButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -74,7 +64,6 @@
             this.printPanel.SuspendLayout();
             this.currentConfigurationPanel.SuspendLayout();
             this.storesApiPanel.SuspendLayout();
-            this.editStoresApiConfigurationPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // totemPanel
@@ -388,127 +377,12 @@
             // storesApiPanel
             // 
             this.storesApiPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.storesApiPanel.Controls.Add(this.editStoresApiConfigurationPanel);
             this.storesApiPanel.Controls.Add(this.editStoresApiConfigurationButton);
             this.storesApiPanel.Location = new System.Drawing.Point(272, 213);
             this.storesApiPanel.Margin = new System.Windows.Forms.Padding(2);
             this.storesApiPanel.Name = "storesApiPanel";
             this.storesApiPanel.Size = new System.Drawing.Size(236, 328);
             this.storesApiPanel.TabIndex = 21;
-            // 
-            // editStoresApiConfigurationPanel
-            // 
-            this.editStoresApiConfigurationPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.editStoresApiConfigurationPanel.Controls.Add(this.saveStoresApiConfigurationButton);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientSecretTextBox);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientSecretEditLabel);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientIdTextBox);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiClientIdEditLabel);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiKeyTextBox);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiKeyEditLabel);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiUrlTextBox);
-            this.editStoresApiConfigurationPanel.Controls.Add(this.storesApiUrlEditLabel);
-            this.editStoresApiConfigurationPanel.Location = new System.Drawing.Point(9, 45);
-            this.editStoresApiConfigurationPanel.Margin = new System.Windows.Forms.Padding(2);
-            this.editStoresApiConfigurationPanel.Name = "editStoresApiConfigurationPanel";
-            this.editStoresApiConfigurationPanel.Size = new System.Drawing.Size(220, 268);
-            this.editStoresApiConfigurationPanel.TabIndex = 21;
-            // 
-            // saveStoresApiConfigurationButton
-            // 
-            this.saveStoresApiConfigurationButton.Enabled = false;
-            this.saveStoresApiConfigurationButton.Location = new System.Drawing.Point(11, 231);
-            this.saveStoresApiConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
-            this.saveStoresApiConfigurationButton.Name = "saveStoresApiConfigurationButton";
-            this.saveStoresApiConfigurationButton.Size = new System.Drawing.Size(191, 25);
-            this.saveStoresApiConfigurationButton.TabIndex = 18;
-            this.saveStoresApiConfigurationButton.Text = "Guardar";
-            this.saveStoresApiConfigurationButton.UseVisualStyleBackColor = true;
-            this.saveStoresApiConfigurationButton.Click += new System.EventHandler(this.saveStoresApiConfigurationButton_Click);
-            // 
-            // storesApiClientSecretTextBox
-            // 
-            this.storesApiClientSecretTextBox.Enabled = false;
-            this.storesApiClientSecretTextBox.Location = new System.Drawing.Point(11, 195);
-            this.storesApiClientSecretTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.storesApiClientSecretTextBox.Name = "storesApiClientSecretTextBox";
-            this.storesApiClientSecretTextBox.Size = new System.Drawing.Size(192, 20);
-            this.storesApiClientSecretTextBox.TabIndex = 24;
-            // 
-            // storesApiClientSecretEditLabel
-            // 
-            this.storesApiClientSecretEditLabel.AutoSize = true;
-            this.storesApiClientSecretEditLabel.Enabled = false;
-            this.storesApiClientSecretEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storesApiClientSecretEditLabel.Location = new System.Drawing.Point(8, 173);
-            this.storesApiClientSecretEditLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.storesApiClientSecretEditLabel.Name = "storesApiClientSecretEditLabel";
-            this.storesApiClientSecretEditLabel.Size = new System.Drawing.Size(151, 29);
-            this.storesApiClientSecretEditLabel.TabIndex = 23;
-            this.storesApiClientSecretEditLabel.Text = "Client Secret";
-            // 
-            // storesApiClientIdTextBox
-            // 
-            this.storesApiClientIdTextBox.Enabled = false;
-            this.storesApiClientIdTextBox.Location = new System.Drawing.Point(11, 141);
-            this.storesApiClientIdTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.storesApiClientIdTextBox.Name = "storesApiClientIdTextBox";
-            this.storesApiClientIdTextBox.Size = new System.Drawing.Size(192, 20);
-            this.storesApiClientIdTextBox.TabIndex = 22;
-            // 
-            // storesApiClientIdEditLabel
-            // 
-            this.storesApiClientIdEditLabel.AutoSize = true;
-            this.storesApiClientIdEditLabel.Enabled = false;
-            this.storesApiClientIdEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storesApiClientIdEditLabel.Location = new System.Drawing.Point(8, 119);
-            this.storesApiClientIdEditLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.storesApiClientIdEditLabel.Name = "storesApiClientIdEditLabel";
-            this.storesApiClientIdEditLabel.Size = new System.Drawing.Size(104, 29);
-            this.storesApiClientIdEditLabel.TabIndex = 21;
-            this.storesApiClientIdEditLabel.Text = "Client ID";
-            // 
-            // storesApiKeyTextBox
-            // 
-            this.storesApiKeyTextBox.Enabled = false;
-            this.storesApiKeyTextBox.Location = new System.Drawing.Point(11, 88);
-            this.storesApiKeyTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.storesApiKeyTextBox.Name = "storesApiKeyTextBox";
-            this.storesApiKeyTextBox.Size = new System.Drawing.Size(192, 20);
-            this.storesApiKeyTextBox.TabIndex = 20;
-            // 
-            // storesApiKeyEditLabel
-            // 
-            this.storesApiKeyEditLabel.AutoSize = true;
-            this.storesApiKeyEditLabel.Enabled = false;
-            this.storesApiKeyEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storesApiKeyEditLabel.Location = new System.Drawing.Point(8, 66);
-            this.storesApiKeyEditLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.storesApiKeyEditLabel.Name = "storesApiKeyEditLabel";
-            this.storesApiKeyEditLabel.Size = new System.Drawing.Size(97, 29);
-            this.storesApiKeyEditLabel.TabIndex = 19;
-            this.storesApiKeyEditLabel.Text = "API Key";
-            // 
-            // storesApiUrlTextBox
-            // 
-            this.storesApiUrlTextBox.Enabled = false;
-            this.storesApiUrlTextBox.Location = new System.Drawing.Point(11, 32);
-            this.storesApiUrlTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.storesApiUrlTextBox.Name = "storesApiUrlTextBox";
-            this.storesApiUrlTextBox.Size = new System.Drawing.Size(192, 20);
-            this.storesApiUrlTextBox.TabIndex = 18;
-            // 
-            // storesApiUrlEditLabel
-            // 
-            this.storesApiUrlEditLabel.AutoSize = true;
-            this.storesApiUrlEditLabel.Enabled = false;
-            this.storesApiUrlEditLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storesApiUrlEditLabel.Location = new System.Drawing.Point(8, 12);
-            this.storesApiUrlEditLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.storesApiUrlEditLabel.Name = "storesApiUrlEditLabel";
-            this.storesApiUrlEditLabel.Size = new System.Drawing.Size(60, 29);
-            this.storesApiUrlEditLabel.TabIndex = 10;
-            this.storesApiUrlEditLabel.Text = "URL";
             // 
             // editStoresApiConfigurationButton
             // 
@@ -567,8 +441,6 @@
             this.currentConfigurationPanel.ResumeLayout(false);
             this.currentConfigurationPanel.PerformLayout();
             this.storesApiPanel.ResumeLayout(false);
-            this.editStoresApiConfigurationPanel.ResumeLayout(false);
-            this.editStoresApiConfigurationPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -604,18 +476,8 @@
         private System.Windows.Forms.Label storesApiStatusLabel;
         private System.Windows.Forms.Label networkStatusLabel;
         private System.Windows.Forms.Panel storesApiPanel;
-        private System.Windows.Forms.Panel editStoresApiConfigurationPanel;
         private System.Windows.Forms.Button editStoresApiConfigurationButton;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox storesApiClientIdTextBox;
-        private System.Windows.Forms.Label storesApiClientIdEditLabel;
-        private System.Windows.Forms.TextBox storesApiKeyTextBox;
-        private System.Windows.Forms.Label storesApiKeyEditLabel;
-        private System.Windows.Forms.TextBox storesApiUrlTextBox;
-        private System.Windows.Forms.Label storesApiUrlEditLabel;
-        private System.Windows.Forms.Label storesApiClientSecretEditLabel;
-        private System.Windows.Forms.Button saveStoresApiConfigurationButton;
-        private System.Windows.Forms.TextBox storesApiClientSecretTextBox;
         private System.Windows.Forms.Panel panel1;
     }
 }

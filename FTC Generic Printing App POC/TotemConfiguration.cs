@@ -11,6 +11,7 @@ using System.Windows.Forms.Design;
 
 namespace FTC_Generic_Printing_App_POC
 {
+    // TODO: Hide icon from taskbar when form is open.
     public partial class TotemConfiguration : Form
     {
         private readonly ApiService apiService;
@@ -201,7 +202,6 @@ namespace FTC_Generic_Printing_App_POC
                     StoreId = selectedStoreId
                 };
 
-                // Use the new section-based saving method
                 ConfigurationManager.SaveTotemConfiguration(config);
 
                 AppLogger.LogInfo($"Totem configuration saved with StoreId: {selectedStoreId}, Store: {selectedStore}");
@@ -214,7 +214,6 @@ namespace FTC_Generic_Printing_App_POC
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         private void ResetEditTotemConfigurationPanel()
         {
@@ -309,6 +308,11 @@ namespace FTC_Generic_Printing_App_POC
         {
             ResetEditTotemConfigurationPanel();
             AppLogger.LogInfo("Totem configuration form cleaned");
+        }
+
+        private void TotemConfiguration_Load_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

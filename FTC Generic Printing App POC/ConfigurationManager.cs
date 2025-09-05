@@ -105,7 +105,7 @@ namespace FTC_Generic_Printing_App_POC
                     DatabaseUrl = GetAppSetting(KEY_FIREBASE_DATABASE_URL, ""),
                     ProjectId = GetAppSetting(KEY_FIREBASE_PROJECT_ID, ""),
                     ApiKey = GetAppSetting(KEY_FIREBASE_API_KEY, ""),
-                    DocumentPath = "tickets"
+                    DocumentPath = "tickets" // Hardcoded for now
                 };
 
                 // If any settings are empty, try to load from defaultConfig.xml
@@ -183,6 +183,7 @@ namespace FTC_Generic_Printing_App_POC
                 configFile.Save(ConfigurationSaveMode.Modified);
                 System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
+                // TODO: Log Store API settings
                 AppLogger.LogInfo("StoreApi configuration saved successfully");
             }
             catch (Exception ex)

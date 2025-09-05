@@ -19,6 +19,7 @@ namespace FTC_Generic_Printing_App_POC
         public ApiService()
         {
             var config = ConfigurationManager.LoadStoreApiConfiguration();
+
             AUTH_URL = config.AuthUrl;
             STORES_URL = config.StoresUrl;
             CLIENT_ID = config.ClientId;
