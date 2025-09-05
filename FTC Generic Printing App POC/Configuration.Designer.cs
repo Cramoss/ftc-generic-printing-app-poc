@@ -124,9 +124,9 @@
             this.currentStoreId.Location = new System.Drawing.Point(157, 129);
             this.currentStoreId.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentStoreId.Name = "currentStoreId";
-            this.currentStoreId.Size = new System.Drawing.Size(46, 25);
+            this.currentStoreId.Size = new System.Drawing.Size(144, 25);
             this.currentStoreId.TabIndex = 9;
-            this.currentStoreId.Text = "N/A";
+            this.currentStoreId.Text = "No configurado";
             // 
             // currentStore
             // 
@@ -136,9 +136,9 @@
             this.currentStore.Location = new System.Drawing.Point(157, 97);
             this.currentStore.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentStore.Name = "currentStore";
-            this.currentStore.Size = new System.Drawing.Size(46, 25);
+            this.currentStore.Size = new System.Drawing.Size(144, 25);
             this.currentStore.TabIndex = 8;
-            this.currentStore.Text = "N/A";
+            this.currentStore.Text = "No configurado";
             // 
             // currentBusiness
             // 
@@ -148,9 +148,9 @@
             this.currentBusiness.Location = new System.Drawing.Point(157, 66);
             this.currentBusiness.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentBusiness.Name = "currentBusiness";
-            this.currentBusiness.Size = new System.Drawing.Size(46, 25);
+            this.currentBusiness.Size = new System.Drawing.Size(144, 25);
             this.currentBusiness.TabIndex = 7;
-            this.currentBusiness.Text = "N/A";
+            this.currentBusiness.Text = "No configurado";
             // 
             // currentCountry
             // 
@@ -160,9 +160,9 @@
             this.currentCountry.Location = new System.Drawing.Point(157, 35);
             this.currentCountry.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentCountry.Name = "currentCountry";
-            this.currentCountry.Size = new System.Drawing.Size(46, 25);
+            this.currentCountry.Size = new System.Drawing.Size(144, 25);
             this.currentCountry.TabIndex = 6;
-            this.currentCountry.Text = "N/A";
+            this.currentCountry.Text = "No configurado";
             // 
             // currentTotemId
             // 
@@ -172,9 +172,9 @@
             this.currentTotemId.Location = new System.Drawing.Point(157, 4);
             this.currentTotemId.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentTotemId.Name = "currentTotemId";
-            this.currentTotemId.Size = new System.Drawing.Size(46, 25);
+            this.currentTotemId.Size = new System.Drawing.Size(144, 25);
             this.currentTotemId.TabIndex = 5;
-            this.currentTotemId.Text = "N/A";
+            this.currentTotemId.Text = "No configurado";
             // 
             // currentStoreIdLabel
             // 
@@ -265,9 +265,9 @@
             this.totemPanel.Controls.Add(this.totemTableLayoutPanel);
             this.totemPanel.Controls.Add(this.refreshCurrentTotemConfigurationButton);
             this.totemPanel.Controls.Add(this.editTotemConfigurationButton);
-            this.totemPanel.Location = new System.Drawing.Point(10, 48);
+            this.totemPanel.Location = new System.Drawing.Point(16, 48);
             this.totemPanel.Name = "totemPanel";
-            this.totemPanel.Size = new System.Drawing.Size(753, 186);
+            this.totemPanel.Size = new System.Drawing.Size(747, 186);
             this.totemPanel.TabIndex = 22;
             // 
             // totemTableLayoutPanel
@@ -287,7 +287,7 @@
             this.totemTableLayoutPanel.Controls.Add(this.currentCountryLabel, 0, 1);
             this.totemTableLayoutPanel.Controls.Add(this.currentCountry, 1, 1);
             this.totemTableLayoutPanel.Controls.Add(this.currentBusinessLabel, 0, 2);
-            this.totemTableLayoutPanel.Location = new System.Drawing.Point(20, 12);
+            this.totemTableLayoutPanel.Location = new System.Drawing.Point(17, 12);
             this.totemTableLayoutPanel.Name = "totemTableLayoutPanel";
             this.totemTableLayoutPanel.RowCount = 5;
             this.totemTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -295,6 +295,7 @@
             this.totemTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.totemTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.totemTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.totemTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.totemTableLayoutPanel.Size = new System.Drawing.Size(508, 160);
             this.totemTableLayoutPanel.TabIndex = 21;
             // 
@@ -319,7 +320,7 @@
             this.storesApiPanel.Controls.Add(this.editStoreApiConfigurationButton);
             this.storesApiPanel.Location = new System.Drawing.Point(16, 282);
             this.storesApiPanel.Name = "storesApiPanel";
-            this.storesApiPanel.Size = new System.Drawing.Size(753, 186);
+            this.storesApiPanel.Size = new System.Drawing.Size(747, 186);
             this.storesApiPanel.TabIndex = 23;
             // 
             // showStoresApiInfo
@@ -336,7 +337,7 @@
             // testStoresApiConnectivityButton
             // 
             this.testStoresApiConnectivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.testStoresApiConnectivityButton.Location = new System.Drawing.Point(533, 81);
+            this.testStoresApiConnectivityButton.Location = new System.Drawing.Point(533, 80);
             this.testStoresApiConnectivityButton.Margin = new System.Windows.Forms.Padding(2);
             this.testStoresApiConnectivityButton.Name = "testStoresApiConnectivityButton";
             this.testStoresApiConnectivityButton.Size = new System.Drawing.Size(200, 30);
@@ -362,7 +363,7 @@
             this.storesApiTableLayoutPanel.Controls.Add(this.storesApiAuthUrlLabel, 0, 1);
             this.storesApiTableLayoutPanel.Controls.Add(this.currentStoresApiAuthUrl, 1, 1);
             this.storesApiTableLayoutPanel.Controls.Add(this.storesApiClientIdLabel, 0, 2);
-            this.storesApiTableLayoutPanel.Location = new System.Drawing.Point(20, 12);
+            this.storesApiTableLayoutPanel.Location = new System.Drawing.Point(17, 12);
             this.storesApiTableLayoutPanel.Name = "storesApiTableLayoutPanel";
             this.storesApiTableLayoutPanel.RowCount = 5;
             this.storesApiTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -497,7 +498,7 @@
             // refreshCurrentStoresApiConfigurationButton
             // 
             this.refreshCurrentStoresApiConfigurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.refreshCurrentStoresApiConfigurationButton.Location = new System.Drawing.Point(533, 47);
+            this.refreshCurrentStoresApiConfigurationButton.Location = new System.Drawing.Point(533, 46);
             this.refreshCurrentStoresApiConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentStoresApiConfigurationButton.Name = "refreshCurrentStoresApiConfigurationButton";
             this.refreshCurrentStoresApiConfigurationButton.Size = new System.Drawing.Size(200, 30);
@@ -508,7 +509,7 @@
             // editStoreApiConfigurationButton
             // 
             this.editStoreApiConfigurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.editStoreApiConfigurationButton.Location = new System.Drawing.Point(533, 12);
+            this.editStoreApiConfigurationButton.Location = new System.Drawing.Point(533, 11);
             this.editStoreApiConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.editStoreApiConfigurationButton.Name = "editStoreApiConfigurationButton";
             this.editStoreApiConfigurationButton.Size = new System.Drawing.Size(200, 30);
@@ -547,7 +548,7 @@
             this.firebasePanel.Controls.Add(this.editFirebaseConfigurationButton);
             this.firebasePanel.Location = new System.Drawing.Point(16, 521);
             this.firebasePanel.Name = "firebasePanel";
-            this.firebasePanel.Size = new System.Drawing.Size(753, 186);
+            this.firebasePanel.Size = new System.Drawing.Size(747, 186);
             this.firebasePanel.TabIndex = 25;
             // 
             // showFirebaseInfoButton
@@ -564,7 +565,7 @@
             // testFirebaseConnectivityButton
             // 
             this.testFirebaseConnectivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.testFirebaseConnectivityButton.Location = new System.Drawing.Point(533, 81);
+            this.testFirebaseConnectivityButton.Location = new System.Drawing.Point(533, 79);
             this.testFirebaseConnectivityButton.Margin = new System.Windows.Forms.Padding(2);
             this.testFirebaseConnectivityButton.Name = "testFirebaseConnectivityButton";
             this.testFirebaseConnectivityButton.Size = new System.Drawing.Size(200, 30);
@@ -588,7 +589,7 @@
             this.firebaseTableLayoutPanel.Controls.Add(this.firebaseProjectIdLabel, 0, 1);
             this.firebaseTableLayoutPanel.Controls.Add(this.currentFirebaseProjectId, 1, 1);
             this.firebaseTableLayoutPanel.Controls.Add(this.firebaseApiKeyLabel, 0, 2);
-            this.firebaseTableLayoutPanel.Location = new System.Drawing.Point(20, 12);
+            this.firebaseTableLayoutPanel.Location = new System.Drawing.Point(17, 12);
             this.firebaseTableLayoutPanel.Name = "firebaseTableLayoutPanel";
             this.firebaseTableLayoutPanel.RowCount = 4;
             this.firebaseTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
@@ -698,7 +699,7 @@
             // refreshCurrentFirebaseConfigurationButton
             // 
             this.refreshCurrentFirebaseConfigurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.refreshCurrentFirebaseConfigurationButton.Location = new System.Drawing.Point(533, 47);
+            this.refreshCurrentFirebaseConfigurationButton.Location = new System.Drawing.Point(533, 45);
             this.refreshCurrentFirebaseConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentFirebaseConfigurationButton.Name = "refreshCurrentFirebaseConfigurationButton";
             this.refreshCurrentFirebaseConfigurationButton.Size = new System.Drawing.Size(200, 30);
@@ -709,7 +710,7 @@
             // editFirebaseConfigurationButton
             // 
             this.editFirebaseConfigurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.editFirebaseConfigurationButton.Location = new System.Drawing.Point(533, 12);
+            this.editFirebaseConfigurationButton.Location = new System.Drawing.Point(533, 10);
             this.editFirebaseConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.editFirebaseConfigurationButton.Name = "editFirebaseConfigurationButton";
             this.editFirebaseConfigurationButton.Size = new System.Drawing.Size(200, 30);
@@ -741,7 +742,7 @@
             // testTicketPrintButton
             // 
             this.testTicketPrintButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.testTicketPrintButton.Location = new System.Drawing.Point(530, 49);
+            this.testTicketPrintButton.Location = new System.Drawing.Point(533, 49);
             this.testTicketPrintButton.Margin = new System.Windows.Forms.Padding(2);
             this.testTicketPrintButton.Name = "testTicketPrintButton";
             this.testTicketPrintButton.Size = new System.Drawing.Size(200, 30);
@@ -794,7 +795,7 @@
             // refreshCurrentPrinterButton
             // 
             this.refreshCurrentPrinterButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.refreshCurrentPrinterButton.Location = new System.Drawing.Point(530, 15);
+            this.refreshCurrentPrinterButton.Location = new System.Drawing.Point(533, 15);
             this.refreshCurrentPrinterButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentPrinterButton.Name = "refreshCurrentPrinterButton";
             this.refreshCurrentPrinterButton.Size = new System.Drawing.Size(200, 30);
