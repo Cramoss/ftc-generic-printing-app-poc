@@ -309,10 +309,5 @@ namespace FTC_Generic_Printing_App_POC
             ResetEditTotemConfigurationPanel();
             AppLogger.LogInfo("Totem configuration form cleaned");
         }
-
-        private void TotemConfiguration_Load_1(object sender, EventArgs e)
-        {
-
-        }
     }
 }

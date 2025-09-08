@@ -104,7 +104,7 @@
             // editTotemConfigurationButton
             // 
             this.editTotemConfigurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.editTotemConfigurationButton.Location = new System.Drawing.Point(387, 34);
+            this.editTotemConfigurationButton.Location = new System.Drawing.Point(387, 3);
             this.editTotemConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.editTotemConfigurationButton.Name = "editTotemConfigurationButton";
             this.editTotemConfigurationButton.Size = new System.Drawing.Size(100, 25);
@@ -298,7 +298,7 @@
             // refreshCurrentTotemConfigurationButton
             // 
             this.refreshCurrentTotemConfigurationButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.refreshCurrentTotemConfigurationButton.Location = new System.Drawing.Point(387, 5);
+            this.refreshCurrentTotemConfigurationButton.Location = new System.Drawing.Point(387, 32);
             this.refreshCurrentTotemConfigurationButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentTotemConfigurationButton.Name = "refreshCurrentTotemConfigurationButton";
             this.refreshCurrentTotemConfigurationButton.Size = new System.Drawing.Size(100, 25);
