@@ -242,7 +242,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private static string GetValueFromDefaultConfig(string key)
+        public static string GetValueFromDefaultConfig(string key)
         {
             try
             {

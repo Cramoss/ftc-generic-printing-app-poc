@@ -77,6 +77,12 @@
     <Compile Include="Configuration.Designer.cs">
       <DependentUpon>Configuration.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigurationAdminPasswordPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigurationAdminPasswordPrompt.Designer.cs">
+      <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConfigurationManager.cs" />
     <Compile Include="DefaultConfigKeys.cs" />
     <Compile Include="FirebaseManager.cs" />
@@ -98,6 +104,9 @@
     <Compile Include="TrayApplicationContext.cs" />
     <EmbeddedResource Include="Configuration.resx">
       <DependentUpon>Configuration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfigurationAdminPasswordPrompt.resx">
+      <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

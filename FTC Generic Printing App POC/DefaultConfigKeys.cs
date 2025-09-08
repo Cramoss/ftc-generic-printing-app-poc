@@ -16,5 +16,7 @@ namespace FTC_Generic_Printing_App_POC
         public const string CONFIG_DEFAULT_FIREBASE_DB_URL = "configDefaultFirebaseDbUrl";
         public const string CONFIG_DEFAULT_FIREBASE_PROJECT_ID = "configDefaultFirebaseProjectId";
         public const string CONFIG_DEFAULT_FIREBASE_API_KEY = "configDefaultFirebaseApiKey";
+
+        public const string CONFIG_DEFAULT_ADMIN_PASSWORD = "configDefaultAdminPassword";
     }
 }

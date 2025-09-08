@@ -333,6 +333,7 @@
             this.showStoresApiInfo.TabIndex = 24;
             this.showStoresApiInfo.Text = "Mostrar info";
             this.showStoresApiInfo.UseVisualStyleBackColor = true;
+            this.showStoresApiInfo.Click += new System.EventHandler(this.showStoresApiInfo_Click);
             // 
             // testStoresApiConnectivityButton
             // 
@@ -504,6 +505,7 @@
             this.refreshCurrentStoresApiConfigurationButton.TabIndex = 20;
             this.refreshCurrentStoresApiConfigurationButton.Text = "Refrescar";
             this.refreshCurrentStoresApiConfigurationButton.UseVisualStyleBackColor = true;
+            this.refreshCurrentStoresApiConfigurationButton.Click += new System.EventHandler(this.refreshCurrentStoresApiConfigurationButton_Click);
             // 
             // editStoreApiConfigurationButton
             // 

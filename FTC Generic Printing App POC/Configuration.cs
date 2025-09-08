@@ -36,6 +36,7 @@ namespace FTC_Generic_Printing_App_POC
             if (value)
             {
                 RefreshTotemConfigurationLabels();
+                RefreshStoresApiConfigurationLabels();
             }
         }
 
@@ -121,6 +122,129 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo("Opening Stores API Configuration panel");
             StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
             storeApiConfigForm.ShowDialog();
+        }
+
+        private void refreshCurrentStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            RefreshStoresApiConfigurationLabels();
+        }
+
+        private void RefreshStoresApiConfigurationLabels()
+        {
+            try
+            {
+                AppLogger.LogInfo("Refreshing Store API configuration labels");
+                var storeApiConfig = ConfigurationManager.LoadStoreApiConfiguration();
+
+                currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
+                    "Oculto" : "No configurado";
+
+                currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
+                    "Oculto" : "No configurado";
+
+                currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
+                    "Oculto" : "No configurado";
+
+                currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
+                    "Oculto" : "No configurado";
+
+                AppLogger.LogInfo("Store API configuration labels refreshed successfully");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error refreshing Store API configuration labels", ex);
+
+                currentStoresApiUrl.Text = "Error";
+                currentStoresApiAuthUrl.Text = "Error";
+                currentStoresApiClientId.Text = "Error";
+                currentStoresApiClientSecret.Text = "Error";
+            }
+        }
+
+        private bool isStoreApiInfoVisible = false;
+        private System.Windows.Forms.Timer storeApiInfoTimer;
+
+        // TODO: Option to show full value (maybe increase label size??)
+        // Note: Values shown are hidden again after 30 seconds.
+        // Note 2: This button requires admin password verification.
+        private void showStoresApiInfo_Click(object sender, EventArgs e)
+        {
+            if (isStoreApiInfoVisible)
+            {
+                AppLogger.LogInfo("Hiding Store API sensitive information");
+                RefreshStoresApiConfigurationLabels();
+                showStoresApiInfo.Text = "Mostrar info";
+                isStoreApiInfoVisible = false;
+
+                // Stop and dispose timer for the admin password timeout
+                if (storeApiInfoTimer != null)
+                {
+                    storeApiInfoTimer.Stop();
+                    storeApiInfoTimer.Dispose();
+                    storeApiInfoTimer = null;
+                }
+
+                return;
+            }
+
+            AppLogger.LogInfo("Show Stores API info button clicked");
+
+            using (var passwordPrompt = new ConfigurationAdminPasswordPrompt())
+            {
+                if (passwordPrompt.ShowDialog() == DialogResult.OK && passwordPrompt.IsPasswordVerified)
+                {
+                    try
+                    {
+                        AppLogger.LogInfo("Admin password verification successful");
+
+                        var storeApiConfig = ConfigurationManager.LoadStoreApiConfiguration();
+
+                        currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
+                            storeApiConfig.StoresUrl : "No configurado";
+
+                        currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
+                            storeApiConfig.AuthUrl : "No configurado";
+
+                        currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
+                            storeApiConfig.ClientId : "No configurado";
+
+                        currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
+                            storeApiConfig.ClientSecret : "No configurado";
+
+                        showStoresApiInfo.Text = "Ocultar info";
+                        isStoreApiInfoVisible = true;
+
+                        // Clean up any existing timer
+                        if (storeApiInfoTimer != null)
+                        {
+                            storeApiInfoTimer.Stop();
+                            storeApiInfoTimer.Dispose();
+                        }
+
+                        // Timer to hide the info after 30 seconds
+                        storeApiInfoTimer = new System.Windows.Forms.Timer();
+                        storeApiInfoTimer.Interval = 30000;
+                        storeApiInfoTimer.Tick += (s, args) =>
+                        {
+                            RefreshStoresApiConfigurationLabels();
+                            showStoresApiInfo.Text = "Mostrar info";
+                            isStoreApiInfoVisible = false;
+                            storeApiInfoTimer.Stop();
+                            storeApiInfoTimer.Dispose();
+                            storeApiInfoTimer = null;
+                            AppLogger.LogInfo("Store API sensitive information hidden automatically after timeout");
+                        };
+                        storeApiInfoTimer.Start();
+                        AppLogger.LogInfo("Store API sensitive information will be hidden in 30 seconds");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogError("Error displaying Store API information", ex);
+                        MessageBox.Show("Error al mostrar la información: " + ex.Message, "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         private async void testStoresApiConnectivityButton_Click(object sender, EventArgs e)
@@ -307,5 +431,7 @@ namespace FTC_Generic_Printing_App_POC
         }
 
         #endregion
+
+
     }
 }
