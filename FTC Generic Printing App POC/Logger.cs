@@ -8,18 +8,23 @@ namespace FTC_Generic_Printing_App_POC
 {
     public static class AppLogger
     {
+        #region Fields
         private static readonly Logger logger;
+        #endregion
 
+        #region Initialization
         static AppLogger()
         {
             if (LogManager.Configuration == null)
             {
                 ConfigureDefaultLogging();
             }
-            
+
             logger = LogManager.GetCurrentClassLogger();
         }
+        #endregion
 
+        #region Core Methods
         private static void ConfigureDefaultLogging()
         {
             try
@@ -45,7 +50,7 @@ namespace FTC_Generic_Printing_App_POC
                 var rule = new LoggingRule("*", LogLevel.Debug, fileTarget);
                 config.LoggingRules.Add(rule);
 
-                LogManager.Configuration = config;                
+                LogManager.Configuration = config;
                 LogManager.GetCurrentClassLogger().Info("Using default NLog configuration. App.config file may be missing");
             }
             catch (Exception ex)
@@ -53,7 +58,9 @@ namespace FTC_Generic_Printing_App_POC
                 Console.WriteLine($"Failed to configure default logging: {ex.Message}");
             }
         }
+        #endregion
 
+        #region Helper Methods
         public static void LogInfo(string message)
         {
             logger.Info(message);
@@ -86,5 +93,6 @@ namespace FTC_Generic_Printing_App_POC
         {
             logger.Info($"PRINT-{eventType}: {details}");
         }
+        #endregion
     }
 }

@@ -7,8 +7,7 @@ namespace FTC_Generic_Printing_App_POC
 {
     public static class ConfigurationManager
     {
-        #region Configuration Keys
-
+        #region Fields
         // Totem Configuration Keys
         private const string KEY_TOTEM_ID = "TotemId";
         private const string KEY_TOTEM_COUNTRY = "TotemCountry";
@@ -26,11 +25,9 @@ namespace FTC_Generic_Printing_App_POC
         private const string KEY_FIREBASE_DATABASE_URL = "Firebase_DatabaseUrl";
         private const string KEY_FIREBASE_PROJECT_ID = "Firebase_ProjectId";
         private const string KEY_FIREBASE_API_KEY = "Firebase_ApiKey";
-
         #endregion
 
-        #region Load Configuration Methods
-
+        #region Core Methods
         public static ConfigurationData LoadTotemConfiguration()
         {
             try
@@ -45,21 +42,26 @@ namespace FTC_Generic_Printing_App_POC
                     StoreId = GetAppSetting(KEY_TOTEM_STORE_ID, "")
                 };
 
-                AppLogger.LogInfo($"Totem configuration loaded. IdTotem: {config.IdTotem}, Country: {config.Country}, Business: {config.Business}, Store: {config.Store}, StoreId: {config.StoreId}");
+                AppLogger.LogInfo($"Totem configuration loaded. " +
+                    $"IdTotem: {config.IdTotem}, " +
+                    $"Country: {config.Country}, " +
+                    $"Business: {config.Business}, " +
+                    $"Store: {config.Store}, " +
+                    $"StoreId: {config.StoreId}");
                 return config;
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error loading totem configuration. Returning default values", ex);
+                AppLogger.LogError("Error loading Totem configuration. Returning default values", ex);
                 return new ConfigurationData();
             }
         }
 
-        public static StoreApiConfig LoadStoreApiConfiguration()
+        public static StoreApiConfig LoadStoresApiConfiguration()
         {
             try
             {
-                AppLogger.LogInfo("Loading Store API configuration...");
+                AppLogger.LogInfo("Loading Stores API configuration...");
 
                 // Try to get settings from app.config
                 var config = new StoreApiConfig
@@ -70,7 +72,7 @@ namespace FTC_Generic_Printing_App_POC
                     ClientSecret = GetAppSetting(KEY_STOREAPI_CLIENT_SECRET, "")
                 };
 
-                // If any settings are empty, try to load from defaultConfig.xml
+                // If any values are empty, try to load from defaultConfig.xml
                 if (string.IsNullOrEmpty(config.AuthUrl))
                     config.AuthUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
 
@@ -83,12 +85,12 @@ namespace FTC_Generic_Printing_App_POC
                 if (string.IsNullOrEmpty(config.ClientSecret))
                     config.ClientSecret = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_SECRET);
 
-                AppLogger.LogInfo("Store API configuration loaded successfully");
+                AppLogger.LogInfo("Stores API configuration loaded successfully");
                 return config;
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error loading Store API configuration", ex);
+                AppLogger.LogError("Error loading Stores API configuration", ex);
                 throw;
             }
         }
@@ -108,7 +110,7 @@ namespace FTC_Generic_Printing_App_POC
                     DocumentPath = "tickets" // Hardcoded for now
                 };
 
-                // If any settings are empty, try to load from defaultConfig.xml
+                // If any values are empty, try to load from defaultConfig.xml
                 if (string.IsNullOrEmpty(config.DatabaseUrl))
                     config.DatabaseUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_DB_URL);
 
@@ -128,14 +130,11 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
+        // Note: Not sure what this was made for. Maybe to load all configurations at once?
         public static ConfigurationData LoadConfiguration()
         {
             return LoadTotemConfiguration();
         }
-
-        #endregion
-
-        #region Save Configuration Methods
 
         public static void SaveTotemConfiguration(ConfigurationData config)
         {
@@ -168,7 +167,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        public static void SaveStoreApiConfiguration(string authUrl, string storesUrl, string clientId, string clientSecret)
+        public static void SaveStoresApiConfiguration(string authUrl, string storesUrl, string clientId, string clientSecret)
         {
             try
             {
@@ -220,10 +219,20 @@ namespace FTC_Generic_Printing_App_POC
         {
             SaveTotemConfiguration(config);
         }
-
         #endregion
 
         #region Helper Methods
+        public static bool IsConfigurationValid(ConfigurationData config)
+        {
+            bool isValid = !string.IsNullOrWhiteSpace(config.IdTotem) &&
+                          !string.IsNullOrWhiteSpace(config.Country) &&
+                          !string.IsNullOrWhiteSpace(config.Business) &&
+                          !string.IsNullOrWhiteSpace(config.Store) &&
+                          !string.IsNullOrWhiteSpace(config.StoreId);
+
+            AppLogger.LogInfo($"Configuration validation: {(isValid ? "VALID" : "INVALID")}");
+            return isValid;
+        }
 
         private static string GetAppSetting(string key, string defaultValue)
         {
@@ -275,23 +284,6 @@ namespace FTC_Generic_Printing_App_POC
                 return string.Empty;
             }
         }
-
-        #endregion
-
-        #region Validation Methods
-
-        public static bool IsConfigurationValid(ConfigurationData config)
-        {
-            bool isValid = !string.IsNullOrWhiteSpace(config.IdTotem) &&
-                          !string.IsNullOrWhiteSpace(config.Country) &&
-                          !string.IsNullOrWhiteSpace(config.Business) &&
-                          !string.IsNullOrWhiteSpace(config.Store) &&
-                          !string.IsNullOrWhiteSpace(config.StoreId);
-
-            AppLogger.LogInfo($"Configuration validation: {(isValid ? "VALID" : "INVALID")}");
-            return isValid;
-        }
-
         #endregion
     }
 

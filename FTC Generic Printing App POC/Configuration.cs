@@ -208,7 +208,7 @@ namespace FTC_Generic_Printing_App_POC
             try
             {
                 AppLogger.LogInfo("Refreshing Store API configuration labels");
-                var storeApiConfig = ConfigurationManager.LoadStoreApiConfiguration();
+                var storeApiConfig = ConfigurationManager.LoadStoresApiConfiguration();
 
                 currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
                     "Oculto" : "No configurado";
@@ -301,7 +301,7 @@ namespace FTC_Generic_Printing_App_POC
                     {
                         AppLogger.LogInfo("Admin password verification successful");
 
-                        var storeApiConfig = ConfigurationManager.LoadStoreApiConfiguration();
+                        var storeApiConfig = ConfigurationManager.LoadStoresApiConfiguration();
 
                         currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
                             storeApiConfig.StoresUrl : "No configurado";

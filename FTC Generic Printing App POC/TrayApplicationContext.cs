@@ -6,11 +6,14 @@ namespace FTC_Generic_Printing_App_POC
 {
     public class TrayApplicationContext : ApplicationContext
     {
+        #region Fields
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
         private Configuration configForm;
         private bool isListening = false;
+        #endregion
 
+        #region Initialization
         public TrayApplicationContext()
         {
             InitializeTrayIcon();
@@ -39,7 +42,9 @@ namespace FTC_Generic_Printing_App_POC
             // Double-click to show configuration
             trayIcon.DoubleClick += ShowConfiguration;
         }
+        #endregion
 
+        #region Core Methods
         private void ShowConfiguration(object sender, EventArgs e)
         {
             if (configForm == null || configForm.IsDisposed)
@@ -100,5 +105,6 @@ namespace FTC_Generic_Printing_App_POC
 
             Application.Exit();
         }
+        #endregion
     }
 }

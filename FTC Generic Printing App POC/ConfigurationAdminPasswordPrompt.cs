@@ -12,16 +12,33 @@ namespace FTC_Generic_Printing_App_POC
 {
     public partial class ConfigurationAdminPasswordPrompt : Form
     {
+        #region Fields
         public bool IsPasswordVerified { get; private set; }
+        #endregion
 
+        #region Initialization
         public ConfigurationAdminPasswordPrompt()
         {
             InitializeComponent();
             adminPasswordTextBox.UseSystemPasswordChar = true;
             IsPasswordVerified = false;
         }
+        #endregion
 
+        #region Event Handlers
         private void acceptPasswordButton_Click(object sender, EventArgs e)
+        {
+            ValidatePassword();
+        }
+
+        private void cancelPasswordButton_Click(object sender, EventArgs e)
+        {
+            CancelPrompt();
+        }
+        #endregion
+
+        #region Core Methods
+        private void ValidatePassword()
         {
             try
             {
@@ -59,11 +76,12 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void cancelPasswordButton_Click(object sender, EventArgs e)
+        private void CancelPrompt()
         {
             IsPasswordVerified = false;
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+        #endregion
     }
 }

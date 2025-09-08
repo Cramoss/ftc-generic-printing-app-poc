@@ -10,6 +10,7 @@ namespace FTC_Generic_Printing_App_POC
 {
     public class FirebaseManager
     {
+        #region Fields
         private FirebaseClient firebaseClient;
         private string firebaseUrl;
         private string projectId;
@@ -19,7 +20,9 @@ namespace FTC_Generic_Printing_App_POC
         private ConfigurationData currentConfig;
         private bool isListening = false;
         private IDisposable currentSubscription;
+        #endregion
 
+        #region Initialization
         public FirebaseManager()
         {
             var config = ConfigurationManager.LoadFirebaseConfiguration();
@@ -32,7 +35,42 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo($"FirebaseManager initialized for project: {projectId}");
         }
 
-        #region Load configuration
+        private void LoadCurrentConfiguration()
+        {
+            try
+            {
+                currentConfig = FTC_Generic_Printing_App_POC.ConfigurationManager.LoadConfiguration();
+                AppLogger.LogInfo($"Loaded current configuration. Totem: {currentConfig.IdTotem}, Store: {currentConfig.StoreId}");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error loading current configuration", ex);
+                currentConfig = new ConfigurationData();
+            }
+        }
+
+        public void RefreshConfiguration()
+        {
+            try
+            {
+                var previousConfig = currentConfig;
+                LoadCurrentConfiguration();
+
+                if (isListening && !ConfigurationEquals(previousConfig, currentConfig))
+                {
+                    AppLogger.LogInfo("Configuration changed. Restarting Firebase listener");
+                    StopListening();
+                    StartListeningAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error refreshing configuration", ex);
+            }
+        }
+        #endregion
+
+        #region Core Methods
         private string LoadConfigurationWithFallback(string key, string defaultKeyName)
         {
             string value = System.Configuration.ConfigurationManager.AppSettings[key];
@@ -72,40 +110,6 @@ namespace FTC_Generic_Printing_App_POC
             return value;
         }
 
-        private void LoadCurrentConfiguration()
-        {
-            try
-            {
-                currentConfig = FTC_Generic_Printing_App_POC.ConfigurationManager.LoadConfiguration();
-                AppLogger.LogInfo($"Loaded current configuration. Totem: {currentConfig.IdTotem}, Store: {currentConfig.StoreId}");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error loading current configuration", ex);
-                currentConfig = new ConfigurationData();
-            }
-        }
-
-        public void RefreshConfiguration()
-        {
-            try
-            {
-                var previousConfig = currentConfig;
-                LoadCurrentConfiguration();
-
-                if (isListening && !ConfigurationEquals(previousConfig, currentConfig))
-                {
-                    AppLogger.LogInfo("Configuration changed. Restarting Firebase listener");
-                    StopListening();
-                    StartListeningAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error refreshing configuration", ex);
-            }
-        }
-
         public void ReloadConfiguration()
         {
             try
@@ -127,9 +131,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        #endregion
-
-        #region Listener
+        // Listener
         private void InitializeFirebase()
         {
             try
@@ -234,9 +236,6 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        #endregion
-
-        #region Tests
         public async Task<bool> TestConnectionAsync()
         {
             try
@@ -384,7 +383,6 @@ namespace FTC_Generic_Printing_App_POC
                 return false;
             }
         }
-
         #endregion
 
         #region Helper methods
@@ -425,13 +423,12 @@ namespace FTC_Generic_Printing_App_POC
                    !string.IsNullOrWhiteSpace(currentConfig.StoreId);
         }
 
-        #endregion
-
-        public bool IsListening => isListening;
-
         public ConfigurationData GetCurrentConfiguration()
         {
             return currentConfig;
         }
+        #endregion
+
+        public bool IsListening => isListening;
     }
 }

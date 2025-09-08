@@ -9,16 +9,19 @@ namespace FTC_Generic_Printing_App_POC
 {
     public class ApiService
     {
+        #region Fields
         private static readonly HttpClient httpClient = new HttpClient();
 
         private string AUTH_URL;
         private string STORES_URL;
         private string CLIENT_ID;
         private string CLIENT_SECRET;
+        #endregion
 
+        #region Initialization
         public ApiService()
         {
-            var config = ConfigurationManager.LoadStoreApiConfiguration();
+            var config = ConfigurationManager.LoadStoresApiConfiguration();
 
             AUTH_URL = config.AuthUrl;
             STORES_URL = config.StoresUrl;
@@ -26,9 +29,9 @@ namespace FTC_Generic_Printing_App_POC
             CLIENT_SECRET = config.ClientSecret;
             AppLogger.LogInfo("ApiService initialized with configuration values");
         }
+        #endregion
 
-        #region Load configuration
-
+        #region Core Methods
         private string LoadConfigurationWithFallback(string key, string defaultKeyName)
         {
             string value = System.Configuration.ConfigurationManager.AppSettings[key];
@@ -68,7 +71,7 @@ namespace FTC_Generic_Printing_App_POC
             try
             {
                 AppLogger.LogInfo("Reloading API service configuration");
-                var config = ConfigurationManager.LoadStoreApiConfiguration();
+                var config = ConfigurationManager.LoadStoresApiConfiguration();
 
                 AUTH_URL = config.AuthUrl;
                 STORES_URL = config.StoresUrl;
@@ -82,10 +85,6 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogError("Failed to reload API service configuration", ex);
             }
         }
-
-        #endregion
-
-        #region API calls
 
         public async Task<string> GetAccessTokenAsync()
         {
@@ -157,10 +156,9 @@ namespace FTC_Generic_Printing_App_POC
                 throw;
             }
         }
-
         #endregion
 
-        #region Helper methods
+        #region Helper Methods
         private string BuildEcommName(string country, string business)
         {
             string countryCode = "";
@@ -199,7 +197,6 @@ namespace FTC_Generic_Printing_App_POC
 
             return $"{businessCode}-{countryCode}";
         }
-
         #endregion
     }
 
