@@ -89,7 +89,6 @@
             this.networkTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.networkStatusLabel = new System.Windows.Forms.Label();
             this.networkStatus = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
             this.totemPanel.SuspendLayout();
             this.totemTableLayoutPanel.SuspendLayout();
             this.storesApiPanel.SuspendLayout();
@@ -815,16 +814,15 @@
             this.networkPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.networkPanel.Controls.Add(this.testNetworkConnectivityButton);
             this.networkPanel.Controls.Add(this.networkTableLayoutPanel);
-            this.networkPanel.Controls.Add(this.button5);
             this.networkPanel.Location = new System.Drawing.Point(20, 718);
             this.networkPanel.Name = "networkPanel";
-            this.networkPanel.Size = new System.Drawing.Size(492, 62);
+            this.networkPanel.Size = new System.Drawing.Size(492, 40);
             this.networkPanel.TabIndex = 27;
             // 
             // testNetworkConnectivityButton
             // 
             this.testNetworkConnectivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.testNetworkConnectivityButton.Location = new System.Drawing.Point(383, 31);
+            this.testNetworkConnectivityButton.Location = new System.Drawing.Point(381, 4);
             this.testNetworkConnectivityButton.Margin = new System.Windows.Forms.Padding(2);
             this.testNetworkConnectivityButton.Name = "testNetworkConnectivityButton";
             this.testNetworkConnectivityButton.Size = new System.Drawing.Size(100, 25);
@@ -841,11 +839,11 @@
             this.networkTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.networkTableLayoutPanel.Controls.Add(this.networkStatusLabel, 0, 0);
             this.networkTableLayoutPanel.Controls.Add(this.networkStatus, 1, 0);
-            this.networkTableLayoutPanel.Location = new System.Drawing.Point(3, 14);
+            this.networkTableLayoutPanel.Location = new System.Drawing.Point(3, 3);
             this.networkTableLayoutPanel.Name = "networkTableLayoutPanel";
             this.networkTableLayoutPanel.RowCount = 1;
             this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.networkTableLayoutPanel.Size = new System.Drawing.Size(375, 33);
             this.networkTableLayoutPanel.TabIndex = 21;
             // 
@@ -872,17 +870,6 @@
             this.networkStatus.Size = new System.Drawing.Size(20, 17);
             this.networkStatus.TabIndex = 6;
             this.networkStatus.Text = "...";
-            // 
-            // button5
-            // 
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button5.Location = new System.Drawing.Point(383, 2);
-            this.button5.Margin = new System.Windows.Forms.Padding(2);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(100, 25);
-            this.button5.TabIndex = 20;
-            this.button5.Text = "Refrescar";
-            this.button5.UseVisualStyleBackColor = true;
             // 
             // Configuration
             // 
@@ -987,6 +974,5 @@
         private System.Windows.Forms.TableLayoutPanel networkTableLayoutPanel;
         private System.Windows.Forms.Label networkStatusLabel;
         private System.Windows.Forms.Label networkStatus;
-        private System.Windows.Forms.Button button5;
     }
 }

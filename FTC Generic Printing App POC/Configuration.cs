@@ -408,11 +408,6 @@ namespace FTC_Generic_Printing_App_POC
 
         }
 
-
-
-
-
-
         #endregion
 
         #region Window management
@@ -430,8 +425,7 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo("Configuration form hidden");
         }
 
+
         #endregion
-
-
     }
 }
