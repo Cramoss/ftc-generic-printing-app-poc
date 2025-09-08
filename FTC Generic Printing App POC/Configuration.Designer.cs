@@ -308,6 +308,7 @@
             this.refreshCurrentTotemConfigurationButton.TabIndex = 20;
             this.refreshCurrentTotemConfigurationButton.Text = "Refrescar";
             this.refreshCurrentTotemConfigurationButton.UseVisualStyleBackColor = true;
+            this.refreshCurrentTotemConfigurationButton.Click += new System.EventHandler(this.refreshCurrentTotemConfigurationButton_Click);
             // 
             // storesApiPanel
             // 

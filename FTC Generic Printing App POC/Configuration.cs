@@ -35,13 +35,13 @@ namespace FTC_Generic_Printing_App_POC
 
             if (value)
             {
-                RefreshConfigurationLabels();
+                RefreshTotemConfigurationLabels();
             }
         }
 
         #endregion
 
-        #region Display current configuration
+        #region Totem configuration
 
         private void LoadSavedConfiguration()
         {
@@ -71,7 +71,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void RefreshConfigurationLabels()
+        private void RefreshTotemConfigurationLabels()
         {
             try
             {
@@ -97,9 +97,11 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        #endregion
 
-        #region Edit Totem configuration
+        private void refreshCurrentTotemConfigurationButton_Click(object sender, EventArgs e)
+        {
+            RefreshTotemConfigurationLabels();
+        }
 
         private void editTotemConfigurationButton_Click(object sender, EventArgs e)
         {
@@ -107,62 +109,18 @@ namespace FTC_Generic_Printing_App_POC
             TotemConfiguration totemConfigForm = new TotemConfiguration();
             totemConfigForm.ShowDialog();
 
-            RefreshConfigurationLabels();
+            RefreshTotemConfigurationLabels();
         }
 
         #endregion
 
-        #region Edit Stores API configuration
+        #region Stores API configuration
 
         private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
         {
             AppLogger.LogInfo("Opening Stores API Configuration panel");
             StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
             storeApiConfigForm.ShowDialog();
-        }
-
-        #endregion
-
-        #region Testing connectivity
-
-        private async void testNetworkConnectivityButton_Click(object sender, EventArgs e)
-        {
-            networkStatus.Text = "Probando...";
-            testNetworkConnectivityButton.Text = "Probando...";
-            testNetworkConnectivityButton.Enabled = false;
-
-            try
-            {
-                AppLogger.LogInfo("Starting network connectivity test");
-                using (var client = new System.Net.NetworkInformation.Ping())
-                {
-                    var reply = await Task.Run(() => client.Send("8.8.8.8", 3000));
-                    if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
-                    {
-                        networkStatus.Text = "ERROR";
-                        networkStatus.BackColor = Color.LightCoral;
-                        AppLogger.LogError("Network connectivity test failed");
-                        throw new Exception("Network connectivity test failed");
-                    }
-                    else
-                    {
-                        networkStatus.Text = "OK";
-                        networkStatus.BackColor = Color.LightGreen;
-                        AppLogger.LogInfo("Network connectivity test passed");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                string errorDetails = ex.Message;
-                AppLogger.LogError("Connectivity test failed", ex);
-            }
-            finally
-            {
-                testNetworkConnectivityButton.Text = "Probar conectividad";
-                testNetworkConnectivityButton.Enabled = true;
-            }
-
         }
 
         private async void testStoresApiConnectivityButton_Click(object sender, EventArgs e)
@@ -197,6 +155,10 @@ namespace FTC_Generic_Printing_App_POC
                 testStoresApiConnectivityButton.Enabled = true;
             }
         }
+
+        #endregion
+
+        #region Firebase configuration
 
         private async void testFirebaseConnectivityButton_Click(object sender, EventArgs e)
         {
@@ -256,6 +218,9 @@ namespace FTC_Generic_Printing_App_POC
                 testFirebaseConnectivityButton.Enabled = true;
             }
         }
+        #endregion
+
+        #region Print configuration
 
         // TODO: Implement printing test.
         private void testTicketPrintButton_Click(object sender, EventArgs e)
@@ -274,6 +239,55 @@ namespace FTC_Generic_Printing_App_POC
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        #endregion
+
+        #region Network configuration
+
+        private async void testNetworkConnectivityButton_Click(object sender, EventArgs e)
+        {
+            networkStatus.Text = "Probando...";
+            testNetworkConnectivityButton.Text = "Probando...";
+            testNetworkConnectivityButton.Enabled = false;
+
+            try
+            {
+                AppLogger.LogInfo("Starting network connectivity test");
+                using (var client = new System.Net.NetworkInformation.Ping())
+                {
+                    var reply = await Task.Run(() => client.Send("8.8.8.8", 3000));
+                    if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
+                    {
+                        networkStatus.Text = "ERROR";
+                        networkStatus.BackColor = Color.LightCoral;
+                        AppLogger.LogError("Network connectivity test failed");
+                        throw new Exception("Network connectivity test failed");
+                    }
+                    else
+                    {
+                        networkStatus.Text = "OK";
+                        networkStatus.BackColor = Color.LightGreen;
+                        AppLogger.LogInfo("Network connectivity test passed");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorDetails = ex.Message;
+                AppLogger.LogError("Connectivity test failed", ex);
+            }
+            finally
+            {
+                testNetworkConnectivityButton.Text = "Probar conectividad";
+                testNetworkConnectivityButton.Enabled = true;
+            }
+
+        }
+
+
+
+
+
 
         #endregion
 
