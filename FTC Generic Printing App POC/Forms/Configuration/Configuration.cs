@@ -319,11 +319,11 @@ namespace FTC_Generic_Printing_App_POC
             if (isStoreApiInfoVisible)
             {
                 AppLogger.LogInfo("Hiding Store API sensitive information");
+
+                isStoreApiInfoVisible = false;
                 RefreshStoresApiConfigurationLabels();
                 showStoresApiInfoButton.Text = "Mostrar info";
-                isStoreApiInfoVisible = false;
 
-                // Stop and dispose timer for the admin password timeout
                 if (storeApiInfoTimer != null)
                 {
                     storeApiInfoTimer.Stop();
@@ -361,21 +361,19 @@ namespace FTC_Generic_Printing_App_POC
                         showStoresApiInfoButton.Text = "Ocultar info";
                         isStoreApiInfoVisible = true;
 
-                        // Clean up any existing timer
                         if (storeApiInfoTimer != null)
                         {
                             storeApiInfoTimer.Stop();
                             storeApiInfoTimer.Dispose();
                         }
 
-                        // Timer to hide the info after 30 seconds
                         storeApiInfoTimer = new System.Windows.Forms.Timer();
                         storeApiInfoTimer.Interval = 30000;
                         storeApiInfoTimer.Tick += (s, args) =>
                         {
+                            isStoreApiInfoVisible = false;
                             RefreshStoresApiConfigurationLabels();
                             showStoresApiInfoButton.Text = "Mostrar info";
-                            isStoreApiInfoVisible = false;
                             storeApiInfoTimer.Stop();
                             storeApiInfoTimer.Dispose();
                             storeApiInfoTimer = null;
@@ -462,11 +460,11 @@ namespace FTC_Generic_Printing_App_POC
             if (isFirebaseInfoVisible)
             {
                 AppLogger.LogInfo("Hiding Firebase sensitive information");
+
+                isFirebaseInfoVisible = false;
                 RefreshFirebaseConfigurationLabels();
                 showFirebaseInfoButton.Text = "Mostrar info";
-                isFirebaseInfoVisible = false;
 
-                // Stop and dispose timer for the auto-hide timeout
                 if (firebaseInfoTimer != null)
                 {
                     firebaseInfoTimer.Stop();
@@ -501,21 +499,19 @@ namespace FTC_Generic_Printing_App_POC
                         showFirebaseInfoButton.Text = "Ocultar info";
                         isFirebaseInfoVisible = true;
 
-                        // Clean up any existing timer
                         if (firebaseInfoTimer != null)
                         {
                             firebaseInfoTimer.Stop();
                             firebaseInfoTimer.Dispose();
                         }
 
-                        // Timer to hide the info after 30 seconds
                         firebaseInfoTimer = new System.Windows.Forms.Timer();
-                        firebaseInfoTimer.Interval = 30000; // 30 seconds
+                        firebaseInfoTimer.Interval = 30000;
                         firebaseInfoTimer.Tick += (s, args) =>
                         {
+                            isFirebaseInfoVisible = false;
                             RefreshFirebaseConfigurationLabels();
                             showFirebaseInfoButton.Text = "Mostrar info";
-                            isFirebaseInfoVisible = false;
                             firebaseInfoTimer.Stop();
                             firebaseInfoTimer.Dispose();
                             firebaseInfoTimer = null;
