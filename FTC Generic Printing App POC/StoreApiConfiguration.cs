@@ -120,7 +120,64 @@ namespace FTC_Generic_Printing_App_POC
 
         private void restoreDefaultStoreApiConfigurationButton_Click(object sender, EventArgs e)
         {
-            // TODO: Load default values from defaultConfig.xml
+            try
+            {
+                AppLogger.LogInfo("User clicked Restore Default Stores API Configuration button");
+
+                DialogResult result = MessageBox.Show(
+                    "¿Está seguro que desea restaurar la configuración de Stores API a los valores predeterminados?" +
+                    Environment.NewLine + Environment.NewLine,
+                    "Confirmar restauración",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    // Get default values from defaultConfig.xml
+                    string authUrl = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
+                    string storesUrl = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_URL);
+                    string clientId = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_ID);
+                    string clientSecret = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_SECRET);
+
+                    if (string.IsNullOrEmpty(authUrl) || string.IsNullOrEmpty(storesUrl) ||
+                        string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+                    {
+                        AppLogger.LogWarning("Some default Store API configuration values were not found.");
+                        MessageBox.Show(
+                            "Algunos valores predeterminados no fueron encontrados en el archivo de configuración predeterminada.",
+                            "Error de restauración",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    ConfigurationManager.SaveStoreApiConfiguration(storesUrl, authUrl, clientId, clientSecret);
+
+                    apiService.ReloadConfiguration();
+
+                    AppLogger.LogInfo("Store API configuration restored to default values successfully");
+                    MessageBox.Show(
+                        "La configuración de Stores API ha sido restaurada a los valores predeterminados correctamente.",
+                        "Restauración exitosa",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    this.Hide();
+                }
+                else
+                {
+                    AppLogger.LogInfo("User cancelled restoring Store API default configuration");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error restoring Store API default configuration", ex);
+                MessageBox.Show(
+                    "Error al restaurar la configuración predeterminada: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         private void cancelStoresApiConfigurationButton_Click(object sender, EventArgs e)
