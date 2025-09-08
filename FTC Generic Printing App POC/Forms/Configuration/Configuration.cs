@@ -16,6 +16,8 @@ namespace FTC_Generic_Printing_App_POC
         private readonly StoresApiService apiService;
         private bool isStoreApiInfoVisible = false;
         private System.Windows.Forms.Timer storeApiInfoTimer;
+        private bool isFirebaseInfoVisible = false;
+        private System.Windows.Forms.Timer firebaseInfoTimer;
         #endregion
 
         #region Initialization
@@ -76,7 +78,7 @@ namespace FTC_Generic_Printing_App_POC
         // Totem
         private void editTotemConfigurationButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("Opening Totem Configuration form");
+            AppLogger.LogInfo("Opening Totem configuration form");
             TotemConfiguration totemConfigForm = new TotemConfiguration();
             totemConfigForm.ShowDialog();
 
@@ -90,7 +92,7 @@ namespace FTC_Generic_Printing_App_POC
         // Stores API
         private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("Opening Stores API Configuration panel");
+            AppLogger.LogInfo("Opening Stores API configuration panel");
             StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
             storeApiConfigForm.ShowDialog();
         }
@@ -112,9 +114,26 @@ namespace FTC_Generic_Printing_App_POC
         }
 
         // Firebase
+        private void editFirebaseConfigurationButton_Click(object sender, EventArgs e)
+        {
+            AppLogger.LogInfo("Opening Firebase configuration panel");
+            FirebaseConfiguration firebaseConfigurationForm = new FirebaseConfiguration();
+            firebaseConfigurationForm.ShowDialog();
+        }
+
+        private void refreshCurrentFirebaseConfigurationButton_Click(object sender, EventArgs e)
+        {
+            RefreshFirebaseConfigurationLabels();
+        }
+
         private async void testFirebaseConnectivityButton_Click(object sender, EventArgs e)
         {
             TestFirebaseConnectivity();
+        }
+
+        private void showFirebaseInfoButton_Click(object sender, EventArgs e)
+        {
+            ShowFirebaseInfo();
         }
 
         // Printer
@@ -269,6 +288,7 @@ namespace FTC_Generic_Printing_App_POC
         }
 
         // TODO: Option to show full value (maybe increase label size??)
+        // TODO: Avoid redundant code with ShowFirebaseInfo()
         // Note: Values shown are hidden again after 30 seconds.
         // Note 2: This button requires admin password verification.
         private void ShowStoresApiInfo()
@@ -399,14 +419,123 @@ namespace FTC_Generic_Printing_App_POC
             catch (Exception ex)
             {
                 firebaseStatus.Text = "ERROR";
+                firebaseStatus.BackColor = Color.LightCoral;
                 AppLogger.LogError("Firebase connectivity test failed", ex);
-                throw new Exception($"Firebase test failed: {ex.Message}");
             }
             finally
             {
                 firebaseManager.Dispose();
                 testFirebaseConnectivityButton.Text = "Probar conectividad";
                 testFirebaseConnectivityButton.Enabled = true;
+            }
+        }
+
+        // TODO: Option to show full value (maybe increase label size??)
+        // TODO: Avoid redundant code with ShowStoresApiInfo()
+        // Note: Values shown are hidden again after 30 seconds.
+        // Note 2: This button requires admin password verification.
+        private void ShowFirebaseInfo()
+        {
+            if (isFirebaseInfoVisible)
+            {
+                AppLogger.LogInfo("Hiding Firebase sensitive information");
+                RefreshFirebaseConfigurationLabels();
+                showFirebaseInfoButton.Text = "Mostrar info";
+                isFirebaseInfoVisible = false;
+
+                // Stop and dispose timer for the auto-hide timeout
+                if (firebaseInfoTimer != null)
+                {
+                    firebaseInfoTimer.Stop();
+                    firebaseInfoTimer.Dispose();
+                    firebaseInfoTimer = null;
+                }
+
+                return;
+            }
+
+            AppLogger.LogInfo("Show Firebase info button clicked");
+
+            using (var passwordPrompt = new ConfigurationAdminPasswordPrompt())
+            {
+                if (passwordPrompt.ShowDialog() == DialogResult.OK && passwordPrompt.IsPasswordVerified)
+                {
+                    try
+                    {
+                        AppLogger.LogInfo("Admin password verification successful");
+
+                        var firebaseConfig = ConfigurationManager.LoadFirebaseConfiguration();
+
+                        currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
+                            firebaseConfig.DatabaseUrl : "No configurado";
+
+                        currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
+                            firebaseConfig.ProjectId : "No configurado";
+
+                        currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
+                            firebaseConfig.ApiKey : "No configurado";
+
+                        showFirebaseInfoButton.Text = "Ocultar info";
+                        isFirebaseInfoVisible = true;
+
+                        // Clean up any existing timer
+                        if (firebaseInfoTimer != null)
+                        {
+                            firebaseInfoTimer.Stop();
+                            firebaseInfoTimer.Dispose();
+                        }
+
+                        // Timer to hide the info after 30 seconds
+                        firebaseInfoTimer = new System.Windows.Forms.Timer();
+                        firebaseInfoTimer.Interval = 30000; // 30 seconds
+                        firebaseInfoTimer.Tick += (s, args) =>
+                        {
+                            RefreshFirebaseConfigurationLabels();
+                            showFirebaseInfoButton.Text = "Mostrar info";
+                            isFirebaseInfoVisible = false;
+                            firebaseInfoTimer.Stop();
+                            firebaseInfoTimer.Dispose();
+                            firebaseInfoTimer = null;
+                            AppLogger.LogInfo("Firebase sensitive information hidden automatically after timeout");
+                        };
+                        firebaseInfoTimer.Start();
+                        AppLogger.LogInfo("Firebase sensitive information will be hidden in 30 seconds");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogError("Error displaying Firebase information", ex);
+                        MessageBox.Show("Error al mostrar la información: " + ex.Message, "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void RefreshFirebaseConfigurationLabels()
+        {
+            try
+            {
+                AppLogger.LogInfo("Refreshing Firebase configuration labels");
+                var firebaseConfig = ConfigurationManager.LoadFirebaseConfiguration();
+
+                currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
+                    "Oculto" : "No configurado";
+
+                currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
+                    "Oculto" : "No configurado";
+
+                currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
+                    "Oculto" : "No configurado";
+
+                AppLogger.LogInfo("Firebase configuration labels refreshed successfully");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error refreshing Firebase configuration labels", ex);
+
+                currentFirebaseDatabase.Text = "Error";
+                currentFirebaseProjectId.Text = "Error";
+                currentFirebaseApiKey.Text = "Error";
             }
         }
 
@@ -420,6 +549,9 @@ namespace FTC_Generic_Printing_App_POC
             this.Hide();
             AppLogger.LogInfo("Configuration form hidden");
         }
+
         #endregion
+
+
     }
 }

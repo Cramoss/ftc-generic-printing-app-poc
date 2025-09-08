@@ -559,6 +559,7 @@
             this.showFirebaseInfoButton.TabIndex = 23;
             this.showFirebaseInfoButton.Text = "Mostrar info";
             this.showFirebaseInfoButton.UseVisualStyleBackColor = true;
+            this.showFirebaseInfoButton.Click += new System.EventHandler(this.showFirebaseInfoButton_Click);
             // 
             // testFirebaseConnectivityButton
             // 
@@ -703,6 +704,7 @@
             this.refreshCurrentFirebaseConfigurationButton.TabIndex = 20;
             this.refreshCurrentFirebaseConfigurationButton.Text = "Refrescar";
             this.refreshCurrentFirebaseConfigurationButton.UseVisualStyleBackColor = true;
+            this.refreshCurrentFirebaseConfigurationButton.Click += new System.EventHandler(this.refreshCurrentFirebaseConfigurationButton_Click);
             // 
             // editFirebaseConfigurationButton
             // 
@@ -714,6 +716,7 @@
             this.editFirebaseConfigurationButton.TabIndex = 19;
             this.editFirebaseConfigurationButton.Text = "Configurar";
             this.editFirebaseConfigurationButton.UseVisualStyleBackColor = true;
+            this.editFirebaseConfigurationButton.Click += new System.EventHandler(this.editFirebaseConfigurationButton_Click);
             // 
             // printLabel
             // 
