@@ -15,8 +15,8 @@ namespace FTC_Generic_Printing_App_POC
         #region Fields
         private readonly StoresApiService apiService;
         private bool isStoreApiInfoVisible = false;
-        private System.Windows.Forms.Timer storeApiInfoTimer;
         private bool isFirebaseInfoVisible = false;
+        private System.Windows.Forms.Timer storeApiInfoTimer;
         private System.Windows.Forms.Timer firebaseInfoTimer;
         #endregion
 
@@ -95,6 +95,8 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo("Opening Stores API configuration panel");
             StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
             storeApiConfigForm.ShowDialog();
+
+            RefreshStoresApiConfigurationLabels();
         }
 
         private void refreshCurrentStoresApiConfigurationButton_Click(object sender, EventArgs e)
@@ -119,6 +121,8 @@ namespace FTC_Generic_Printing_App_POC
             AppLogger.LogInfo("Opening Firebase configuration panel");
             FirebaseConfiguration firebaseConfigurationForm = new FirebaseConfiguration();
             firebaseConfigurationForm.ShowDialog();
+
+            RefreshFirebaseConfigurationLabels();
         }
 
         private void refreshCurrentFirebaseConfigurationButton_Click(object sender, EventArgs e)
@@ -229,17 +233,36 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogInfo("Refreshing Store API configuration labels");
                 var storeApiConfig = ConfigurationManager.LoadStoresApiConfiguration();
 
-                currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
-                    "Oculto" : "No configurado";
+                if (isStoreApiInfoVisible)
+                {
+                    AppLogger.LogInfo("Store API info is currently visible, refreshing with actual values");
 
-                currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
-                    "Oculto" : "No configurado";
+                    currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
+                        storeApiConfig.StoresUrl : "No configurado";
 
-                currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
-                    "Oculto" : "No configurado";
+                    currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
+                        storeApiConfig.AuthUrl : "No configurado";
 
-                currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
-                    "Oculto" : "No configurado";
+                    currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
+                        storeApiConfig.ClientId : "No configurado";
+
+                    currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
+                        storeApiConfig.ClientSecret : "No configurado";
+                }
+                else
+                {
+                    currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
+                        "Oculto" : "No configurado";
+
+                    currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
+                        "Oculto" : "No configurado";
+
+                    currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
+                        "Oculto" : "No configurado";
+
+                    currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
+                        "Oculto" : "No configurado";
+                }
 
                 AppLogger.LogInfo("Store API configuration labels refreshed successfully");
             }
@@ -518,14 +541,30 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogInfo("Refreshing Firebase configuration labels");
                 var firebaseConfig = ConfigurationManager.LoadFirebaseConfiguration();
 
-                currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
-                    "Oculto" : "No configurado";
+                if (isFirebaseInfoVisible)
+                {
+                    AppLogger.LogInfo("Firebase info is currently visible, refreshing with actual values");
 
-                currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
-                    "Oculto" : "No configurado";
+                    currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
+                        firebaseConfig.DatabaseUrl : "No configurado";
 
-                currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
-                    "Oculto" : "No configurado";
+                    currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
+                        firebaseConfig.ProjectId : "No configurado";
+
+                    currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
+                        firebaseConfig.ApiKey : "No configurado";
+                }
+                else
+                {
+                    currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
+                        "Oculto" : "No configurado";
+
+                    currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
+                        "Oculto" : "No configurado";
+
+                    currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
+                        "Oculto" : "No configurado";
+                }
 
                 AppLogger.LogInfo("Firebase configuration labels refreshed successfully");
             }
