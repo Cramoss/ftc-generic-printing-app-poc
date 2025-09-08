@@ -39,7 +39,7 @@
             this.currentStoreNameLabel = new System.Windows.Forms.Label();
             this.currentCountryLabel = new System.Windows.Forms.Label();
             this.currentBusinessLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.configurarTotemLabel = new System.Windows.Forms.Label();
             this.cancelTotemConfgurationButton = new System.Windows.Forms.Button();
             this.cleanTotemConfigurationButton = new System.Windows.Forms.Button();
             this.editTotemConfigurationPanel.SuspendLayout();
@@ -181,15 +181,15 @@
             this.currentBusinessLabel.TabIndex = 2;
             this.currentBusinessLabel.Text = "Negocio:";
             // 
-            // label1
+            // configurarTotemLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
-            this.label1.Location = new System.Drawing.Point(6, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(180, 26);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "Configurar Totem";
+            this.configurarTotemLabel.AutoSize = true;
+            this.configurarTotemLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            this.configurarTotemLabel.Location = new System.Drawing.Point(6, 9);
+            this.configurarTotemLabel.Name = "configurarTotemLabel";
+            this.configurarTotemLabel.Size = new System.Drawing.Size(180, 26);
+            this.configurarTotemLabel.TabIndex = 12;
+            this.configurarTotemLabel.Text = "Configurar Totem";
             // 
             // cancelTotemConfgurationButton
             // 
@@ -219,11 +219,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.cancelTotemConfgurationButton;
             this.ClientSize = new System.Drawing.Size(470, 261);
             this.Controls.Add(this.cleanTotemConfigurationButton);
             this.Controls.Add(this.cancelTotemConfgurationButton);
             this.Controls.Add(this.saveTotemConfigurationButton);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.configurarTotemLabel);
             this.Controls.Add(this.editTotemConfigurationPanel);
             this.Name = "TotemConfiguration";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -243,7 +244,7 @@
         private System.Windows.Forms.ComboBox storeComboBox;
         private System.Windows.Forms.Button saveTotemConfigurationButton;
         private System.Windows.Forms.Panel editTotemConfigurationPanel;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label configurarTotemLabel;
         private System.Windows.Forms.Button cancelTotemConfgurationButton;
         private System.Windows.Forms.Button cleanTotemConfigurationButton;
         private System.Windows.Forms.TableLayoutPanel totemTableLayoutPanel;

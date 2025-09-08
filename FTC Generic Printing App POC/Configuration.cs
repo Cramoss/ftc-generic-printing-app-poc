@@ -12,16 +12,19 @@ namespace FTC_Generic_Printing_App_POC
 {
     public partial class Configuration : Form
     {
+        #region Fields
         private readonly ApiService apiService;
+        private bool isStoreApiInfoVisible = false;
+        private System.Windows.Forms.Timer storeApiInfoTimer;
+        #endregion
 
+        #region Initialization
         public Configuration()
         {
             apiService = new ApiService();
             InitializeComponent();
             LoadSavedConfiguration();
         }
-
-        #region Load configuration
 
         private void Configuration_Load(object sender, EventArgs e)
         {
@@ -39,10 +42,6 @@ namespace FTC_Generic_Printing_App_POC
                 RefreshStoresApiConfigurationLabels();
             }
         }
-
-        #endregion
-
-        #region Totem configuration
 
         private void LoadSavedConfiguration()
         {
@@ -71,7 +70,113 @@ namespace FTC_Generic_Printing_App_POC
                 currentStoreId.Text = "Error";
             }
         }
+        #endregion
 
+        #region Event Handlers
+        // Totem
+        private void editTotemConfigurationButton_Click(object sender, EventArgs e)
+        {
+            AppLogger.LogInfo("Opening Totem Configuration form");
+            TotemConfiguration totemConfigForm = new TotemConfiguration();
+            totemConfigForm.ShowDialog();
+
+            RefreshTotemConfigurationLabels();
+        }
+        private void refreshCurrentTotemConfigurationButton_Click(object sender, EventArgs e)
+        {
+            RefreshTotemConfigurationLabels();
+        }
+
+        // Stores API
+        private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            AppLogger.LogInfo("Opening Stores API Configuration panel");
+            StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
+            storeApiConfigForm.ShowDialog();
+        }
+
+        private void refreshCurrentStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            RefreshStoresApiConfigurationLabels();
+        }
+
+        private async void testStoresApiConnectivityButton_Click(object sender, EventArgs e)
+        {
+            TestStoresApiConnectivity();
+        }
+
+
+        private void showStoresApiInfoButton_Click(object sender, EventArgs e)
+        {
+            ShowStoresApiInfo();
+        }
+
+        // Firebase
+        private async void testFirebaseConnectivityButton_Click(object sender, EventArgs e)
+        {
+            TestFirebaseConnectivity();
+        }
+
+        // Printer
+        private void testTicketPrintButton_Click(object sender, EventArgs e)
+        {
+            TestPrinter();
+        }
+
+        // Network
+        private async void testNetworkConnectivityButton_Click(object sender, EventArgs e)
+        {
+            networkStatus.Text = "Probando...";
+            testNetworkConnectivityButton.Text = "Probando...";
+            testNetworkConnectivityButton.Enabled = false;
+
+            try
+            {
+                AppLogger.LogInfo("Starting network connectivity test");
+                using (var client = new System.Net.NetworkInformation.Ping())
+                {
+                    var reply = await Task.Run(() => client.Send("8.8.8.8", 3000));
+                    if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
+                    {
+                        networkStatus.Text = "ERROR";
+                        networkStatus.BackColor = Color.LightCoral;
+                        AppLogger.LogError("Network connectivity test failed");
+                        throw new Exception("Network connectivity test failed");
+                    }
+                    else
+                    {
+                        networkStatus.Text = "OK";
+                        networkStatus.BackColor = Color.LightGreen;
+                        AppLogger.LogInfo("Network connectivity test passed");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorDetails = ex.Message;
+                AppLogger.LogError("Connectivity test failed", ex);
+            }
+            finally
+            {
+                testNetworkConnectivityButton.Text = "Probar conectividad";
+                testNetworkConnectivityButton.Enabled = true;
+            }
+
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            CancelConfiguration();
+        }
+
+        private void exitConfigurationButton_Click(object sender, EventArgs e)
+        {
+            CancelConfiguration();
+        }
+        #endregion
+
+        #region Core Methods
         private void RefreshTotemConfigurationLabels()
         {
             try
@@ -96,37 +201,6 @@ namespace FTC_Generic_Printing_App_POC
                 currentStore.Text = "Error";
                 currentStoreId.Text = "Error";
             }
-        }
-
-
-        private void refreshCurrentTotemConfigurationButton_Click(object sender, EventArgs e)
-        {
-            RefreshTotemConfigurationLabels();
-        }
-
-        private void editTotemConfigurationButton_Click(object sender, EventArgs e)
-        {
-            AppLogger.LogInfo("Opening Totem Configuration form");
-            TotemConfiguration totemConfigForm = new TotemConfiguration();
-            totemConfigForm.ShowDialog();
-
-            RefreshTotemConfigurationLabels();
-        }
-
-        #endregion
-
-        #region Stores API configuration
-
-        private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
-        {
-            AppLogger.LogInfo("Opening Stores API Configuration panel");
-            StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
-            storeApiConfigForm.ShowDialog();
-        }
-
-        private void refreshCurrentStoresApiConfigurationButton_Click(object sender, EventArgs e)
-        {
-            RefreshStoresApiConfigurationLabels();
         }
 
         private void RefreshStoresApiConfigurationLabels()
@@ -161,19 +235,49 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private bool isStoreApiInfoVisible = false;
-        private System.Windows.Forms.Timer storeApiInfoTimer;
+        private async void TestStoresApiConnectivity()
+        {
+            storesApiStatus.Text = "Probando...";
+            testStoresApiConnectivityButton.Text = "Probando...";
+            testStoresApiConnectivityButton.Enabled = false;
+
+            try
+            {
+                AppLogger.LogInfo("Starting Store API connectivity test");
+                apiService.ReloadConfiguration();
+
+                string token = await apiService.GetAccessTokenAsync();
+                if (string.IsNullOrEmpty(token))
+                {
+                    throw new Exception("Store API returned empty token");
+                }
+                storesApiStatus.Text = "OK";
+                storesApiStatus.BackColor = Color.LightGreen;
+                AppLogger.LogInfo("Store API connectivity test passed");
+            }
+            catch (Exception ex)
+            {
+                storesApiStatus.Text = "ERROR";
+                storesApiStatus.BackColor = Color.LightCoral;
+                AppLogger.LogError("Store API connectivity test failed", ex);
+            }
+            finally
+            {
+                testStoresApiConnectivityButton.Text = "Probar conectividad";
+                testStoresApiConnectivityButton.Enabled = true;
+            }
+        }
 
         // TODO: Option to show full value (maybe increase label size??)
         // Note: Values shown are hidden again after 30 seconds.
         // Note 2: This button requires admin password verification.
-        private void showStoresApiInfo_Click(object sender, EventArgs e)
+        private void ShowStoresApiInfo()
         {
             if (isStoreApiInfoVisible)
             {
                 AppLogger.LogInfo("Hiding Store API sensitive information");
                 RefreshStoresApiConfigurationLabels();
-                showStoresApiInfo.Text = "Mostrar info";
+                showStoresApiInfoButton.Text = "Mostrar info";
                 isStoreApiInfoVisible = false;
 
                 // Stop and dispose timer for the admin password timeout
@@ -211,7 +315,7 @@ namespace FTC_Generic_Printing_App_POC
                         currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
                             storeApiConfig.ClientSecret : "No configurado";
 
-                        showStoresApiInfo.Text = "Ocultar info";
+                        showStoresApiInfoButton.Text = "Ocultar info";
                         isStoreApiInfoVisible = true;
 
                         // Clean up any existing timer
@@ -227,7 +331,7 @@ namespace FTC_Generic_Printing_App_POC
                         storeApiInfoTimer.Tick += (s, args) =>
                         {
                             RefreshStoresApiConfigurationLabels();
-                            showStoresApiInfo.Text = "Mostrar info";
+                            showStoresApiInfoButton.Text = "Mostrar info";
                             isStoreApiInfoVisible = false;
                             storeApiInfoTimer.Stop();
                             storeApiInfoTimer.Dispose();
@@ -247,44 +351,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private async void testStoresApiConnectivityButton_Click(object sender, EventArgs e)
-        {
-            storesApiStatus.Text = "Probando...";
-            testStoresApiConnectivityButton.Text = "Probando...";
-            testStoresApiConnectivityButton.Enabled = false;
-
-            try
-            {
-                AppLogger.LogInfo("Starting Store API connectivity test");
-                apiService.ReloadConfiguration();
-
-                string token = await apiService.GetAccessTokenAsync();
-                if (string.IsNullOrEmpty(token))
-                {
-                    throw new Exception("Store API returned empty token");
-                }
-                storesApiStatus.Text = "OK";
-                storesApiStatus.BackColor = Color.LightGreen;
-                AppLogger.LogInfo("Store API connectivity test passed");
-            }
-            catch (Exception ex)
-            {
-                storesApiStatus.Text = "ERROR";
-                storesApiStatus.BackColor = Color.LightCoral;
-                AppLogger.LogError("Store API connectivity test failed", ex);
-            }
-            finally
-            {
-                testStoresApiConnectivityButton.Text = "Probar conectividad";
-                testStoresApiConnectivityButton.Enabled = true;
-            }
-        }
-
-        #endregion
-
-        #region Firebase configuration
-
-        private async void testFirebaseConnectivityButton_Click(object sender, EventArgs e)
+        private async void TestFirebaseConnectivity()
         {
             firebaseStatus.Text = "Probando...";
             testFirebaseConnectivityButton.Text = "Probando...";
@@ -342,90 +409,17 @@ namespace FTC_Generic_Printing_App_POC
                 testFirebaseConnectivityButton.Enabled = true;
             }
         }
-        #endregion
 
-        #region Print configuration
-
-        // TODO: Implement printing test.
-        private void testTicketPrintButton_Click(object sender, EventArgs e)
+        private void TestPrinter()
         {
-            AppLogger.LogInfo("User clicked Test Ticket Print button");
-            try
-            {
-                AppLogger.LogPrintEvent("TEST", "Test ticket print requested by user");
-
-                // TODO: Call printing method
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Print test failed", ex);
-                MessageBox.Show("Error al imprimir: " + ex.Message, "Error de impresión",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // TODO: Implement test ticket printing.
         }
 
-        #endregion
-
-        #region Network configuration
-
-        private async void testNetworkConnectivityButton_Click(object sender, EventArgs e)
-        {
-            networkStatus.Text = "Probando...";
-            testNetworkConnectivityButton.Text = "Probando...";
-            testNetworkConnectivityButton.Enabled = false;
-
-            try
-            {
-                AppLogger.LogInfo("Starting network connectivity test");
-                using (var client = new System.Net.NetworkInformation.Ping())
-                {
-                    var reply = await Task.Run(() => client.Send("8.8.8.8", 3000));
-                    if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
-                    {
-                        networkStatus.Text = "ERROR";
-                        networkStatus.BackColor = Color.LightCoral;
-                        AppLogger.LogError("Network connectivity test failed");
-                        throw new Exception("Network connectivity test failed");
-                    }
-                    else
-                    {
-                        networkStatus.Text = "OK";
-                        networkStatus.BackColor = Color.LightGreen;
-                        AppLogger.LogInfo("Network connectivity test passed");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                string errorDetails = ex.Message;
-                AppLogger.LogError("Connectivity test failed", ex);
-            }
-            finally
-            {
-                testNetworkConnectivityButton.Text = "Probar conectividad";
-                testNetworkConnectivityButton.Enabled = true;
-            }
-
-        }
-
-        #endregion
-
-        #region Window management
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            e.Cancel = true;
-            this.Hide();
-            AppLogger.LogInfo("Configuration form hidden");
-        }
-
-        private void exitConfigurationButton_Click(object sender, EventArgs e)
+        private void CancelConfiguration()
         {
             this.Hide();
             AppLogger.LogInfo("Configuration form hidden");
         }
-
-
         #endregion
     }
 }

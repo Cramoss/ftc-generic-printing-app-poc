@@ -14,15 +14,49 @@ namespace FTC_Generic_Printing_App_POC
     // TODO: Hide icon from taskbar when form is open.
     public partial class StoreApiConfiguration : Form
     {
+        #region Fields
         private readonly ApiService apiService;
+        #endregion
 
+        #region Initialization
         public StoreApiConfiguration()
         {
             apiService = new ApiService();
             InitializeComponent();
         }
 
-        private void SaveStoresApiConfiguration()
+        private void StoresApiConfiguration_Load(object sender, EventArgs e)
+        {
+            this.ShowInTaskbar = false;
+            AppLogger.LogInfo("Stores API Configuration form opened");
+        }
+        #endregion
+
+        #region Event Handlers
+        private void saveStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            SaveConfiguration();
+            ClearForm();
+        }
+
+        private void cleanStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+        }
+
+        private void restoreDefaultStoreApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            RestoreDefaultConfiguration();
+        }
+
+        private void cancelStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        {
+            CancelConfiguration();
+        }
+        #endregion
+
+        #region Core Methods
+        private void SaveConfiguration()
         {
             try
             {
@@ -33,7 +67,7 @@ namespace FTC_Generic_Printing_App_POC
                 string storesApiClientId = storesApiClientIdTextBox.Text.Trim();
                 string storesApiClientSecret = storesApiClientSecretTextBox.Text.Trim();
 
-                // Required fields validation
+                // TODO: Improve or add more validations.
                 if (string.IsNullOrEmpty(storesApiUrl))
                 {
                     AppLogger.LogWarning("Validation failed: Stores API URL is empty");
@@ -90,7 +124,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void ResetEditStoresApiConfigurationPanel()
+        private void ClearForm()
         {
             try
             {
@@ -107,18 +141,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void saveStoresApiConfigurationButton_Click(object sender, EventArgs e)
-        {
-            SaveStoresApiConfiguration();
-            ResetEditStoresApiConfigurationPanel();
-        }
-
-        private void cleanStoresApiConfigurationButton_Click(object sender, EventArgs e)
-        {
-            ResetEditStoresApiConfigurationPanel();
-        }
-
-        private void restoreDefaultStoreApiConfigurationButton_Click(object sender, EventArgs e)
+        private void RestoreDefaultConfiguration()
         {
             try
             {
@@ -180,11 +203,19 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void cancelStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        private void CancelConfiguration()
         {
-            this.Hide();
-            ResetEditStoresApiConfigurationPanel();
-            AppLogger.LogInfo("Store API configuration form hidden and edit panel reset values");
+            try
+            {
+                this.Hide();
+                ClearForm();
+                AppLogger.LogInfo("Store API configuration form hidden and edit panel reset values");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error hiding Store API configuration form and resetting edit panel", ex);
+            }
         }
+        #endregion
     }
 }

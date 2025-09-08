@@ -11,20 +11,22 @@ using System.Windows.Forms.Design;
 
 namespace FTC_Generic_Printing_App_POC
 {
-    // TODO: Hide icon from taskbar when form is open.
     public partial class TotemConfiguration : Form
     {
+        #region Fields
         private readonly ApiService apiService;
         private List<Store> availableStores;
         private bool isLoadingStores = false;
+        #endregion
 
+        #region Initialization
         public TotemConfiguration()
         {
             InitializeComponent();
             apiService = new ApiService();
             availableStores = new List<Store>();
             PopulateComboBoxes();
-            ResetEditTotemConfigurationPanel();
+            ClearForm();
             SetupEventHandlers();
         }
 
@@ -141,8 +143,72 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogError("Error populating ComboBoxes", ex);
             }
         }
+        #endregion
 
-        private void SaveTotemConfiguration()
+        #region Event Handlers
+        private void SetupEventHandlers()
+        {
+            countryComboBox.SelectedIndexChanged += OnCountryChanged;
+            businessComboBox.SelectedIndexChanged += OnBusinessChanged;
+        }
+
+        private void OnCountryChanged(object sender, EventArgs e)
+        {
+            if (countryComboBox.SelectedIndex != -1)
+            {
+                businessComboBox.Enabled = true;
+                businessComboBox.SelectedIndex = -1;
+                ResetStoreComboBox();
+            }
+            else
+            {
+                // No country selected
+                businessComboBox.Enabled = false;
+                businessComboBox.SelectedIndex = -1;
+                ResetStoreComboBox();
+            }
+        }
+
+        private async void OnBusinessChanged(object sender, EventArgs e)
+        {
+            if (businessComboBox.SelectedIndex != -1 && countryComboBox.SelectedIndex != -1)
+            {
+                await LoadStoresAsync();
+            }
+            else
+            {
+                // Business not selected
+                ResetStoreComboBox();
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
+            AppLogger.LogInfo("Totem configuration form hidden");
+        }
+
+        private void saveTotemConfigurationButton_Click(object sender, EventArgs e)
+        {
+            SaveConfiguration();
+            ClearForm();
+        }
+
+        private void cleanTotemConfigurationButton_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+            AppLogger.LogInfo("Totem configuration form cleaned");
+        }
+
+        private void cancelTotemConfgurationButton_Click(object sender, EventArgs e)
+        {
+            CancelConfiguration();
+        }
+        #endregion
+
+        #region Core Methods
+        private void SaveConfiguration()
         {
             try
             {
@@ -156,7 +222,7 @@ namespace FTC_Generic_Printing_App_POC
                 string selectedStore = selectedStoreObj?.name ?? "";
                 string selectedStoreId = selectedStoreObj?.id ?? "";
 
-                // Required fields validation
+                // TODO: Improve or add more validations.
                 if (string.IsNullOrEmpty(idTotem))
                 {
                     AppLogger.LogWarning("Validation failed: ID Totem is empty");
@@ -215,7 +281,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void ResetEditTotemConfigurationPanel()
+        private void ClearForm()
         {
             try
             {
@@ -243,71 +309,20 @@ namespace FTC_Generic_Printing_App_POC
             storeComboBox.Enabled = false;
         }
 
-
-        #region Event handlers
-
-        private void SetupEventHandlers()
+        private void CancelConfiguration()
         {
-            countryComboBox.SelectedIndexChanged += OnCountryChanged;
-            businessComboBox.SelectedIndexChanged += OnBusinessChanged;
-        }
-
-        private void OnCountryChanged(object sender, EventArgs e)
-        {
-            if (countryComboBox.SelectedIndex != -1)
+            try
             {
-                businessComboBox.Enabled = true;
-                businessComboBox.SelectedIndex = -1;
-                ResetStoreComboBox();
+                this.Hide();
+                ClearForm();
+                AppLogger.LogInfo("Totem configuration form hidden and edit panel reset values");
             }
-            else
+            catch (Exception ex)
             {
-                // No country selected
-                businessComboBox.Enabled = false;
-                businessComboBox.SelectedIndex = -1;
-                ResetStoreComboBox();
+                AppLogger.LogError("Error hiding Totem configuration form and resetting edit panel", ex);
             }
         }
-
-        private async void OnBusinessChanged(object sender, EventArgs e)
-        {
-            if (businessComboBox.SelectedIndex != -1 && countryComboBox.SelectedIndex != -1)
-            {
-                await LoadStoresAsync();
-            }
-            else
-            {
-                // Business not selected
-                ResetStoreComboBox();
-            }
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            e.Cancel = true;
-            this.Hide();
-            AppLogger.LogInfo("Totem configuration form hidden");
-        }
-
         #endregion
-
-        private void saveTotemConfigurationButton_Click(object sender, EventArgs e)
-        {
-            SaveTotemConfiguration();
-            ResetEditTotemConfigurationPanel();
-        }
-
-        private void cancelTotemConfgurationButton_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            ResetEditTotemConfigurationPanel();
-            AppLogger.LogInfo("Totem configuration form hidden and edit panel reset values");
-        }
-
-        private void cleanTotemConfigurationButton_Click(object sender, EventArgs e)
-        {
-            ResetEditTotemConfigurationPanel();
-            AppLogger.LogInfo("Totem configuration form cleaned");
-        }
     }
 }
+

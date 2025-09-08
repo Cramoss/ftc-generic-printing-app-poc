@@ -45,7 +45,7 @@
             this.totemTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.refreshCurrentTotemConfigurationButton = new System.Windows.Forms.Button();
             this.storesApiPanel = new System.Windows.Forms.Panel();
-            this.showStoresApiInfo = new System.Windows.Forms.Button();
+            this.showStoresApiInfoButton = new System.Windows.Forms.Button();
             this.testStoresApiConnectivityButton = new System.Windows.Forms.Button();
             this.storesApiTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.storesApiStatus = new System.Windows.Forms.Label();
@@ -310,7 +310,7 @@
             // storesApiPanel
             // 
             this.storesApiPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.storesApiPanel.Controls.Add(this.showStoresApiInfo);
+            this.storesApiPanel.Controls.Add(this.showStoresApiInfoButton);
             this.storesApiPanel.Controls.Add(this.testStoresApiConnectivityButton);
             this.storesApiPanel.Controls.Add(this.storesApiTableLayoutPanel);
             this.storesApiPanel.Controls.Add(this.refreshCurrentStoresApiConfigurationButton);
@@ -320,17 +320,17 @@
             this.storesApiPanel.Size = new System.Drawing.Size(494, 159);
             this.storesApiPanel.TabIndex = 23;
             // 
-            // showStoresApiInfo
+            // showStoresApiInfoButton
             // 
-            this.showStoresApiInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.showStoresApiInfo.Location = new System.Drawing.Point(385, 89);
-            this.showStoresApiInfo.Margin = new System.Windows.Forms.Padding(2);
-            this.showStoresApiInfo.Name = "showStoresApiInfo";
-            this.showStoresApiInfo.Size = new System.Drawing.Size(100, 25);
-            this.showStoresApiInfo.TabIndex = 24;
-            this.showStoresApiInfo.Text = "Mostrar info";
-            this.showStoresApiInfo.UseVisualStyleBackColor = true;
-            this.showStoresApiInfo.Click += new System.EventHandler(this.showStoresApiInfo_Click);
+            this.showStoresApiInfoButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.showStoresApiInfoButton.Location = new System.Drawing.Point(385, 89);
+            this.showStoresApiInfoButton.Margin = new System.Windows.Forms.Padding(2);
+            this.showStoresApiInfoButton.Name = "showStoresApiInfoButton";
+            this.showStoresApiInfoButton.Size = new System.Drawing.Size(100, 25);
+            this.showStoresApiInfoButton.TabIndex = 24;
+            this.showStoresApiInfoButton.Text = "Mostrar info";
+            this.showStoresApiInfoButton.UseVisualStyleBackColor = true;
+            this.showStoresApiInfoButton.Click += new System.EventHandler(this.showStoresApiInfoButton_Click);
             // 
             // testStoresApiConnectivityButton
             // 
@@ -959,7 +959,7 @@
         private System.Windows.Forms.Label firebaseApiKeyLabel;
         private System.Windows.Forms.Button refreshCurrentFirebaseConfigurationButton;
         private System.Windows.Forms.Button editFirebaseConfigurationButton;
-        private System.Windows.Forms.Button showStoresApiInfo;
+        private System.Windows.Forms.Button showStoresApiInfoButton;
         private System.Windows.Forms.Button showFirebaseInfoButton;
         private System.Windows.Forms.Label printLabel;
         private System.Windows.Forms.Panel printerPanel;

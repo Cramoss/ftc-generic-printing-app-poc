@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.configurarStoresApiLabel = new System.Windows.Forms.Label();
             this.editStoresApiConfigurationPanel = new System.Windows.Forms.Panel();
             this.storesApiAuthUrlTextBox = new System.Windows.Forms.TextBox();
             this.storesApiClientSecretTextBox = new System.Windows.Forms.TextBox();
@@ -47,15 +47,15 @@
             this.storesApiTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // configurarStoresApiLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
-            this.label1.Location = new System.Drawing.Point(6, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(224, 26);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "Configurar Stores API";
+            this.configurarStoresApiLabel.AutoSize = true;
+            this.configurarStoresApiLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            this.configurarStoresApiLabel.Location = new System.Drawing.Point(6, 9);
+            this.configurarStoresApiLabel.Name = "configurarStoresApiLabel";
+            this.configurarStoresApiLabel.Size = new System.Drawing.Size(224, 26);
+            this.configurarStoresApiLabel.TabIndex = 13;
+            this.configurarStoresApiLabel.Text = "Configurar Stores API";
             // 
             // editStoresApiConfigurationPanel
             // 
@@ -236,7 +236,7 @@
             this.Controls.Add(this.cleanStoresApiConfigurationButton);
             this.Controls.Add(this.saveStoresApiConfigurationButton);
             this.Controls.Add(this.editStoresApiConfigurationPanel);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.configurarStoresApiLabel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "StoreApiConfiguration";
@@ -252,7 +252,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label configurarStoresApiLabel;
         private System.Windows.Forms.Panel editStoresApiConfigurationPanel;
         private System.Windows.Forms.TextBox storesApiClientSecretTextBox;
         private System.Windows.Forms.TextBox storesApiClientIdTextBox;
