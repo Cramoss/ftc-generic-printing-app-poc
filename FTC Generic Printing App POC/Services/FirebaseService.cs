@@ -8,7 +8,7 @@ using System.Configuration;
 
 namespace FTC_Generic_Printing_App_POC
 {
-    public class FirebaseManager
+    public class FirebaseService
     {
         #region Fields
         private FirebaseClient firebaseClient;
@@ -23,7 +23,7 @@ namespace FTC_Generic_Printing_App_POC
         #endregion
 
         #region Initialization
-        public FirebaseManager()
+        public FirebaseService()
         {
             var config = ConfigurationManager.LoadFirebaseConfiguration();
             firebaseUrl = config.DatabaseUrl;

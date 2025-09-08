@@ -14,7 +14,7 @@ namespace FTC_Generic_Printing_App_POC
     public partial class FirebaseConfiguration : Form
     {
         #region Fields
-        private FirebaseManager firebaseManager;
+        private FirebaseService firebaseManager;
         #endregion
 
         #region Initialization

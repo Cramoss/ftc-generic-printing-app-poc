@@ -70,51 +70,51 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiService.cs" />
-    <Compile Include="Configuration.cs">
+    <Compile Include="Services\StoresApiService.cs" />
+    <Compile Include="Forms\Configuration\Configuration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Configuration.Designer.cs">
+    <Compile Include="Forms\Configuration\Configuration.Designer.cs">
       <DependentUpon>Configuration.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigurationAdminPasswordPrompt.cs">
+    <Compile Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigurationAdminPasswordPrompt.Designer.cs">
+    <Compile Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.Designer.cs">
       <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfigurationManager.cs" />
-    <Compile Include="DefaultConfigKeys.cs" />
-    <Compile Include="FirebaseConfiguration.cs">
+    <Compile Include="Services\ConfigurationManager.cs" />
+    <Compile Include="Utils\DefaultConfigKeys.cs" />
+    <Compile Include="Forms\Configuration\FirebaseConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FirebaseConfiguration.Designer.cs">
+    <Compile Include="Forms\Configuration\FirebaseConfiguration.Designer.cs">
       <DependentUpon>FirebaseConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="FirebaseManager.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Services\FirebaseService.cs" />
+    <Compile Include="Utils\Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StoreApiConfiguration.cs">
+    <Compile Include="Forms\Configuration\StoreApiConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StoreApiConfiguration.Designer.cs">
+    <Compile Include="Forms\Configuration\StoreApiConfiguration.Designer.cs">
       <DependentUpon>StoreApiConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="TotemConfiguration.cs">
+    <Compile Include="Forms\Configuration\TotemConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TotemConfiguration.Designer.cs">
+    <Compile Include="Forms\Configuration\TotemConfiguration.Designer.cs">
       <DependentUpon>TotemConfiguration.cs</DependentUpon>
     </Compile>
-    <Compile Include="TrayApplicationContext.cs" />
-    <EmbeddedResource Include="Configuration.resx">
+    <Compile Include="Utils\TrayApplicationContext.cs" />
+    <EmbeddedResource Include="Forms\Configuration\Configuration.resx">
       <DependentUpon>Configuration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConfigurationAdminPasswordPrompt.resx">
+    <EmbeddedResource Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.resx">
       <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FirebaseConfiguration.resx">
+    <EmbeddedResource Include="Forms\Configuration\FirebaseConfiguration.resx">
       <DependentUpon>FirebaseConfiguration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -126,10 +126,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="StoreApiConfiguration.resx">
+    <EmbeddedResource Include="Forms\Configuration\StoreApiConfiguration.resx">
       <DependentUpon>StoreApiConfiguration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TotemConfiguration.resx">
+    <EmbeddedResource Include="Forms\Configuration\TotemConfiguration.resx">
       <DependentUpon>TotemConfiguration.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
@@ -145,6 +145,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

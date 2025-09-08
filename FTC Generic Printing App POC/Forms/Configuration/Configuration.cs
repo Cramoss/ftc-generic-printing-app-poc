@@ -13,7 +13,7 @@ namespace FTC_Generic_Printing_App_POC
     public partial class Configuration : Form
     {
         #region Fields
-        private readonly ApiService apiService;
+        private readonly StoresApiService apiService;
         private bool isStoreApiInfoVisible = false;
         private System.Windows.Forms.Timer storeApiInfoTimer;
         #endregion
@@ -21,7 +21,7 @@ namespace FTC_Generic_Printing_App_POC
         #region Initialization
         public Configuration()
         {
-            apiService = new ApiService();
+            apiService = new StoresApiService();
             InitializeComponent();
             LoadSavedConfiguration();
         }
@@ -357,12 +357,12 @@ namespace FTC_Generic_Printing_App_POC
             testFirebaseConnectivityButton.Text = "Probando...";
             testFirebaseConnectivityButton.Enabled = false;
 
-            FirebaseManager firebaseManager = null;
+            FirebaseService firebaseManager = null;
 
             try
             {
                 AppLogger.LogInfo("Starting Firebase connectivity tests");
-                firebaseManager = new FirebaseManager();
+                firebaseManager = new FirebaseService();
 
                 bool firebaseConnectionTest = await firebaseManager.TestConnectionAsync();
                 if (!firebaseConnectionTest)

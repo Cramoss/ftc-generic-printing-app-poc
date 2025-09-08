@@ -14,7 +14,7 @@ namespace FTC_Generic_Printing_App_POC
     public partial class TotemConfiguration : Form
     {
         #region Fields
-        private readonly ApiService apiService;
+        private readonly StoresApiService apiService;
         private List<Store> availableStores;
         private bool isLoadingStores = false;
         #endregion
@@ -23,7 +23,7 @@ namespace FTC_Generic_Printing_App_POC
         public TotemConfiguration()
         {
             InitializeComponent();
-            apiService = new ApiService();
+            apiService = new StoresApiService();
             availableStores = new List<Store>();
             PopulateComboBoxes();
             ClearForm();

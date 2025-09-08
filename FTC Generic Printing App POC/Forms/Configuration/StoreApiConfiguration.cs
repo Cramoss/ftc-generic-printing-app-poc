@@ -15,13 +15,13 @@ namespace FTC_Generic_Printing_App_POC
     public partial class StoreApiConfiguration : Form
     {
         #region Fields
-        private readonly ApiService apiService;
+        private readonly StoresApiService apiService;
         #endregion
 
         #region Initialization
         public StoreApiConfiguration()
         {
-            apiService = new ApiService();
+            apiService = new StoresApiService();
             InitializeComponent();
         }
 

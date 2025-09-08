@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace FTC_Generic_Printing_App_POC
 {
-    public class ApiService
+    public class StoresApiService
     {
         #region Fields
         private static readonly HttpClient httpClient = new HttpClient();
@@ -19,7 +19,7 @@ namespace FTC_Generic_Printing_App_POC
         #endregion
 
         #region Initialization
-        public ApiService()
+        public StoresApiService()
         {
             var config = ConfigurationManager.LoadStoresApiConfiguration();
 
