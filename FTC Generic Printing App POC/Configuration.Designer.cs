@@ -87,8 +87,6 @@
             this.networkPanel = new System.Windows.Forms.Panel();
             this.testNetworkConnectivityButton = new System.Windows.Forms.Button();
             this.networkTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.ipLabel = new System.Windows.Forms.Label();
-            this.currentIpLabel = new System.Windows.Forms.Label();
             this.networkStatusLabel = new System.Windows.Forms.Label();
             this.networkStatus = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
@@ -820,7 +818,7 @@
             this.networkPanel.Controls.Add(this.button5);
             this.networkPanel.Location = new System.Drawing.Point(20, 718);
             this.networkPanel.Name = "networkPanel";
-            this.networkPanel.Size = new System.Drawing.Size(492, 75);
+            this.networkPanel.Size = new System.Drawing.Size(492, 62);
             this.networkPanel.TabIndex = 27;
             // 
             // testNetworkConnectivityButton
@@ -841,49 +839,22 @@
             this.networkTableLayoutPanel.ColumnCount = 2;
             this.networkTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.networkTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.networkTableLayoutPanel.Controls.Add(this.ipLabel, 0, 0);
-            this.networkTableLayoutPanel.Controls.Add(this.currentIpLabel, 1, 0);
-            this.networkTableLayoutPanel.Controls.Add(this.networkStatusLabel, 0, 1);
-            this.networkTableLayoutPanel.Controls.Add(this.networkStatus, 1, 1);
-            this.networkTableLayoutPanel.Location = new System.Drawing.Point(3, 3);
+            this.networkTableLayoutPanel.Controls.Add(this.networkStatusLabel, 0, 0);
+            this.networkTableLayoutPanel.Controls.Add(this.networkStatus, 1, 0);
+            this.networkTableLayoutPanel.Location = new System.Drawing.Point(3, 14);
             this.networkTableLayoutPanel.Name = "networkTableLayoutPanel";
-            this.networkTableLayoutPanel.RowCount = 2;
-            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.networkTableLayoutPanel.Size = new System.Drawing.Size(375, 67);
+            this.networkTableLayoutPanel.RowCount = 1;
+            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.networkTableLayoutPanel.Size = new System.Drawing.Size(375, 33);
             this.networkTableLayoutPanel.TabIndex = 21;
-            // 
-            // ipLabel
-            // 
-            this.ipLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ipLabel.AutoSize = true;
-            this.ipLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ipLabel.Location = new System.Drawing.Point(5, 7);
-            this.ipLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.ipLabel.Name = "ipLabel";
-            this.ipLabel.Size = new System.Drawing.Size(28, 20);
-            this.ipLabel.TabIndex = 0;
-            this.ipLabel.Text = "IP:";
-            this.ipLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // currentIpLabel
-            // 
-            this.currentIpLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.currentIpLabel.AutoSize = true;
-            this.currentIpLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.currentIpLabel.Location = new System.Drawing.Point(117, 9);
-            this.currentIpLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.currentIpLabel.Name = "currentIpLabel";
-            this.currentIpLabel.Size = new System.Drawing.Size(20, 17);
-            this.currentIpLabel.TabIndex = 5;
-            this.currentIpLabel.Text = "...";
             // 
             // networkStatusLabel
             // 
             this.networkStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.networkStatusLabel.AutoSize = true;
             this.networkStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.networkStatusLabel.Location = new System.Drawing.Point(5, 39);
+            this.networkStatusLabel.Location = new System.Drawing.Point(5, 6);
             this.networkStatusLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.networkStatusLabel.Name = "networkStatusLabel";
             this.networkStatusLabel.Size = new System.Drawing.Size(60, 20);
@@ -895,7 +866,7 @@
             this.networkStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.networkStatus.AutoSize = true;
             this.networkStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.networkStatus.Location = new System.Drawing.Point(117, 41);
+            this.networkStatus.Location = new System.Drawing.Point(117, 8);
             this.networkStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.networkStatus.Name = "networkStatus";
             this.networkStatus.Size = new System.Drawing.Size(20, 17);
@@ -931,6 +902,7 @@
             this.Controls.Add(this.exitConfigurationButton);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Configuration";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Configuration";
             this.Load += new System.EventHandler(this.Configuration_Load);
             this.totemPanel.ResumeLayout(false);
@@ -1013,8 +985,6 @@
         private System.Windows.Forms.Panel networkPanel;
         private System.Windows.Forms.Button testNetworkConnectivityButton;
         private System.Windows.Forms.TableLayoutPanel networkTableLayoutPanel;
-        private System.Windows.Forms.Label ipLabel;
-        private System.Windows.Forms.Label currentIpLabel;
         private System.Windows.Forms.Label networkStatusLabel;
         private System.Windows.Forms.Label networkStatus;
         private System.Windows.Forms.Button button5;
