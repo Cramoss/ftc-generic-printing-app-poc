@@ -70,6 +70,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\PrinterService.cs" />
     <Compile Include="Services\StoresApiService.cs" />
     <Compile Include="Forms\Configuration\Configuration.cs">
       <SubType>Form</SubType>
@@ -84,6 +85,12 @@
       <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\ConfigurationManager.cs" />
+    <Compile Include="Services\TicketTemplateManager.cs" />
+    <Compile Include="Templates\BaseTicketTemplate.cs" />
+    <Compile Include="Interfaces\ITicketTemplate.cs" />
+    <Compile Include="Templates\CleveronTicketTemplate.cs" />
+    <Compile Include="Templates\PorcentajeTicketTemplate.cs" />
+    <Compile Include="Templates\TestTicketTemplate.cs" />
     <Compile Include="Utils\DefaultConfigKeys.cs" />
     <Compile Include="Forms\Configuration\FirebaseConfiguration.cs">
       <SubType>Form</SubType>
@@ -146,8 +153,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Templates\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -14,6 +14,7 @@ namespace FTC_Generic_Printing_App_POC
     {
         #region Fields
         private readonly StoresApiService apiService;
+        private readonly Services.PrinterService printerService;
         private bool isStoreApiInfoVisible = false;
         private bool isFirebaseInfoVisible = false;
         private System.Windows.Forms.Timer storeApiInfoTimer;
@@ -24,6 +25,7 @@ namespace FTC_Generic_Printing_App_POC
         public Configuration()
         {
             apiService = new StoresApiService();
+            printerService = new Services.PrinterService();
             InitializeComponent();
             LoadSavedConfiguration();
         }
@@ -576,7 +578,40 @@ namespace FTC_Generic_Printing_App_POC
 
         private void TestPrinter()
         {
-            // TODO: Implement test ticket printing.
+            AppLogger.LogInfo("Starting printer test");
+            testTicketPrintButton.Text = "Probando...";
+            testTicketPrintButton.Enabled = false;
+
+            try
+            {
+                string testTicketJson = @"{
+                    ""template"": ""test"",
+                    ""description"": ""Ticket de prueba""
+                }";
+
+                printerService.PrintTicketAsync(testTicketJson).Wait();
+
+                AppLogger.LogInfo("Printer test completed successfully");
+                MessageBox.Show(
+                    "Ticket de prueba enviado a la impresora correctamente.",
+                    "Prueba de Impresión",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Printer test failed", ex);
+                MessageBox.Show(
+                    $"Error al imprimir ticket de prueba: {ex.Message}",
+                    "Error de Impresión",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                testTicketPrintButton.Text = "Probar";
+                testTicketPrintButton.Enabled = true;
+            }
         }
 
         private void CancelConfiguration()
