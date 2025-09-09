@@ -25,6 +25,104 @@ namespace FTC_Generic_Printing_App_POC
         private const string KEY_FIREBASE_DATABASE_URL = "Firebase_DatabaseUrl";
         private const string KEY_FIREBASE_PROJECT_ID = "Firebase_ProjectId";
         private const string KEY_FIREBASE_API_KEY = "Firebase_ApiKey";
+
+        // Admin Password Key
+        private const string KEY_ADMIN_PASSWORD = "AdminPassword";
+        #endregion
+
+        #region Initialization
+        // Initializes the app.config file with default values from defaultConfig.xml
+        public static void InitializeConfiguration()
+        {
+            try
+            {
+                AppLogger.LogInfo("Initializing application configuration");
+
+                InitializeStoreApiConfiguration();
+                InitializeFirebaseConfiguration();
+                InitializeAdminPassword();
+
+                AppLogger.LogInfo("Application configuration initialization completed");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error initializing application configuration", ex);
+            }
+        }
+
+        private static void InitializeStoreApiConfiguration()
+        {
+            var config = LoadStoresApiConfiguration();
+
+            bool needsUpdate = string.IsNullOrEmpty(config.AuthUrl) ||
+                               string.IsNullOrEmpty(config.StoresUrl) ||
+                               string.IsNullOrEmpty(config.ClientId) ||
+                               string.IsNullOrEmpty(config.ClientSecret);
+
+            if (needsUpdate)
+            {
+                AppLogger.LogInfo("Store API configuration not found in app.config. Loading from default config file.");
+
+                string authUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
+                string storesUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_URL);
+                string clientId = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_ID);
+                string clientSecret = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_SECRET);
+
+                SaveStoresApiConfiguration(
+                    string.IsNullOrEmpty(config.AuthUrl) ? authUrl : config.AuthUrl,
+                    string.IsNullOrEmpty(config.StoresUrl) ? storesUrl : config.StoresUrl,
+                    string.IsNullOrEmpty(config.ClientId) ? clientId : config.ClientId,
+                    string.IsNullOrEmpty(config.ClientSecret) ? clientSecret : config.ClientSecret
+                );
+
+                AppLogger.LogInfo("Store API default configuration saved to app.config");
+            }
+        }
+
+        private static void InitializeFirebaseConfiguration()
+        {
+            var config = LoadFirebaseConfiguration();
+
+            bool needsUpdate = string.IsNullOrEmpty(config.DatabaseUrl) ||
+                               string.IsNullOrEmpty(config.ProjectId) ||
+                               string.IsNullOrEmpty(config.ApiKey);
+
+            if (needsUpdate)
+            {
+                AppLogger.LogInfo("Firebase configuration not found in app.config. Loading from default config file.");
+
+                string databaseUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_DB_URL);
+                string projectId = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_PROJECT_ID);
+                string apiKey = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_API_KEY);
+
+                SaveFirebaseConfiguration(
+                    string.IsNullOrEmpty(config.DatabaseUrl) ? databaseUrl : config.DatabaseUrl,
+                    string.IsNullOrEmpty(config.ProjectId) ? projectId : config.ProjectId,
+                    string.IsNullOrEmpty(config.ApiKey) ? apiKey : config.ApiKey
+                );
+
+                AppLogger.LogInfo("Firebase default configuration saved to app.config");
+            }
+        }
+
+        private static void InitializeAdminPassword()
+        {
+            string currentPassword = GetAppSetting(KEY_ADMIN_PASSWORD, null);
+
+            if (string.IsNullOrEmpty(currentPassword))
+            {
+                AppLogger.LogInfo("Admin password not found in app.config, loading from default config");
+
+                string defaultPassword = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_ADMIN_PASSWORD);
+
+                var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                UpdateOrAddSetting(configFile, KEY_ADMIN_PASSWORD, defaultPassword);
+                configFile.Save(ConfigurationSaveMode.Modified);
+                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+
+                AppLogger.LogInfo("Admin password default configuration saved to app.config");
+            }
+        }
         #endregion
 
         #region Core Methods
@@ -63,7 +161,6 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogInfo("Loading Stores API configuration...");
 
-                // Try to get settings from app.config
                 var config = new StoreApiConfig
                 {
                     AuthUrl = GetAppSetting(KEY_STOREAPI_AUTH_URL, ""),
@@ -71,19 +168,6 @@ namespace FTC_Generic_Printing_App_POC
                     ClientId = GetAppSetting(KEY_STOREAPI_CLIENT_ID, ""),
                     ClientSecret = GetAppSetting(KEY_STOREAPI_CLIENT_SECRET, "")
                 };
-
-                // If any values are empty, try to load from defaultConfig.xml
-                if (string.IsNullOrEmpty(config.AuthUrl))
-                    config.AuthUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
-
-                if (string.IsNullOrEmpty(config.StoresUrl))
-                    config.StoresUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_URL);
-
-                if (string.IsNullOrEmpty(config.ClientId))
-                    config.ClientId = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_ID);
-
-                if (string.IsNullOrEmpty(config.ClientSecret))
-                    config.ClientSecret = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_SECRET);
 
                 AppLogger.LogInfo("Stores API configuration loaded successfully");
                 return config;
@@ -101,7 +185,6 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogInfo("Loading Firebase configuration...");
 
-                // Try to get settings from app.config
                 var config = new FirebaseConfig
                 {
                     DatabaseUrl = GetAppSetting(KEY_FIREBASE_DATABASE_URL, ""),
@@ -109,16 +192,6 @@ namespace FTC_Generic_Printing_App_POC
                     ApiKey = GetAppSetting(KEY_FIREBASE_API_KEY, ""),
                     DocumentPath = "tickets" // Hardcoded for now
                 };
-
-                // If any values are empty, try to load from defaultConfig.xml
-                if (string.IsNullOrEmpty(config.DatabaseUrl))
-                    config.DatabaseUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_DB_URL);
-
-                if (string.IsNullOrEmpty(config.ProjectId))
-                    config.ProjectId = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_PROJECT_ID);
-
-                if (string.IsNullOrEmpty(config.ApiKey))
-                    config.ApiKey = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_API_KEY);
 
                 AppLogger.LogInfo("Firebase configuration loaded successfully");
                 return config;
@@ -130,7 +203,11 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        // Note: Not sure what this was made for. Maybe to load all configurations at once?
+        public static string GetAdminPassword()
+        {
+            return GetAppSetting(KEY_ADMIN_PASSWORD, "");
+        }
+
         public static ConfigurationData LoadConfiguration()
         {
             return LoadTotemConfiguration();
@@ -182,8 +259,7 @@ namespace FTC_Generic_Printing_App_POC
                 configFile.Save(ConfigurationSaveMode.Modified);
                 System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
-                // TODO: Log Store API settings
-                AppLogger.LogInfo("StoreApi configuration saved successfully");
+                AppLogger.LogInfo($"StoreApi configuration saved successfully. URL: {storesUrl}");
             }
             catch (Exception ex)
             {
@@ -211,6 +287,27 @@ namespace FTC_Generic_Printing_App_POC
             catch (Exception ex)
             {
                 AppLogger.LogError("Error saving Firebase configuration", ex);
+                throw;
+            }
+        }
+
+        public static void SaveAdminPassword(string password)
+        {
+            try
+            {
+                AppLogger.LogInfo("Saving admin password...");
+                var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+                UpdateOrAddSetting(configFile, KEY_ADMIN_PASSWORD, password);
+
+                configFile.Save(ConfigurationSaveMode.Modified);
+                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+
+                AppLogger.LogInfo("Admin password saved successfully");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error saving admin password", ex);
                 throw;
             }
         }

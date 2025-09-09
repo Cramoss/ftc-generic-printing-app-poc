@@ -11,8 +11,23 @@ namespace FTC_Generic_Printing_App_POC
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Start with tray application in the background instead of main visible window
-            Application.Run(new TrayApplicationContext());
+            try
+            {
+                AppLogger.LogInfo("Application starting");
+
+                ConfigurationManager.InitializeConfiguration();
+
+                Application.Run(new TrayApplicationContext());
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Unhandled exception in application", ex);
+                MessageBox.Show($"Error: {ex.Message}", "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                AppLogger.LogInfo("Application exiting");
+            }
         }
     }
 }

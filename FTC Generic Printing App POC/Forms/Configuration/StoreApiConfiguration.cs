@@ -105,8 +105,8 @@ namespace FTC_Generic_Printing_App_POC
                 }
 
                 ConfigurationManager.SaveStoresApiConfiguration(
-                    storesApiUrl,
                     storesApiAuthUrl,
+                    storesApiUrl,
                     storesApiClientId,
                     storesApiClientSecret
                 );
@@ -174,7 +174,7 @@ namespace FTC_Generic_Printing_App_POC
                         return;
                     }
 
-                    ConfigurationManager.SaveStoresApiConfiguration(storesUrl, authUrl, clientId, clientSecret);
+                    ConfigurationManager.SaveStoresApiConfiguration(authUrl, storesUrl, clientId, clientSecret);
 
                     apiService.ReloadConfiguration();
 
