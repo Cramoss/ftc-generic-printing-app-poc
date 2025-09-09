@@ -49,8 +49,8 @@ namespace FTC_Generic_Printing_App_POC.Templates
             AddDivider(commands);
             commands.Add(LF);
 
-            // Cut paper
-            commands.Add(ESC_CUT);
+            // Cut the paper
+            AddCutCommand(commands);
 
             return commands;
         }

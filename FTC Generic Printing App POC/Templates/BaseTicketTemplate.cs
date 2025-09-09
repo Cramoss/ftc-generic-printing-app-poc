@@ -19,6 +19,10 @@ namespace FTC_Generic_Printing_App_POC.Templates
         protected static readonly byte[] ESC_CUT = { 0x1D, 0x56, 0x41 };          // Cut paper
         protected static readonly byte[] LF = { 0x0A };                           // Line feed
         protected static readonly byte[] CR = { 0x0D };                           // Carriage return
+        protected static readonly byte[] ESC_FLUSH = { 0x1B, 0x64, 0x00 };        // Flush buffer
+        protected static readonly byte[] LF_MULTIPLE = { 0x1B, 0x64, 0x05 };      // Feed 5 lines
+        protected static readonly byte[] ESC_CUT_FULL = { 0x1D, 0x56, 0x00 };     // Full cut
+        protected static readonly byte[] ESC_CUT_PARTIAL = { 0x1D, 0x56, 0x01 };  // Partial cut
         #endregion
 
         public abstract string TemplateId { get; }
@@ -76,6 +80,23 @@ namespace FTC_Generic_Printing_App_POC.Templates
             {
                 return defaultValue;
             }
+        }
+
+        protected void AddCutCommand(List<byte[]> commands)
+        {
+            // Adds several line feeds to ensure paper is positioned correctly
+            commands.Add(LF);
+            commands.Add(LF);
+            commands.Add(LF);
+
+            // Some printers need flush before cut
+            commands.Add(ESC_FLUSH);
+
+            // Try partial cut which is more compatible with most printers
+            commands.Add(ESC_CUT_PARTIAL);
+
+            // Some printers need flush after cut as well
+            commands.Add(ESC_FLUSH);
         }
         #endregion
     }
