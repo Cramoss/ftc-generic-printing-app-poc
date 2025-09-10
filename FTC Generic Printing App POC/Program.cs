@@ -5,6 +5,8 @@ namespace FTC_Generic_Printing_App_POC
 {
     static class Program
     {
+        public static TrayApplicationContext TrayContext { get; private set; }
+        
         [STAThread]
         static void Main()
         {
@@ -34,10 +36,10 @@ namespace FTC_Generic_Printing_App_POC
                     AppLogger.LogWarning("Firebase listener not started: Invalid configuration");
                 }
 
-                var appContext = new TrayApplicationContext();
-                appContext.FirebaseService = firebaseService;
+                TrayContext = new TrayApplicationContext();
+                TrayContext.FirebaseService = firebaseService;
 
-                Application.Run(appContext);
+                Application.Run(TrayContext);
             }
             catch (Exception ex)
             {

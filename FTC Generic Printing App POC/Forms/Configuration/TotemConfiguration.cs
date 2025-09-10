@@ -269,6 +269,7 @@ namespace FTC_Generic_Printing_App_POC
                 };
 
                 ConfigurationManager.SaveTotemConfiguration(config);
+                NotifyFirebaseConfigurationChanged();
 
                 AppLogger.LogInfo($"Totem configuration saved with StoreId: {selectedStoreId}, Store: {selectedStore}");
                 this.Hide();
@@ -278,6 +279,23 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogError("Error saving Totem configuration", ex);
                 MessageBox.Show("Error al guardar configuración: " + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void NotifyFirebaseConfigurationChanged()
+        {
+            try
+            {
+                var trayContext = Program.TrayContext;
+                if (trayContext?.FirebaseService != null)
+                {
+                    AppLogger.LogInfo("Notifying Firebase service to reload configuration");
+                    trayContext.FirebaseService.ReloadTotemConfiguration();
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Failed to notify Firebase about configuration change", ex);
             }
         }
 
