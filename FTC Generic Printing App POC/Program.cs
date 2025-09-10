@@ -33,7 +33,7 @@ namespace FTC_Generic_Printing_App_POC
                 }
                 else
                 {
-                    AppLogger.LogWarning("Firebase listener not started: Invalid configuration");
+                    AppLogger.LogWarning("Firebase listener not started: Invalid Totem configuration");
                 }
 
                 TrayContext = new TrayApplicationContext();
