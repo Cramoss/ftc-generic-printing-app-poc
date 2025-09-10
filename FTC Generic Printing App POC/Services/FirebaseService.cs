@@ -17,7 +17,7 @@ namespace FTC_Generic_Printing_App_POC
         private string apiKey;
         private readonly String databaseDocumentParentPath = "tickets";
         private readonly String databaseDocumentTestingPath = "connection-test";
-        private ConfigurationData currentConfig;
+        private ConfigurationData currentTotemConfig;
         private bool isListening = false;
         private IDisposable currentSubscription;
         #endregion
@@ -39,13 +39,13 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                currentConfig = FTC_Generic_Printing_App_POC.ConfigurationManager.LoadConfiguration();
-                AppLogger.LogInfo($"Loaded current configuration. Totem: {currentConfig.IdTotem}, Store: {currentConfig.StoreId}");
+                currentTotemConfig = FTC_Generic_Printing_App_POC.ConfigurationManager.LoadTotemConfiguration();
+                AppLogger.LogInfo($"Loaded current Totem configuration. Totem: {currentTotemConfig.IdTotem}, Store: {currentTotemConfig.StoreId}");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error loading current configuration", ex);
-                currentConfig = new ConfigurationData();
+                AppLogger.LogError("Error loading current Totem configuration", ex);
+                currentTotemConfig = new ConfigurationData();
             }
         }
 
@@ -53,10 +53,10 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                var previousConfig = currentConfig;
+                var previousConfig = currentTotemConfig;
                 LoadCurrentConfiguration();
 
-                if (isListening && !ConfigurationEquals(previousConfig, currentConfig))
+                if (isListening && !ConfigurationEquals(previousConfig, currentTotemConfig))
                 {
                     AppLogger.LogInfo("Configuration changed. Restarting Firebase listener");
                     StopListening();
@@ -164,7 +164,7 @@ namespace FTC_Generic_Printing_App_POC
                 if (!IsConfigurationValid())
                 {
                     AppLogger.LogError("Cannot start Firebase listener. Configuration is invalid");
-                    throw new InvalidOperationException("Cannot start Firebase listener. Configuration is invalid");
+                    return;
                 }
 
                 string fullPath = BuildDocumentPath();
@@ -174,20 +174,34 @@ namespace FTC_Generic_Printing_App_POC
                     .Child(fullPath)
                     .AsObservable<Dictionary<string, object>>();
 
-                // TODO: Implement listener call on new ticket 
+                currentSubscription = observable.Subscribe(
+                    onNext: (firebaseEvent) =>
+                    {
+                        if (firebaseEvent != null && firebaseEvent.Object != null)
+                        {
+                            // Only process if this is a new ticket that was added
+                            if (firebaseEvent.EventType == Firebase.Database.Streaming.FirebaseEventType.InsertOrUpdate)
+                            {
+                                string key = firebaseEvent.Key;
+                                var data = firebaseEvent.Object;
 
-                //currentSubscription = observable.Subscribe(
-                //    onNext: (firebaseEvent) =>
-                //    {
-                //        OnFirebaseDataChanged(firebaseEvent);
-                //    },
-                //    onError: (error) =>
-                //    {
-                //        AppLogger.LogError("Firebase listener error", error);
-                //        isListening = false;
-                //        currentSubscription?.Dispose();
-                //    }
-                //);
+                                AppLogger.LogFirebaseEvent("NEW_TICKET",
+                                    $"New ticket detected: Key={key}, Data={JsonConvert.SerializeObject(data)}");
+
+                                // TODO: Process, map and print ticket
+                            }
+                        }
+                    },
+                    onError: (error) =>
+                    {
+                        AppLogger.LogError("Firebase listener error", error);
+                        isListening = false;
+                        currentSubscription?.Dispose();
+
+                        // Try to reconnect after delay
+                        Task.Delay(5000).ContinueWith(_ => StartListeningAsync());
+                    }
+                );
 
                 isListening = true;
                 AppLogger.LogFirebaseEvent("LISTENER_STARTED", $"Listening on path: {fullPath}");
@@ -404,7 +418,8 @@ namespace FTC_Generic_Printing_App_POC
                     throw new InvalidOperationException("Configuration is not valid for building Firebase path");
                 }
 
-                string path = $"{databaseDocumentParentPath}/{currentConfig.Country.ToLower()}/{currentConfig.Business.ToLower()}/{currentConfig.StoreId}/{currentConfig.IdTotem}";
+                string countryCode = MapCountryToCode(currentTotemConfig.Country);
+                string path = $"{databaseDocumentParentPath}/{countryCode}/{currentTotemConfig.Business.ToLower()}/{currentTotemConfig.StoreId}/{currentTotemConfig.IdTotem}";
                 AppLogger.LogInfo($"Built Firebase document path: {path}");
                 return path;
             }
@@ -414,21 +429,97 @@ namespace FTC_Generic_Printing_App_POC
                 throw;
             }
         }
+
+        private string MapCountryToCode(string country)
+        {
+            if (string.IsNullOrEmpty(country))
+                return "unknown";
+
+            string normalizedCountry = country.Trim().ToLower();
+
+            switch (normalizedCountry)
+            {
+                case "chile":
+                    return "cl";
+                case "peru":
+                case "perú":
+                    return "pe";
+                case "colombia":
+                    return "co";
+                default:
+                    if (normalizedCountry == "cl" || normalizedCountry == "pe" || normalizedCountry == "co")
+                        return normalizedCountry;
+
+                    AppLogger.LogWarning($"Unknown country format '{country}', using normalized value: {normalizedCountry}");
+                    return normalizedCountry;
+            }
+        }
         private bool IsConfigurationValid()
         {
-            return currentConfig != null &&
-                   !string.IsNullOrWhiteSpace(currentConfig.IdTotem) &&
-                   !string.IsNullOrWhiteSpace(currentConfig.Country) &&
-                   !string.IsNullOrWhiteSpace(currentConfig.Business) &&
-                   !string.IsNullOrWhiteSpace(currentConfig.StoreId);
+            if (currentTotemConfig == null)
+            {
+                AppLogger.LogError("Configuration validation failed: currentConfig is null");
+                return false;
+            }
+
+            bool isValid = !string.IsNullOrWhiteSpace(currentTotemConfig.IdTotem) &&
+                          !string.IsNullOrWhiteSpace(currentTotemConfig.Country) &&
+                          !string.IsNullOrWhiteSpace(currentTotemConfig.Business) &&
+                          !string.IsNullOrWhiteSpace(currentTotemConfig.StoreId);
+
+            if (!isValid)
+            {
+                AppLogger.LogError($"Configuration validation failed: IdTotem={currentTotemConfig.IdTotem ?? "null"}, " +
+                                  $"Country={currentTotemConfig.Country ?? "null"}, " +
+                                  $"Business={currentTotemConfig.Business ?? "null"}, " +
+                                  $"StoreId={currentTotemConfig.StoreId ?? "null"}");
+            }
+
+            return isValid;
         }
 
         public ConfigurationData GetCurrentConfiguration()
         {
-            return currentConfig;
+            return currentTotemConfig;
         }
         #endregion
 
         public bool IsListening => isListening;
+
+        /// Reloads the totem configuration and restarts the Firebase listener if needed
+        public void ReloadTotemConfiguration()
+        {
+            try
+            {
+                AppLogger.LogInfo("Reloading totem configuration...");
+                var previousConfig = currentTotemConfig;
+                LoadCurrentConfiguration();
+
+                AppLogger.LogInfo($"Reloaded totem configuration: " +
+                    $"IdTotem={currentTotemConfig?.IdTotem ?? "null"}, " +
+                    $"Country={currentTotemConfig?.Country ?? "null"}, " +
+                    $"Business={currentTotemConfig?.Business ?? "null"}, " +
+                    $"StoreId={currentTotemConfig?.StoreId ?? "null"}");
+
+                if (!ConfigurationEquals(previousConfig, currentTotemConfig))
+                {
+                    if (isListening)
+                    {
+                        AppLogger.LogInfo("Configuration changed. Restarting Firebase listener");
+                        StopListening();
+                    }
+
+                    if (IsConfigurationValid())
+                    {
+                        AppLogger.LogInfo("Starting Firebase listener with new configuration");
+                        Task.Run(() => StartListeningAsync());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error reloading totem configuration", ex);
+            }
+        }
     }
 }

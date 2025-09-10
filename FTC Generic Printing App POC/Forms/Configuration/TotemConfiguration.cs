@@ -66,7 +66,7 @@ namespace FTC_Generic_Printing_App_POC
                     }
 
                     // Try to select previously saved store
-                    var savedConfig = ConfigurationManager.LoadConfiguration();
+                    var savedConfig = ConfigurationManager.LoadTotemConfiguration();
                     if (!string.IsNullOrEmpty(savedConfig.StoreId))
                     {
                         var savedStore = availableStores.FirstOrDefault(s => s.id == savedConfig.StoreId);

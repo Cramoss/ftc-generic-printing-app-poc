@@ -15,9 +15,29 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogInfo("Application starting");
 
+                // Initialize configuration. Ensures default values are in app.config file.
                 ConfigurationManager.InitializeConfiguration();
 
-                Application.Run(new TrayApplicationContext());
+                FirebaseService firebaseService = new FirebaseService();
+
+                // Check if the configuration is valid before starting listener
+                var config = ConfigurationManager.LoadTotemConfiguration();
+                bool configValid = ConfigurationManager.IsConfigurationValid(config);
+
+                if (configValid)
+                {
+                    firebaseService.StartListeningAsync().Wait();
+                    AppLogger.LogInfo("Firebase listener started successfully");
+                }
+                else
+                {
+                    AppLogger.LogWarning("Firebase listener not started: Invalid configuration");
+                }
+
+                var appContext = new TrayApplicationContext();
+                appContext.FirebaseService = firebaseService;
+
+                Application.Run(appContext);
             }
             catch (Exception ex)
             {

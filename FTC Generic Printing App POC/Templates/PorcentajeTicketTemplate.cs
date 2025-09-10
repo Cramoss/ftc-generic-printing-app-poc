@@ -13,7 +13,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
         public override List<byte[]> GenerateTicketCommands(dynamic ticketData)
         {
             var commands = new List<byte[]>();
-            var config = ConfigurationManager.LoadConfiguration();
+            var config = ConfigurationManager.LoadTotemConfiguration();
 
             // Initialize printer
             commands.Add(ESC_INIT);

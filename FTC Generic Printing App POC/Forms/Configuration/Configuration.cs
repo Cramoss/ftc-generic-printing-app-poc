@@ -51,8 +51,8 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                AppLogger.LogInfo("Loading saved configuration..");
-                var config = ConfigurationManager.LoadConfiguration();
+                AppLogger.LogInfo("Loading saved Totem configuration..");
+                var config = ConfigurationManager.LoadTotemConfiguration();
 
                 currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
                 currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
@@ -206,7 +206,7 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                var config = ConfigurationManager.LoadConfiguration();
+                var config = ConfigurationManager.LoadTotemConfiguration();
 
                 currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
                 currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
@@ -621,7 +621,5 @@ namespace FTC_Generic_Printing_App_POC
         }
 
         #endregion
-
-
     }
 }

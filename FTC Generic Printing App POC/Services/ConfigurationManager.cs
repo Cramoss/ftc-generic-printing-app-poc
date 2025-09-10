@@ -208,11 +208,6 @@ namespace FTC_Generic_Printing_App_POC
             return GetAppSetting(KEY_ADMIN_PASSWORD, "");
         }
 
-        public static ConfigurationData LoadConfiguration()
-        {
-            return LoadTotemConfiguration();
-        }
-
         public static void SaveTotemConfiguration(ConfigurationData config)
         {
             try
@@ -327,7 +322,7 @@ namespace FTC_Generic_Printing_App_POC
                           !string.IsNullOrWhiteSpace(config.Store) &&
                           !string.IsNullOrWhiteSpace(config.StoreId);
 
-            AppLogger.LogInfo($"Configuration validation: {(isValid ? "VALID" : "INVALID")}");
+            AppLogger.LogInfo($"Totem configuration validation: {(isValid ? "VALID" : "INVALID")}. Maybe it is not set up yet.");
             return isValid;
         }
 

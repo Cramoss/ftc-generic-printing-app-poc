@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace FTC_Generic_Printing_App_POC
 {
@@ -69,27 +71,99 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        // TODO: Implement Firebase start listening.
-        // Note: This may get deleted since it is kind of redundant.
         private void StartListening()
         {
-            isListening = true;
-            trayMenu.Items[1].Text = "Finalizar escuchar";
-            trayIcon.Text = "FTC Generic Printing App - Escuchando";
+            try
+            {
+                if (FirebaseService != null && !FirebaseService.IsListening)
+                {
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await FirebaseService.StartListeningAsync();
 
-            ShowTrayMessage("Escuchando");
+                            if (configForm != null && !configForm.IsDisposed)
+                            {
+                                configForm.Invoke(new Action(() =>
+                                {
+                                    isListening = true;
+                                    trayMenu.Items[1].Text = "Finalizar escuchar";
+                                    trayIcon.Text = "FTC Generic Printing App - Escuchando";
+                                    ShowTrayMessage("Escuchando eventos en Firebase");
+                                }));
+                            }
+                            else
+                            {
+                                var syncContext = SynchronizationContext.Current;
+                                if (syncContext != null)
+                                {
+                                    syncContext.Post(_ =>
+                                    {
+                                        isListening = true;
+                                        trayMenu.Items[1].Text = "Finalizar escuchar";
+                                        trayIcon.Text = "FTC Generic Printing App - Escuchando";
+                                        ShowTrayMessage("Escuchando eventos en Firebase");
+                                    }, null);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            AppLogger.LogError("Error starting Firebase listener", ex);
+
+                            if (configForm != null && !configForm.IsDisposed)
+                            {
+                                configForm.Invoke(new Action(() =>
+                                {
+                                    ShowTrayMessage("Error al iniciar escucha en Firebase");
+                                }));
+                            }
+                            else
+                            {
+                                var syncContext = SynchronizationContext.Current;
+                                if (syncContext != null)
+                                {
+                                    syncContext.Post(_ => ShowTrayMessage("Error al iniciar escucha en Firebase"), null);
+                                }
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    isListening = true;
+                    trayMenu.Items[1].Text = "Finalizar escuchar";
+                    trayIcon.Text = "FTC Generic Printing App - Escuchando";
+                    ShowTrayMessage("Ya está escuchando eventos en Firebase");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error in StartListening", ex);
+                ShowTrayMessage("Error al iniciar escucha en Firebase");
+            }
         }
 
-
-        // TODO: Implement Firebase stop listening.
-        // Note: This may get deleted since it is kind of redundant.
         private void StopListening()
         {
-            isListening = false;
-            trayMenu.Items[1].Text = "Escuchar evento";
-            trayIcon.Text = "FTC Generic Printing App - Finalizado";
+            try
+            {
+                if (FirebaseService != null && FirebaseService.IsListening)
+                {
+                    FirebaseService.StopListening();
+                }
 
-            ShowTrayMessage("Escuchar evento finalizado");
+                isListening = false;
+                trayMenu.Items[1].Text = "Escuchar evento";
+                trayIcon.Text = "FTC Generic Printing App - Finalizado";
+                ShowTrayMessage("Escuchar evento finalizado");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error in StopListening", ex);
+                ShowTrayMessage("Error al finalizar escucha en Firebase");
+            }
         }
 
         private void ShowTrayMessage(string message)
@@ -99,12 +173,22 @@ namespace FTC_Generic_Printing_App_POC
 
         private void ExitApplication(object sender, EventArgs e)
         {
-            // Clean up
             trayIcon.Visible = false;
             trayIcon.Dispose();
 
             Application.Exit();
         }
         #endregion
+
+        public FirebaseService FirebaseService { get; set; }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                FirebaseService?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }
