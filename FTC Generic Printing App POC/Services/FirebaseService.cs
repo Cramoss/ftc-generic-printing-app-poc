@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using Firebase.Database;
-using Firebase.Database.Query;
-using Firebase.Database.Streaming;
+using FireSharp;
+using FireSharp.Config;
+using FireSharp.Interfaces;
+using FireSharp.Response;
 using Newtonsoft.Json;
 using System.Configuration;
 using System.Net.Http;
@@ -13,7 +15,7 @@ namespace FTC_Generic_Printing_App_POC
     public class FirebaseService : IDisposable
     {
         #region Fields
-        private FirebaseClient firebaseClient;
+        private IFirebaseClient firebaseClient;
         private string firebaseUrl;
         private string projectId;
         private string apiKey;
@@ -21,7 +23,8 @@ namespace FTC_Generic_Printing_App_POC
         private readonly string databaseDocumentTestingPath = "connection-test";
         private ConfigurationData currentTotemConfig;
         private bool isListening = false;
-        private IDisposable currentSubscription;
+        private EventStreamResponse currentEventStream;
+        private CancellationTokenSource cancellationTokenSource;
         #endregion
 
         #region Initialization
@@ -60,18 +63,23 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                firebaseClient = new FirebaseClient($"{firebaseUrl}?auth={apiKey}");
-                AppLogger.LogInfo($"Firebase client initialized with API key authentication");
+                IFirebaseConfig config = new FireSharp.Config.FirebaseConfig
+                {
+                    BasePath = firebaseUrl,
+                };
+
+                firebaseClient = new FirebaseClient(config);
+                AppLogger.LogInfo($"FireSharp client initialized");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error initializing Firebase client", ex);
+                AppLogger.LogError("Error initializing FireSharp client", ex);
                 throw;
             }
         }
         #endregion
 
-        #region Public Methods
+        #region Core Methods
         public void ReloadConfiguration()
         {
             try
@@ -87,7 +95,6 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        // Reloads the totem configuration and restarts the Firebase listener using the new Totem if needed
         public void ReloadTotemConfiguration()
         {
             try
@@ -140,36 +147,36 @@ namespace FTC_Generic_Printing_App_POC
                 }
 
                 string fullPath = BuildDocumentPath();
-                AppLogger.LogInfo($"Starting Firebase listener on path: {fullPath}");
+                AppLogger.LogInfo($"Starting FireSharp listener on path: {fullPath}");
 
-                // Pre-check path and create placeholder if needed
-                try
+                cancellationTokenSource = new CancellationTokenSource();
+
+                await Task.Run(async () =>
                 {
-                    if (!await CheckPathExistsAsync(fullPath))
+                    try
                     {
-                        await CreatePathPlaceholderAsync(fullPath);
+                        currentEventStream = await firebaseClient.OnAsync(fullPath,
+                            added: (sender, args, context) => HandleValueAdded(args, (string)context));
+
+                        isListening = true;
+                        AppLogger.LogFirebaseEvent("LISTENER_STARTED", $"FireSharp listening on path: {fullPath}");
+
+                        // Keep the listener alive
+                        while (!cancellationTokenSource.Token.IsCancellationRequested)
+                        {
+                            await Task.Delay(1000, cancellationTokenSource.Token);
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    AppLogger.LogWarning($"Path preparation error: {ex.Message}");
-                }
-
-                var observable = firebaseClient
-                    .Child(fullPath)
-                    .AsObservable<Dictionary<string, object>>();
-
-                currentSubscription = observable.Subscribe(
-                    firebaseEvent => HandleFirebaseEvent(firebaseEvent),
-                    error => HandleFirebaseError(error)
-                );
-
-                isListening = true;
-                AppLogger.LogFirebaseEvent("LISTENER_STARTED", $"Listening on path: {fullPath}");
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogError("Error in FireSharp listener", ex);
+                        isListening = false;
+                    }
+                });
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error starting Firebase listener", ex);
+                AppLogger.LogError("Error starting FireSharp listener", ex);
                 isListening = false;
                 throw;
             }
@@ -185,163 +192,53 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                currentSubscription?.Dispose();
-                currentSubscription = null;
+                cancellationTokenSource?.Cancel();
+                currentEventStream?.Dispose();
+                currentEventStream = null;
+                cancellationTokenSource = null;
 
                 isListening = false;
-                AppLogger.LogFirebaseEvent("LISTENER_STOPPED", "Firebase listener stopped");
+                AppLogger.LogFirebaseEvent("LISTENER_STOPPED", "FireSharp listener stopped");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error stopping Firebase listener", ex);
-            }
-        }
-
-        // Tests Firebase connection and its API key
-        public async Task<bool> TestConnectionAsync()
-        {
-            try
-            {
-                AppLogger.LogInfo("Testing Firebase connection...");
-
-                // Test REST API access
-                using (var httpClient = new HttpClient())
-                {
-                    var testUrl = $"{firebaseUrl}/{databaseDocumentTestingPath}.json?auth={apiKey}";
-                    var response = await httpClient.GetAsync(testUrl);
-
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        AppLogger.LogError($"Firebase REST API test failed: {response.StatusCode}");
-                        return false;
-                    }
-                }
-
-                // Test CRUD operations
-                var testPath = $"{databaseDocumentTestingPath}-{DateTime.Now.Ticks}";
-                var testData = new { timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), test = true };
-
-                await firebaseClient.Child(testPath).PutAsync(testData);
-                var result = await firebaseClient.Child(testPath).OnceSingleAsync<object>();
-
-                if (result == null)
-                {
-                    AppLogger.LogError("Firebase read test failed");
-                    return false;
-                }
-
-                await firebaseClient.Child(testPath).DeleteAsync();
-
-                AppLogger.LogInfo("Firebase connection test successful");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Firebase connection test failed", ex);
-                return false;
-            }
-        }
-
-        // Tests Firebase API key authentication
-        public async Task<bool> TestAuthenticationAsync()
-        {
-            try
-            {
-                AppLogger.LogInfo("Testing Firebase API key authentication...");
-
-                using (var httpClient = new HttpClient())
-                {
-                    var authTestUrl = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={apiKey}";
-                    var requestBody = new { returnSecureToken = false };
-                    var jsonContent = new StringContent(
-                        JsonConvert.SerializeObject(requestBody),
-                        System.Text.Encoding.UTF8,
-                        "application/json"
-                    );
-
-                    var response = await httpClient.PostAsync(authTestUrl, jsonContent);
-                    var responseContent = await response.Content.ReadAsStringAsync();
-
-                    // API key validation returns BadRequest with specific message when key is valid
-                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest &&
-                        !responseContent.Contains("API_KEY_INVALID") &&
-                        !responseContent.Contains("INVALID_API_KEY"))
-                    {
-                        AppLogger.LogInfo("Firebase API key appears valid");
-                        return true;
-                    }
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        AppLogger.LogInfo("Firebase API key authentication successful");
-                        return true;
-                    }
-
-                    AppLogger.LogError($"Firebase API key test failed: {response.StatusCode}");
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Firebase authentication test failed", ex);
-                return false;
-            }
-        }
-
-        // Tests if the configured document path exists and is accessible
-        public async Task<bool> TestDocumentPathAsync()
-        {
-            try
-            {
-                if (!IsTotemConfigurationValid())
-                {
-                    AppLogger.LogError("Cannot test document path. Configuration is invalid");
-                    return false;
-                }
-
-                string fullPath = BuildDocumentPath();
-                AppLogger.LogInfo($"Testing Firebase document path: {fullPath}");
-
-                using (var httpClient = new HttpClient())
-                {
-                    var testUrl = $"{firebaseUrl}/{fullPath}.json?auth={apiKey}";
-                    var response = await httpClient.GetAsync(testUrl);
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        AppLogger.LogError("Firebase path access error: Authentication failed");
-                        return false;
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound ||
-                            (response.IsSuccessStatusCode && (await response.Content.ReadAsStringAsync()) == "null"))
-                    {
-                        AppLogger.LogInfo($"Firebase document path '{fullPath}' does not exist yet.");
-                        return true;
-                    }
-                    else if (!response.IsSuccessStatusCode)
-                    {
-                        AppLogger.LogError($"Firebase path check failed: {response.StatusCode}");
-                        return false;
-                    }
-
-                    AppLogger.LogInfo($"Firebase document path '{fullPath}' exists and is accessible");
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Firebase document path test failed", ex);
-                return false;
+                AppLogger.LogError("Error stopping FireSharp listener", ex);
             }
         }
 
         public void Dispose()
         {
             StopListening();
-            firebaseClient?.Dispose();
             AppLogger.LogInfo("FirebaseManager disposed");
         }
 
+        private void HandleValueAdded(FireSharp.EventStreaming.ValueAddedEventArgs args, string context)
+        {
+            try
+            {
+                AppLogger.LogFirebaseEvent("NEW_DATA_DETECTED", "Validating data..");
+
+                if (!string.IsNullOrEmpty(args.Data) && args.Data != "null")
+                {
+                    // Parse and process the new ticket
+                    //var ticketData = JsonConvert.DeserializeObject<Dictionary<string, object>>(args.Data);
+
+                    AppLogger.LogFirebaseEvent("NEW_TICKET",
+                        $"New ticket detected at path: {args.Path}, Data: {args.Data}");
+
+                    // TODO: Process, map and print ticket
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError($"Error handling value added event", ex);
+            }
+        }
+
+        public bool IsListening => isListening;
+        #endregion
+
+        #region Helper Methods
         public string BuildDocumentPath()
         {
             if (!IsTotemConfigurationValid())
@@ -358,125 +255,6 @@ namespace FTC_Generic_Printing_App_POC
         public ConfigurationData GetCurrentConfiguration()
         {
             return currentTotemConfig;
-        }
-
-        public bool IsListening => isListening;
-        #endregion
-
-        #region Private Methods
-        private void HandleFirebaseEvent(FirebaseEvent<Dictionary<string, object>> firebaseEvent)
-        {
-            try
-            {
-                // Log ALL events for debugging
-                AppLogger.LogFirebaseEvent("FIREBASE_EVENT",
-                    $"Event Type: {firebaseEvent.EventType}, Key: {firebaseEvent.Key}, " +
-                    $"Object is null: {firebaseEvent.Object == null}");
-
-                if (firebaseEvent?.Object != null)
-                {
-                    string key = firebaseEvent.Key;
-                    var data = firebaseEvent.Object;
-
-                    AppLogger.LogFirebaseEvent($"FIREBASE_{firebaseEvent.EventType}",
-                        $"Key={key}, Data={JsonConvert.SerializeObject(data)}");
-
-                    // Handle different event types
-                    switch (firebaseEvent.EventType)
-                    {
-                        case FirebaseEventType.InsertOrUpdate:
-                            AppLogger.LogFirebaseEvent("NEW_TICKET",
-                                $"New ticket detected: Key={key}, Data={JsonConvert.SerializeObject(data)}");
-                            // TODO: Process, map and print ticket
-                            break;
-
-                        case FirebaseEventType.Delete:
-                            AppLogger.LogFirebaseEvent("TICKET_DELETED", $"Ticket deleted: Key={key}");
-                            break;
-                    }
-                }
-                else if (firebaseEvent != null)
-                {
-                    // Initial event might have null object
-                    AppLogger.LogFirebaseEvent("FIREBASE_INITIAL",
-                        $"Initial event or empty path - EventType: {firebaseEvent.EventType}, Key: {firebaseEvent.Key}");
-                }
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError($"Error handling Firebase event", ex);
-            }
-        }
-
-        private void HandleFirebaseError(Exception error)
-        {
-            string errorMessage = "Firebase listener error";
-
-            if (error is Firebase.Database.FirebaseException fbEx &&
-                fbEx.InnerException is HttpRequestException httpEx)
-            {
-                if (httpEx.Message.Contains("401"))
-                    errorMessage = "Firebase authentication error: Invalid API key or insufficient permissions";
-                else if (httpEx.Message.Contains("403"))
-                    errorMessage = "Firebase authorization error: Insufficient permissions to access this path";
-                else if (httpEx.Message.Contains("404"))
-                    errorMessage = "Firebase path does not exist yet";
-                else
-                    errorMessage = $"Firebase HTTP error: {httpEx.Message}";
-            }
-
-            AppLogger.LogError(errorMessage, error);
-            isListening = false;
-            currentSubscription?.Dispose();
-        }
-
-        private async Task<bool> CheckPathExistsAsync(string path)
-        {
-            try
-            {
-                using (var httpClient = new HttpClient())
-                {
-                    var testUrl = $"{firebaseUrl}/{path}.json?auth={apiKey}";
-                    var response = await httpClient.GetAsync(testUrl);
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                        return false;
-
-                    if (!response.IsSuccessStatusCode)
-                        return false;
-
-                    var content = await response.Content.ReadAsStringAsync();
-                    return content != "null";
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task CreatePathPlaceholderAsync(string path)
-        {
-            try
-            {
-                AppLogger.LogInfo($"Creating placeholder for path: {path}");
-
-                var placeholder = new Dictionary<string, object>
-                {
-                    ["_placeholder"] = new
-                    {
-                        created = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                        info = "Path created automatically to enable Firebase listener"
-                    }
-                };
-
-                await firebaseClient.Child(path).PutAsync(placeholder);
-                AppLogger.LogInfo("Path placeholder created successfully");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogWarning($"Could not create path placeholder: {ex.Message}");
-            }
         }
 
         private bool IsTotemConfigurationValid()
@@ -524,6 +302,132 @@ namespace FTC_Generic_Printing_App_POC
                         return normalizedCountry;
 
                     return normalizedCountry;
+            }
+        }
+
+
+        #endregion
+
+        #region Test methods
+        public async Task<bool> TestAuthenticationAsync()
+        {
+            try
+            {
+                AppLogger.LogInfo("Testing Firebase API key authentication...");
+
+                using (var httpClient = new HttpClient())
+                {
+                    var authTestUrl = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={apiKey}";
+                    var requestBody = new { returnSecureToken = false };
+                    var jsonContent = new StringContent(
+                        JsonConvert.SerializeObject(requestBody),
+                        System.Text.Encoding.UTF8,
+                        "application/json"
+                    );
+
+                    var response = await httpClient.PostAsync(authTestUrl, jsonContent);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest &&
+                        !responseContent.Contains("API_KEY_INVALID") &&
+                        !responseContent.Contains("INVALID_API_KEY"))
+                    {
+                        AppLogger.LogInfo("Firebase API key appears valid");
+                        return true;
+                    }
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        AppLogger.LogInfo("Firebase API key authentication successful");
+                        return true;
+                    }
+
+                    AppLogger.LogError($"Firebase API key test failed: {response.StatusCode}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Firebase authentication test failed", ex);
+                return false;
+            }
+        }
+
+        public async Task<bool> TestConnectionAsync()
+        {
+            try
+            {
+                AppLogger.LogInfo("Testing FireSharp connection...");
+
+                var testPath = $"{databaseDocumentTestingPath}-{DateTime.Now.Ticks}";
+                var testData = new { timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(), test = true };
+
+                // Write
+                var setResponse = await firebaseClient.SetAsync(testPath, testData);
+                if (setResponse == null || setResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    AppLogger.LogError("FireSharp write test failed");
+                    return false;
+                }
+
+                // Read
+                var getResponse = await firebaseClient.GetAsync(testPath);
+                if (getResponse == null || getResponse.Body == "null")
+                {
+                    AppLogger.LogError("FireSharp read test failed");
+                    return false;
+                }
+
+                AppLogger.LogInfo("FireSharp connection test successful");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("FireSharp connection test failed", ex);
+                return false;
+            }
+        }
+
+        public async Task<bool> TestDocumentPathAsync()
+        {
+            try
+            {
+                if (!IsTotemConfigurationValid())
+                {
+                    AppLogger.LogError("Cannot test document path. Configuration is invalid");
+                    return false;
+                }
+
+                string fullPath = BuildDocumentPath();
+                AppLogger.LogInfo($"Testing FireSharp document path: {fullPath}");
+
+                var response = await firebaseClient.GetAsync(fullPath);
+
+                if (response == null)
+                {
+                    AppLogger.LogError("FireSharp path check failed: null response");
+                    return false;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound || response.Body == "null")
+                {
+                    AppLogger.LogInfo($"Firebase document path '{fullPath}' does not exist yet (this is OK)");
+                    return true;
+                }
+
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    AppLogger.LogError($"FireSharp path check failed: {response.StatusCode}");
+                    return false;
+                }
+
+                AppLogger.LogInfo($"Firebase document path '{fullPath}' exists and is accessible");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Firebase document path test failed", ex);
+                return false;
             }
         }
         #endregion
