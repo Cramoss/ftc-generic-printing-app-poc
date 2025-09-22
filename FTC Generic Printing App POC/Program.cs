@@ -32,8 +32,7 @@ namespace FTC_Generic_Printing_App_POC
 
                 if (configValid)
                 {
-                    await FirebaseListenerManager.Instance.StartListeningAsync();
-                    AppLogger.LogInfo("Firebase listener started successfully");
+                    FirebaseListenerManager.Instance.StartListeningAsync();
                 }
                 else
                 {
