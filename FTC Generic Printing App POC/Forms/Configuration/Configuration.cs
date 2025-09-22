@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -32,26 +33,12 @@ namespace FTC_Generic_Printing_App_POC
 
         private void Configuration_Load(object sender, EventArgs e)
         {
-            this.ShowInTaskbar = false;
+            this.ShowInTaskbar = true;
             AppLogger.LogInfo("Configuration form opened");
 
-            StopFirebaseListener();
-        }
-
-        private void StopFirebaseListener()
-        {
-            try
+            if (FirebaseListenerManager.Instance.IsListening)
             {
-                var trayContext = Program.TrayContext;
-                if (trayContext?.FirebaseService != null)
-                {
-                    AppLogger.LogInfo("Stopping Firebase listener while configuration form is open");
-                    trayContext.FirebaseService.StopListening();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error stopping Firebase listener", ex);
+                FirebaseListenerManager.Instance.StopListening();
             }
         }
 
@@ -61,11 +48,10 @@ namespace FTC_Generic_Printing_App_POC
 
             if (value)
             {
-                var trayContext = Program.TrayContext;
-                if (trayContext?.FirebaseService != null && trayContext.FirebaseService.IsListening)
+                if (FirebaseListenerManager.Instance.IsListening)
                 {
                     AppLogger.LogInfo("Stopping Firebase listener while configuration form is open");
-                    trayContext.FirebaseService.StopListening();
+                    FirebaseListenerManager.Instance.StopListening();
                 }
 
                 RefreshTotemConfigurationLabels();
@@ -92,7 +78,7 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogError("Error loading configuration into the form", ex);
 
-                // TODO: Use constant ERROR
+                // TODO: Use constant ERROR label
                 currentTotemId.Text = "Error";
                 currentCountry.Text = "Error";
                 currentBusiness.Text = "Error";
@@ -645,23 +631,25 @@ namespace FTC_Generic_Printing_App_POC
             this.Hide();
             AppLogger.LogInfo("Configuration form hidden");
 
-            // Restart the Firebase listener
-            var trayContext = Program.TrayContext;
-            if (trayContext?.FirebaseService != null)
+            if (!FirebaseListenerManager.Instance.IsListening)
             {
-                AppLogger.LogInfo("Restarting Firebase listener after configuration form closed");
+                AppLogger.LogInfo("Starting Firebase listener after configuration form closed");
+
+                // Task.Run to avoid blocking the UI thread
                 Task.Run(async () =>
                 {
                     try
                     {
-                        await trayContext.FirebaseService.StartListeningAsync();
+                        await FirebaseListenerManager.Instance.StartListeningAsync();
+                        AppLogger.LogInfo("Firebase listener started successfully after form closed");
                     }
                     catch (Exception ex)
                     {
-                        AppLogger.LogError("Error starting Firebase listener", ex);
+                        AppLogger.LogError("Error starting Firebase listener after form closed", ex);
                     }
                 });
             }
+
         }
         #endregion
     }

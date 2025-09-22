@@ -90,6 +90,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Manager\FirebaseListenerManager.cs" />
+    <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\PrinterService.cs" />
     <Compile Include="Services\StoresApiService.cs" />
     <Compile Include="Forms\Configuration\Configuration.cs">
@@ -105,7 +107,7 @@
       <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\ConfigurationManager.cs" />
-    <Compile Include="Services\DocumentTemplateManager.cs" />
+    <Compile Include="Manager\DocumentTemplateManager.cs" />
     <Compile Include="Templates\BaseDocumentTemplate.cs" />
     <Compile Include="Interfaces\IDocumentTemplate.cs" />
     <Compile Include="Templates\CleveronDocumentTemplate.cs" />

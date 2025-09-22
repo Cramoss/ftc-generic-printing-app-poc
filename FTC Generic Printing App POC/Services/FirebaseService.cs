@@ -36,7 +36,7 @@ namespace FTC_Generic_Printing_App_POC
             LoadFirebaseSettings();
             LoadCurrentConfiguration();
             InitializeFirebase();
-            AppLogger.LogInfo($"FirebaseManager initialized for project: {projectId}");
+            AppLogger.LogInfo($"Firebase initialized for project: {projectId}");
         }
 
         private void LoadFirebaseSettings()
@@ -120,7 +120,6 @@ namespace FTC_Generic_Printing_App_POC
                         StopListening();
                     }
 
-                    // Only start the listener if explicitly requested
                     if (autoStartListener && IsTotemConfigurationValid())
                     {
                         AppLogger.LogInfo("Starting Firebase listener with new configuration");
@@ -207,10 +206,8 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                // Set the flag first to prevent race conditions
                 isListening = false;
 
-                // Then cancel the token and dispose resources
                 try
                 {
                     cancellationTokenSource?.Cancel();
@@ -256,7 +253,7 @@ namespace FTC_Generic_Printing_App_POC
 
                 if (string.IsNullOrEmpty(rootId))
                 {
-                    AppLogger.LogWarning("Skipping new entry due to invalid path format. Skipping.");
+                    AppLogger.LogWarning("Skipping new entry due to invalid path format. Skipping");
                     return;
                 }
 
@@ -284,7 +281,7 @@ namespace FTC_Generic_Printing_App_POC
                         var documentResponse = await firebaseClient.GetAsync(documentPath);
                         if (documentResponse == null || documentResponse.Body == "null" || string.IsNullOrEmpty(documentResponse.Body))
                         {
-                            AppLogger.LogWarning("Document is incomplete. Skipping.");
+                            AppLogger.LogWarning("Document is incomplete. Skipping");
                             return;
                         }
 
@@ -309,7 +306,7 @@ namespace FTC_Generic_Printing_App_POC
                         if (hasRequiredFields)
                         {
                             await ProcessEntry(rootId, documentData);
-                            AppLogger.LogInfo($"Finished document {rootId} processing.");
+                            AppLogger.LogInfo($"Finished document {rootId} processing");
                         }
                     }
                     catch (Exception ex)

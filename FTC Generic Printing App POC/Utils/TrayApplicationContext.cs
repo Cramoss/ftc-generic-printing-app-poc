@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Services;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Threading.Tasks;
-using System.Threading;
 
 namespace FTC_Generic_Printing_App_POC
 {
@@ -12,14 +12,14 @@ namespace FTC_Generic_Printing_App_POC
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
         private Configuration configForm;
-        private bool isListening = false;
-        private FirebaseService _firebaseService;
         #endregion
 
         #region Initialization
         public TrayApplicationContext()
         {
             InitializeTrayIcon();
+            NotificationService.Initialize(trayIcon);
+            FirebaseListenerManager.Instance.ListeningStateChanged += OnListeningStateChanged;
         }
 
         private void InitializeTrayIcon()
@@ -46,7 +46,29 @@ namespace FTC_Generic_Printing_App_POC
         }
         #endregion
 
-        #region Core Methods
+        #region Event Handlers
+        private void OnListeningStateChanged(object sender, bool isListening)
+        {
+            try
+            {
+                AppLogger.LogInfo($"Received listening state changed event: {isListening}");
+
+                // Forces UI updates happen on the UI thread
+                if (trayMenu.InvokeRequired)
+                {
+                    trayMenu.BeginInvoke(new Action(() => UpdateTrayUI(isListening)));
+                }
+                else
+                {
+                    UpdateTrayUI(isListening);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error in OnListeningStateChanged", ex);
+            }
+        }
+
         private void ShowConfiguration(object sender, EventArgs e)
         {
             if (configForm == null || configForm.IsDisposed)
@@ -59,139 +81,44 @@ namespace FTC_Generic_Printing_App_POC
             configForm.BringToFront();
         }
 
-        private void ToggleListening(object sender, EventArgs e)
+        private async void ToggleListening(object sender, EventArgs e)
         {
-            if (isListening)
+            if (FirebaseListenerManager.Instance.IsListening)
             {
-                StopListening();
+                FirebaseListenerManager.Instance.StopListening();
             }
             else
             {
-                StartListening();
+                await FirebaseListenerManager.Instance.StartListeningAsync();
             }
         }
 
-        private void StartListening()
+        private void UpdateTrayUI(bool isListening)
         {
             try
             {
-                if (FirebaseService != null && !FirebaseService.IsListening)
+                AppLogger.LogInfo($"Updating tray UI for listening state: {isListening}");
+
+                if (isListening)
                 {
-                    // Check if the totem configuration is set up correctly
-                    bool canStartListening = false;
-                    try
-                    {
-                        FirebaseService.BuildDocumentPath();
-                        canStartListening = true;
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        ShowTrayMessage("No se puede iniciar la escucha: Configuración de totem inválida");
-                        return;
-                    }
-
-                    if (canStartListening)
-                    {
-                        Task.Run(async () =>
-                        {
-                            try
-                            {
-                                await FirebaseService.StartListeningAsync();
-
-                                if (FirebaseService.IsListening)
-                                {
-                                    if (configForm != null && !configForm.IsDisposed)
-                                    {
-                                        configForm.Invoke(new Action(() =>
-                                        {
-                                            isListening = true;
-                                            trayMenu.Items[1].Text = "Finalizar escuchar";
-                                            trayIcon.Text = "FTC Generic Printing App - Escuchando";
-                                            ShowTrayMessage("Escuchando eventos en Firebase");
-                                        }));
-                                    }
-                                    else
-                                    {
-                                        var syncContext = SynchronizationContext.Current;
-                                        if (syncContext != null)
-                                        {
-                                            syncContext.Post(_ =>
-                                            {
-                                                isListening = true;
-                                                trayMenu.Items[1].Text = "Finalizar escuchar";
-                                                trayIcon.Text = "FTC Generic Printing App - Escuchando";
-                                                ShowTrayMessage("Escuchando eventos en Firebase");
-                                            }, null);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    ShowTrayMessage("No se pudo iniciar la escucha en Firebase");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                AppLogger.LogError("Error starting Firebase listener", ex);
-
-                                if (configForm != null && !configForm.IsDisposed)
-                                {
-                                    configForm.Invoke(new Action(() =>
-                                    {
-                                        ShowTrayMessage("Error al iniciar escucha en Firebase");
-                                    }));
-                                }
-                                else
-                                {
-                                    var syncContext = SynchronizationContext.Current;
-                                    if (syncContext != null)
-                                    {
-                                        syncContext.Post(_ => ShowTrayMessage("Error al iniciar escucha en Firebase"), null);
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-                else if (FirebaseService != null && FirebaseService.IsListening)
-                {
-                    isListening = true;
                     trayMenu.Items[1].Text = "Finalizar escuchar";
                     trayIcon.Text = "FTC Generic Printing App - Escuchando";
-                    ShowTrayMessage("Ya está escuchando eventos en Firebase");
                 }
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error in StartListening", ex);
-                ShowTrayMessage("Error al iniciar escucha en Firebase");
-            }
-        }
-
-        private void StopListening()
-        {
-            try
-            {
-                if (FirebaseService != null && FirebaseService.IsListening)
+                else
                 {
-                    FirebaseService.StopListening();
+                    trayMenu.Items[1].Text = "Escuchar evento";
+                    trayIcon.Text = "FTC Generic Printing App - Finalizado";
                 }
 
-                isListening = false;
-                trayMenu.Items[1].Text = "Escuchar evento";
-                trayIcon.Text = "FTC Generic Printing App - Finalizado";
-                ShowTrayMessage("Escuchar evento finalizado");
+                // Force a refresh of the tray menu
+                trayMenu.Refresh();
+
+                AppLogger.LogInfo($"Updated tray UI for listening state: {isListening}");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error in StopListening", ex);
-                ShowTrayMessage("Error al finalizar escucha en Firebase");
+                AppLogger.LogError("Error in UpdateTrayUI", ex);
             }
-        }
-
-        private void ShowTrayMessage(string message)
-        {
-            trayIcon.ShowBalloonTip(2000, "FTC Printing App", message, ToolTipIcon.Info);
         }
 
         private void ExitApplication(object sender, EventArgs e)
@@ -205,21 +132,12 @@ namespace FTC_Generic_Printing_App_POC
 
         public FirebaseService FirebaseService
         {
-            get => _firebaseService;
             set
             {
-                _firebaseService = value;
+                FirebaseListenerManager.Instance.Initialize(value);
 
-                // Update UI based on current FirebaseService state
-                if (_firebaseService != null && _firebaseService.IsListening)
-                {
-                    isListening = true;
-                    if (trayMenu != null && trayMenu.Items.Count > 1)
-                    {
-                        trayMenu.Items[1].Text = "Finalizar escuchar";
-                        trayIcon.Text = "FTC Generic Printing App - Escuchando";
-                    }
-                }
+                // Updates the UI based on current Firebase state
+                UpdateTrayUI(FirebaseListenerManager.Instance.IsListening);
             }
         }
 
@@ -227,7 +145,9 @@ namespace FTC_Generic_Printing_App_POC
         {
             if (disposing)
             {
-                FirebaseService?.Dispose();
+                // Unsubscribe from event
+                FirebaseListenerManager.Instance.ListeningStateChanged -= OnListeningStateChanged;
+                trayIcon?.Dispose();
             }
             base.Dispose(disposing);
         }

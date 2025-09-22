@@ -79,7 +79,7 @@ namespace FTC_Generic_Printing_App_POC.Services
                 catch (Exception ex)
                 {
                     AppLogger.LogError("Failed to get default printer name", ex);
-                    throw new InvalidOperationException("No default printer is configured on this system.", ex);
+                    throw new InvalidOperationException("No default printer is configured on this system", ex);
                 }
             }
             else
@@ -88,7 +88,6 @@ namespace FTC_Generic_Printing_App_POC.Services
                 AppLogger.LogInfo($"Using specified printer: {this.printerName}");
             }
 
-            // Create template manager
             templateManager = new DocumentTemplateManager();
         }
 
@@ -97,7 +96,7 @@ namespace FTC_Generic_Printing_App_POC.Services
             PrinterSettings settings = new PrinterSettings();
             if (string.IsNullOrEmpty(settings.PrinterName))
             {
-                throw new InvalidOperationException("No default printer is configured on this system.");
+                throw new InvalidOperationException("No default printer is configured on this system");
             }
             return settings.PrinterName;
         }
@@ -161,7 +160,7 @@ namespace FTC_Generic_Printing_App_POC.Services
                 }
                 else
                 {
-                    throw new Exception($"Failed to open printer '{printerName}'. Check if it is connected and turned on.");
+                    throw new Exception($"Failed to open printer '{printerName}'. Check if it is connected and turned on");
                 }
             }
             catch (Exception ex)
@@ -191,7 +190,6 @@ namespace FTC_Generic_Printing_App_POC.Services
                     // Nothing to dispose currently
                 }
 
-                // Clean up unmanaged resources if any
                 isDisposed = true;
             }
         }

@@ -38,7 +38,7 @@ namespace FTC_Generic_Printing_App_POC.Services
 
                 if (!templates.TryGetValue(templateType, out var template))
                 {
-                    AppLogger.LogError($"Template '{templateType}' not found. Unable to process document.");
+                    AppLogger.LogError($"Template '{templateType}' not found. Unable to process document");
                     return new List<byte[]>();
                 }
 

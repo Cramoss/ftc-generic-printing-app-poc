@@ -32,40 +32,6 @@ namespace FTC_Generic_Printing_App_POC
         #endregion
 
         #region Core Methods
-        private string LoadConfigurationWithFallback(string key, string defaultKeyName)
-        {
-            string value = System.Configuration.ConfigurationManager.AppSettings[key];
-
-            if (string.IsNullOrEmpty(value))
-            {
-                try
-                {
-                    string defaultConfigPath = System.IO.Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        "defaultConfig.xml");
-
-                    if (System.IO.File.Exists(defaultConfigPath))
-                    {
-                        var configXml = new System.Xml.XmlDocument();
-                        configXml.Load(defaultConfigPath);
-
-                        var node = configXml.SelectSingleNode($"//appSettings/add[@key='{defaultKeyName}']");
-                        if (node != null)
-                        {
-                            value = node.Attributes["value"]?.Value;
-                            AppLogger.LogInfo($"Loaded default value for {key} from defaultConfig.xml");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    AppLogger.LogWarning($"Could not load default value for {key} from defaultConfig.xml: {ex.Message}");
-                }
-            }
-
-            return value ?? string.Empty;
-        }
-
         public void ReloadConfiguration()
         {
             try

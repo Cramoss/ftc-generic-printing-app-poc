@@ -135,7 +135,7 @@ namespace FTC_Generic_Printing_App_POC
                 DialogResult result = MessageBox.Show(
                     "¿Está seguro que desea restaurar la configuración de Firebase a los valores predeterminados?" +
                     Environment.NewLine + Environment.NewLine +
-                    "Los valores actuales serán reemplazados por los valores predeterminados del archivo defaultConfig.xml.",
+                    "Los valores actuales serán reemplazados por los valores predeterminados del archivo defaultConfig.xml",
                     "Confirmar restauración",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
@@ -151,7 +151,7 @@ namespace FTC_Generic_Printing_App_POC
                     {
                         AppLogger.LogWarning("Some default Firebase configuration values were not found in defaultConfig.xml");
                         MessageBox.Show(
-                            "Algunos valores predeterminados no fueron encontrados en el archivo defaultConfig.xml.",
+                            "Algunos valores predeterminados no fueron encontrados en el archivo defaultConfig.xml",
                             "Error de restauración",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);

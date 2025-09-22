@@ -165,7 +165,7 @@ namespace FTC_Generic_Printing_App_POC
                     if (string.IsNullOrEmpty(authUrl) || string.IsNullOrEmpty(storesUrl) ||
                         string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
                     {
-                        AppLogger.LogWarning("Some default Store API configuration values were not found.");
+                        AppLogger.LogWarning("Some default Store API configuration values were not found");
                         MessageBox.Show(
                             "Algunos valores predeterminados no fueron encontrados en el archivo de configuración predeterminada.",
                             "Error de restauración",

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FTC_Generic_Printing_App_POC
@@ -6,9 +8,9 @@ namespace FTC_Generic_Printing_App_POC
     static class Program
     {
         public static TrayApplicationContext TrayContext { get; private set; }
-        
+
         [STAThread]
-        static void Main()
+        static async Task Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -21,23 +23,23 @@ namespace FTC_Generic_Printing_App_POC
                 ConfigurationManager.InitializeConfiguration();
 
                 FirebaseService firebaseService = new FirebaseService();
+                FirebaseListenerManager.Instance.Initialize(firebaseService);
 
-                // Check if the configuration is valid before starting listener
+                TrayContext = new TrayApplicationContext();
+                TrayContext.FirebaseService = firebaseService;
+
                 var config = ConfigurationManager.LoadTotemConfiguration();
                 bool configValid = ConfigurationManager.IsConfigurationValid(config);
 
                 if (configValid)
                 {
-                    firebaseService.StartListeningAsync().Wait();
+                    await FirebaseListenerManager.Instance.StartListeningAsync();
                     AppLogger.LogInfo("Firebase listener started successfully");
                 }
                 else
                 {
                     AppLogger.LogWarning("Firebase listener not started: Invalid Totem configuration");
                 }
-
-                TrayContext = new TrayApplicationContext();
-                TrayContext.FirebaseService = firebaseService;
 
                 Application.Run(TrayContext);
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -286,13 +287,8 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                var trayContext = Program.TrayContext;
-                if (trayContext?.FirebaseService != null)
-                {
-                    AppLogger.LogInfo("Notifying Firebase service to reload configuration without starting listener");
-                    // Prevent automatic listener start
-                    trayContext.FirebaseService.ReloadTotemConfiguration(false);
-                }
+                AppLogger.LogInfo("Reloading Firebase configuration");
+                FirebaseListenerManager.Instance.ReloadConfiguration(false);
             }
             catch (Exception ex)
             {

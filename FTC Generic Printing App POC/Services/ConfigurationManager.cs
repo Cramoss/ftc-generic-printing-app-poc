@@ -61,7 +61,7 @@ namespace FTC_Generic_Printing_App_POC
 
             if (needsUpdate)
             {
-                AppLogger.LogInfo("Store API configuration not found in app.config. Loading from default config file.");
+                AppLogger.LogInfo("Store API configuration not found in app.config. Loading from default config file");
 
                 string authUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
                 string storesUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_URL);
@@ -89,7 +89,7 @@ namespace FTC_Generic_Printing_App_POC
 
             if (needsUpdate)
             {
-                AppLogger.LogInfo("Firebase configuration not found in app.config. Loading from default config file.");
+                AppLogger.LogInfo("Firebase configuration not found in app.config. Loading from default config file");
 
                 string databaseUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_DB_URL);
                 string projectId = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_PROJECT_ID);
@@ -322,7 +322,7 @@ namespace FTC_Generic_Printing_App_POC
                           !string.IsNullOrWhiteSpace(config.Store) &&
                           !string.IsNullOrWhiteSpace(config.StoreId);
 
-            AppLogger.LogInfo($"Totem configuration validation: {(isValid ? "VALID" : "INVALID")}. Maybe it is not set up yet.");
+            AppLogger.LogInfo($"Totem configuration validation: {(isValid ? "VALID" : "INVALID")}. Maybe it is not set up yet");
             return isValid;
         }
 
