@@ -26,6 +26,9 @@ namespace FTC_Generic_Printing_App_POC
         private bool isListening = false;
         private EventStreamResponse currentEventStream;
         private CancellationTokenSource cancellationTokenSource;
+        // Add this field to track processed document IDs
+        private readonly HashSet<string> processedDocumentIds = new HashSet<string>();
+        private readonly object lockObject = new object();
         #endregion
 
         #region Initialization
@@ -198,6 +201,12 @@ namespace FTC_Generic_Printing_App_POC
                 currentEventStream = null;
                 cancellationTokenSource = null;
 
+                // Clear the processed document IDs when stopping the listener
+                lock (lockObject)
+                {
+                    processedDocumentIds.Clear();
+                }
+
                 isListening = false;
                 AppLogger.LogFirebaseEvent("LISTENER_STOPPED", "FireSharp listener stopped");
             }
@@ -217,7 +226,6 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                // Extract the entry ID
                 string pathParts = args.Path.TrimStart('/');
                 string[] pathSegments = pathParts.Split('/');
                 string rootId = pathSegments.FirstOrDefault();
@@ -225,6 +233,20 @@ namespace FTC_Generic_Printing_App_POC
                 if (string.IsNullOrEmpty(rootId))
                 {
                     AppLogger.LogWarning("Skipping new entry due to invalid path format. Skipping.");
+                    return;
+                }
+
+                // Since the FireSharp library doesn't provide a method to just detect single new entries,
+                // the added event may trigger multiple times for the same current document.
+                // For this, we need to check if we've already processed this document in the current session.
+                bool isNewDocument;
+                lock (lockObject)
+                {
+                    isNewDocument = processedDocumentIds.Add(rootId);
+                }
+
+                if (!isNewDocument)
+                {
                     return;
                 }
 
@@ -262,7 +284,7 @@ namespace FTC_Generic_Printing_App_POC
 
                         if (hasRequiredFields)
                         {
-                            await ProcessFullDocument(rootId, documentData);
+                            await ProcessEntry(rootId, documentData);
                         }
                     }
                     catch (Exception ex)
@@ -277,12 +299,12 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private async Task ProcessFullDocument(string rootId, Dictionary<string, object> documentData)
+        private async Task ProcessEntry(string rootId, Dictionary<string, object> documentData)
         {
             try
             {
-                AppLogger.LogFirebaseEvent("NEW_TICKET",
-                    $"Processing full ticket with ID: {rootId}, Data: {JsonConvert.SerializeObject(documentData)}");
+                AppLogger.LogFirebaseEvent("NEW_DOCUMENT",
+                    $"Processing full document with ID: {rootId}, Data: {JsonConvert.SerializeObject(documentData)}");
 
                 // TODO: Process the complete ticket data here
 
