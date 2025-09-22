@@ -10,7 +10,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
     {
         public override string TemplateId => "porcentaje";
 
-        public override List<byte[]> GenerateDocumentCommands(dynamic documentData)
+        public override List<byte[]> GenerateDocumentCommands(dynamic document)
         {
             var commands = new List<byte[]>();
             var config = ConfigurationManager.LoadTotemConfiguration();

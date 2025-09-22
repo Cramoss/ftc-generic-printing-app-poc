@@ -17,23 +17,20 @@ namespace FTC_Generic_Printing_App_POC.Services
             templates = new Dictionary<string, IDocumentTemplate>(StringComparer.OrdinalIgnoreCase)
             {
                 { "test", new TestDocumentTemplate() },
-                { "order", new PorcentajeDocumentTemplate() }
+                { "porcentaje", new PorcentajeDocumentTemplate() }
             };
 
             AppLogger.LogInfo($"DocumentTemplateManager initialized with {templates.Count} templates");
         }
 
-        // Process a document JSON string and return POS commands for the appropriate template
-        public async Task<List<byte[]>> ProcessDocumentAsync(string documentJson)
+        public async Task<List<byte[]>> ProcessDocumentAsync(dynamic document)
         {
             try
             {
-                AppLogger.LogInfo("Processing document and JSON deserialization");
-
-                dynamic documentData = JsonConvert.DeserializeObject<dynamic>(documentJson);
+                AppLogger.LogInfo("Processing document from parsed data");
 
                 // Get template type from the document data
-                string templateType = documentData?.template?.ToString() ?? "test";
+                string templateType = document?.template?.ToString() ?? "test";
                 AppLogger.LogInfo($"Detected document template type: {templateType}");
 
                 if (!templates.TryGetValue(templateType, out var template))
@@ -42,14 +39,14 @@ namespace FTC_Generic_Printing_App_POC.Services
                     return new List<byte[]>();
                 }
 
-                var commands = template.GenerateDocumentCommands(documentData);
+                var commands = template.GenerateDocumentCommands(document);
 
                 AppLogger.LogInfo($"Document processed successfully with template: {template.TemplateId}");
                 return commands;
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error processing document", ex);
+                AppLogger.LogError("Error processing document data", ex);
                 throw;
             }
         }

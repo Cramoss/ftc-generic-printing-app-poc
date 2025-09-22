@@ -108,13 +108,31 @@ namespace FTC_Generic_Printing_App_POC.Services
             return printerName;
         }
 
-        public async Task PrintDocumentAsync(string documentJson)
+        public async Task PrintDocumentAsync(string document)
         {
             try
             {
                 AppLogger.LogPrintEvent("PRINT", "Starting print job on printer: " + printerName);
 
-                List<byte[]> commands = await templateManager.ProcessDocumentAsync(documentJson);
+                List<byte[]> commands = await templateManager.ProcessDocumentAsync(document);
+                SendBytesToPrinter(commands);
+
+                AppLogger.LogPrintEvent("PRINT", "Print job completed successfully");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error printing document", ex);
+                throw;
+            }
+        }
+
+        public async Task PrintDocumentAsync(dynamic document)
+        {
+            try
+            {
+                AppLogger.LogPrintEvent("PRINT", "Starting print job on printer: " + printerName);
+
+                List<byte[]> commands = await templateManager.ProcessDocumentAsync(document);
                 SendBytesToPrinter(commands);
 
                 AppLogger.LogPrintEvent("PRINT", "Print job completed successfully");

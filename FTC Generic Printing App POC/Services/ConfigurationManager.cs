@@ -330,7 +330,7 @@ namespace FTC_Generic_Printing_App_POC
                           !string.IsNullOrWhiteSpace(config.Store) &&
                           !string.IsNullOrWhiteSpace(config.StoreId);
 
-            AppLogger.LogInfo($"Totem configuration validation: {(isValid ? "VALID" : "INVALID")}. Maybe it is not set up yet");
+            AppLogger.LogInfo($"Totem configuration validation: {(isValid ? "VALID" : "INVALID")}");
             return isValid;
         }
 

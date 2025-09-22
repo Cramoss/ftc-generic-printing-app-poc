@@ -10,6 +10,6 @@ namespace FTC_Generic_Printing_App_POC.Templates
         string TemplateId { get; }
 
         // Generate ESC/POS commands for printing based on document data
-        List<byte[]> GenerateDocumentCommands(dynamic documentData);
+        List<byte[]> GenerateDocumentCommands(dynamic document);
     }
 }

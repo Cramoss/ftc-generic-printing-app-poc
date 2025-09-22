@@ -596,12 +596,12 @@ namespace FTC_Generic_Printing_App_POC
 
             try
             {
-                string testDocumentJson = @"{
+                string testDocument = @"{
                     ""template"": ""test"",
                     ""description"": ""Documento de prueba""
                 }";
 
-                printerService.PrintDocumentAsync(testDocumentJson).Wait();
+                printerService.PrintDocumentAsync(testDocument).Wait();
 
                 AppLogger.LogInfo("Printer test completed successfully");
                 MessageBox.Show(

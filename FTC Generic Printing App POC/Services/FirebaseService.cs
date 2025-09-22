@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Configuration;
 using System.Net.Http;
 using System.Linq;
+using FTC_Generic_Printing_App_POC.Services;
 
 namespace FTC_Generic_Printing_App_POC
 {
@@ -28,6 +29,7 @@ namespace FTC_Generic_Printing_App_POC
         private CancellationTokenSource cancellationTokenSource;
         private readonly HashSet<string> processedDocumentIds = new HashSet<string>();
         private readonly object lockObject = new object();
+        private PrinterService printerService;
         #endregion
 
         #region Initialization
@@ -36,6 +38,7 @@ namespace FTC_Generic_Printing_App_POC
             LoadFirebaseSettings();
             LoadCurrentConfiguration();
             InitializeFirebase();
+            printerService = new PrinterService();
             AppLogger.LogInfo($"Firebase initialized for project: {projectId}");
         }
 
@@ -239,6 +242,7 @@ namespace FTC_Generic_Printing_App_POC
         public void Dispose()
         {
             DisconnectListener();
+            printerService?.Dispose();
             AppLogger.LogInfo("FirebaseManager disposed");
         }
 
@@ -284,27 +288,27 @@ namespace FTC_Generic_Printing_App_POC
                             return;
                         }
 
-                        var documentData = JsonConvert.DeserializeObject<Dictionary<string, object>>(documentResponse.Body);
-                        if (documentData == null)
+                        var document = JsonConvert.DeserializeObject<Dictionary<string, object>>(documentResponse.Body);
+                        if (document == null)
                         {
                             return;
                         }
 
                         // Check if the document has already been processed
-                        if (documentData.ContainsKey("readed") && documentData["readed"] != null)
+                        if (document.ContainsKey("readed") && document["readed"] != null)
                         {
-                            if (documentData["readed"].ToString().Equals("true", StringComparison.OrdinalIgnoreCase))
+                            if (document["readed"].ToString().Equals("true", StringComparison.OrdinalIgnoreCase))
                             {
                                 return;
                             }
                         }
 
                         // Check if this document has required fields to be considered a new entry
-                        bool hasRequiredFields = documentData.ContainsKey("data") && documentData.ContainsKey("id_plantilla");
+                        bool hasRequiredFields = document.ContainsKey("data") && document.ContainsKey("id_plantilla");
 
                         if (hasRequiredFields)
                         {
-                            await ProcessEntry(rootId, documentData);
+                            await ProcessDocument(rootId, document);
                             AppLogger.LogInfo($"Finished document {rootId} processing");
                         }
                     }
@@ -320,20 +324,27 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private async Task ProcessEntry(string rootId, Dictionary<string, object> documentData)
+        private async Task ProcessDocument(string rootId, Dictionary<string, object> document)
         {
             try
             {
                 AppLogger.LogFirebaseEvent("NEW_DOCUMENT",
-                    $"Processing full document with ID: {rootId}, Data: {JsonConvert.SerializeObject(documentData)}");
+                    $"Processing new document with ID: {rootId}");
 
-                // TODO: Process and print the complete document data here
+                dynamic printData = new
+                {
+                    template = document["id_plantilla"]?.ToString() ?? "test",
+                    data = document["data"]
+                };
+
+                await printerService.PrintDocumentAsync(printData);
+                AppLogger.LogInfo($"Document {rootId} sent to printer successfully");
 
                 await MarkDocumentAsRead(rootId);
             }
             catch (Exception ex)
             {
-                AppLogger.LogError($"Error processing full document", ex);
+                AppLogger.LogError($"Error processing document", ex);
             }
         }
 

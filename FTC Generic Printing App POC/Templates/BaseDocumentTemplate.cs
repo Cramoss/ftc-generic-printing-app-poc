@@ -27,7 +27,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
 
         public abstract string TemplateId { get; }
 
-        public abstract List<byte[]> GenerateDocumentCommands(dynamic documentData);
+        public abstract List<byte[]> GenerateDocumentCommands(dynamic document);
 
         #region Helper Methods
         protected byte[] TextLine(string text)
