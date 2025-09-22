@@ -96,7 +96,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
             {
                 commands.Add(ESC_NORMAL);
                 // Wrap long text for thermal printer width (usually 48 chars for 80mm, 32 for 58mm)
-                var wrappedLines = WrapText(footer, 32);
+                var wrappedLines = WrapText(footer, 48);
                 foreach (var line in wrappedLines)
                 {
                     commands.Add(TextLine(line));
@@ -114,7 +114,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
         {
             commands.Add(ESC_ALIGN_CENTER);
 
-            // Title - Medium bold (25px in CSS)
+            // Title
             string title = SafeGetValue(cupon, "title");
             if (!string.IsNullOrEmpty(title))
             {
@@ -140,7 +140,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(LF);
             }
 
-            // Promocion footer - Bold normal size
+            // Promocion footer
             string promocionFooter = SafeGetValue(cupon, "promocion_footer");
             if (!string.IsNullOrEmpty(promocionFooter))
             {
@@ -151,12 +151,12 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(LF);
             }
 
-            // Description - Normal text
+            // Description
             string description = SafeGetValue(cupon, "description");
             if (!string.IsNullOrEmpty(description))
             {
                 commands.Add(ESC_NORMAL);
-                var wrappedLines = WrapText(description, 32);
+                var wrappedLines = WrapText(description, 48);
                 foreach (var line in wrappedLines)
                 {
                     commands.Add(TextLine(line));
@@ -164,17 +164,18 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 }
             }
 
-            // Add divider
+            // Divider
             commands.Add(LF);
             AddDivider(commands);
             commands.Add(LF);
 
-            // Exclusiones section
+            // Exclusiones
             string exclusiones = SafeGetValue(cupon, "exclusiones");
             if (!string.IsNullOrEmpty(exclusiones))
             {
                 commands.Add(ESC_NORMAL);
-                var wrappedLines = WrapText(exclusiones, 32);
+                commands.Add(ESC_ALIGN_CENTER);
+                var wrappedLines = WrapText(exclusiones, 48);
                 foreach (var line in wrappedLines)
                 {
                     commands.Add(TextLine(line));
@@ -186,7 +187,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(LF);
             }
 
-            // Barcode section
+            // Barcode
             string barcode = SafeGetValue(cupon, "barcode");
             if (!string.IsNullOrEmpty(barcode))
             {
@@ -195,21 +196,20 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(LF);
             }
 
-            // Footer - smaller text
+            // Footer
             string footerText = SafeGetValue(cupon, "footer");
             if (!string.IsNullOrEmpty(footerText))
             {
                 // Remove HTML tags (simple approach for <br>)
                 footerText = footerText.Replace("<br>", " ").Replace("<BR>", " ");
 
-                commands.Add(ESC_FONT_B); // Smaller font
-                var wrappedLines = WrapText(footerText, 40); // Slightly wider for smaller font
+                commands.Add(ESC_FONT_A);
+                var wrappedLines = WrapText(footerText, 40);
                 foreach (var line in wrappedLines)
                 {
                     commands.Add(TextLine(line));
                     commands.Add(LF);
                 }
-                commands.Add(ESC_FONT_A); // Back to default font
             }
 
             // Reset alignment
@@ -235,7 +235,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(GS_w);
                 commands.Add(new byte[] { 0x02 }); // Width multiplier
 
-                // Try CODE128 first (if printer supports it)
+                // CODE128 first (if printer supports it)
                 // Using format: GS k 73 n d1...dn
                 commands.Add(GS_k);
                 commands.Add(new byte[] { 73 }); // CODE128 format
@@ -245,7 +245,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
             catch
             {
                 // If CODE128 fails, try EAN13 or just print the number
-                // Some printers might not support CODE128
+                // Some printers don't support CODE128
                 commands.Add(ESC_BOLD_ON);
                 commands.Add(TextLine(barcodeData));
                 commands.Add(ESC_BOLD_OFF);
