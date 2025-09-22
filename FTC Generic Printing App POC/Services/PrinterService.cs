@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace FTC_Generic_Printing_App_POC.Services
 {
@@ -108,39 +109,24 @@ namespace FTC_Generic_Printing_App_POC.Services
             return printerName;
         }
 
-        public async Task PrintDocumentAsync(string document)
+        public async Task PrintDocumentAsync(JObject document)
         {
             try
             {
-                AppLogger.LogPrintEvent("PRINT", "Starting print job on printer: " + printerName);
+                AppLogger.LogInfo("Starting print process");
 
-                List<byte[]> commands = await templateManager.ProcessDocumentAsync(document);
+                string templateId = document["template"]?.ToString() ?? "default";
+                AppLogger.LogInfo($"Using template: {templateId}");
+
+                var commands = await templateManager.ProcessDocumentAsync(document);
+
                 SendBytesToPrinter(commands);
 
-                AppLogger.LogPrintEvent("PRINT", "Print job completed successfully");
+                AppLogger.LogInfo("Document printed successfully");
             }
             catch (Exception ex)
             {
                 AppLogger.LogError("Error printing document", ex);
-                throw;
-            }
-        }
-
-        public async Task PrintDocumentAsync(dynamic document)
-        {
-            try
-            {
-                AppLogger.LogPrintEvent("PRINT", "Starting print job on printer: " + printerName);
-
-                List<byte[]> commands = await templateManager.ProcessDocumentAsync(document);
-                SendBytesToPrinter(commands);
-
-                AppLogger.LogPrintEvent("PRINT", "Print job completed successfully");
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogError("Error printing document", ex);
-                throw;
             }
         }
         #endregion
@@ -205,7 +191,7 @@ namespace FTC_Generic_Printing_App_POC.Services
             {
                 if (disposing)
                 {
-                    // Nothing to dispose currently
+                    // Nothing to dispose for now
                 }
 
                 isDisposed = true;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace FTC_Generic_Printing_App_POC.Templates
 {
@@ -27,7 +28,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
 
         public abstract string TemplateId { get; }
 
-        public abstract List<byte[]> GenerateDocumentCommands(dynamic document);
+        public abstract List<byte[]> GenerateDocumentCommands(JObject document);
 
         #region Helper Methods
         protected byte[] TextLine(string text)
@@ -69,12 +70,15 @@ namespace FTC_Generic_Printing_App_POC.Templates
             commands.Add(ESC_ALIGN_LEFT);
         }
 
-        protected string SafeGetValue(dynamic data, string property, string defaultValue = "")
+        protected string SafeGetValue(JToken data, string property, string defaultValue = "")
         {
             try
             {
-                var value = data[property];
-                return value?.ToString() ?? defaultValue;
+                if (data == null)
+                    return defaultValue;
+
+                var token = data[property];
+                return token?.ToString() ?? defaultValue;
             }
             catch
             {

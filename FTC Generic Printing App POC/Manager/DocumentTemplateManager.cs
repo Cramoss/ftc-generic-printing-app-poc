@@ -23,30 +23,36 @@ namespace FTC_Generic_Printing_App_POC.Services
             AppLogger.LogInfo($"DocumentTemplateManager initialized with {templates.Count} templates");
         }
 
-        public async Task<List<byte[]>> ProcessDocumentAsync(dynamic document)
+        public async Task<List<byte[]>> ProcessDocumentAsync(Newtonsoft.Json.Linq.JObject document)
         {
             try
             {
-                AppLogger.LogInfo("Processing document from parsed data");
+                string templateId = document["id_plantilla"]?.ToString() ?? "default";
 
-                // Get template type from the document data
-                string templateType = document?.template?.ToString() ?? "test";
-                AppLogger.LogInfo($"Detected document template type: {templateType}");
-
-                if (!templates.TryGetValue(templateType, out var template))
+                if (string.IsNullOrEmpty(templateId))
                 {
-                    AppLogger.LogError($"Template '{templateType}' not found. Unable to process document");
-                    return new List<byte[]>();
+                    AppLogger.LogWarning("No template ID specified in document");
+                    templateId = "default";
                 }
 
-                var commands = template.GenerateDocumentCommands(document);
+                if (templates.TryGetValue(templateId.ToLower(), out var template))
+                {
+                    AppLogger.LogInfo($"Using template with ID: {templateId}");
+                    return template.GenerateDocumentCommands(document);
+                }
 
-                AppLogger.LogInfo($"Document processed successfully with template: {template.TemplateId}");
-                return commands;
+                AppLogger.LogWarning($"Template with ID '{templateId}' not found. Using default template.");
+
+                if (templates.TryGetValue("default", out var defaultTemplate))
+                {
+                    return defaultTemplate.GenerateDocumentCommands(document);
+                }
+
+                throw new KeyNotFoundException($"No template found for ID: {templateId} and no default template available");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error processing document data", ex);
+                AppLogger.LogError("Error processing document", ex);
                 throw;
             }
         }

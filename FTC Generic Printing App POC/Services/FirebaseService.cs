@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Net.Http;
 using System.Linq;
 using FTC_Generic_Printing_App_POC.Services;
+using Newtonsoft.Json.Linq;
 
 namespace FTC_Generic_Printing_App_POC
 {
@@ -288,27 +289,18 @@ namespace FTC_Generic_Printing_App_POC
                             return;
                         }
 
-                        var document = JsonConvert.DeserializeObject<Dictionary<string, object>>(documentResponse.Body);
-                        if (document == null)
+                        var documentJson = JObject.Parse(documentResponse.Body);
+
+                        // Check if document has been processed
+                        if (documentJson["readed"] != null && documentJson["readed"].Value<bool>())
                         {
                             return;
                         }
 
-                        // Check if the document has already been processed
-                        if (document.ContainsKey("readed") && document["readed"] != null)
+                        // Check if document has required fields
+                        if (documentJson["data"] != null && documentJson["id_plantilla"] != null)
                         {
-                            if (document["readed"].ToString().Equals("true", StringComparison.OrdinalIgnoreCase))
-                            {
-                                return;
-                            }
-                        }
-
-                        // Check if this document has required fields to be considered a new entry
-                        bool hasRequiredFields = document.ContainsKey("data") && document.ContainsKey("id_plantilla");
-
-                        if (hasRequiredFields)
-                        {
-                            await ProcessDocument(rootId, document);
+                            await ProcessDocument(rootId, documentJson);
                             AppLogger.LogInfo($"Finished document {rootId} processing");
                         }
                     }
@@ -324,20 +316,14 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private async Task ProcessDocument(string rootId, Dictionary<string, object> document)
+        private async Task ProcessDocument(string rootId, JObject document)
         {
             try
             {
                 AppLogger.LogFirebaseEvent("NEW_DOCUMENT",
                     $"Processing new document with ID: {rootId}");
 
-                dynamic printData = new
-                {
-                    template = document["id_plantilla"]?.ToString() ?? "test",
-                    data = document["data"]
-                };
-
-                await printerService.PrintDocumentAsync(printData);
+                await printerService.PrintDocumentAsync(document);
                 AppLogger.LogInfo($"Document {rootId} sent to printer successfully");
 
                 await MarkDocumentAsRead(rootId);

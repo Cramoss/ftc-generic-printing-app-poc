@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 
 namespace FTC_Generic_Printing_App_POC.Templates
@@ -10,7 +11,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
     {
         public override string TemplateId => "cleveron";
 
-        public override List<byte[]> GenerateDocumentCommands(dynamic document)
+        public override List<byte[]> GenerateDocumentCommands(JObject document)
         {
             var commands = new List<byte[]>();
             var config = ConfigurationManager.LoadTotemConfiguration();
