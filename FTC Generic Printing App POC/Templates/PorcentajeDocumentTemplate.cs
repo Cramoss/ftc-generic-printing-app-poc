@@ -95,7 +95,6 @@ namespace FTC_Generic_Printing_App_POC.Templates
             if (!string.IsNullOrEmpty(footer))
             {
                 commands.Add(ESC_NORMAL);
-                // Wrap long text for thermal printer width (usually 48 chars for 80mm, 32 for 58mm)
                 var wrappedLines = WrapText(footer, 48);
                 foreach (var line in wrappedLines)
                 {
@@ -104,7 +103,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 }
             }
 
-            // Add divider line (border-bottom in CSS)
+            // Add divider line
             commands.Add(LF);
             AddDivider(commands);
             commands.Add(LF);
@@ -145,7 +144,9 @@ namespace FTC_Generic_Printing_App_POC.Templates
             if (!string.IsNullOrEmpty(promocionFooter))
             {
                 commands.Add(ESC_BOLD_ON);
+                commands.Add(ESC_DOUBLE_HEIGHT);
                 commands.Add(TextLine(promocionFooter));
+                commands.Add(ESC_NORMAL);
                 commands.Add(ESC_BOLD_OFF);
                 commands.Add(LF);
                 commands.Add(LF);

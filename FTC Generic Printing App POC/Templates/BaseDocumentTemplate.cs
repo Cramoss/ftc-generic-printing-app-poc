@@ -33,7 +33,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
         #region Helper Methods
         protected byte[] TextLine(string text)
         {
-            return Encoding.ASCII.GetBytes(text);
+            return Encoding.GetEncoding(850).GetBytes(text);
         }
 
         protected void AddText(List<byte[]> commands, string text)
