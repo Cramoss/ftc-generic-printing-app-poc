@@ -116,13 +116,13 @@ namespace FTC_Generic_Printing_App_POC
                     if (isListening)
                     {
                         AppLogger.LogInfo("Configuration changed. Stopping Firebase listener");
-                        StopListening();
+                        DisconnectListener();
                     }
 
                     if (autoStartListener && IsTotemConfigurationValid())
                     {
                         AppLogger.LogInfo("Starting Firebase listener with new configuration");
-                        Task.Run(() => StartListeningAsync());
+                        Task.Run(() => ConnectListenerAsync());
                     }
                 }
             }
@@ -132,7 +132,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        public async Task StartListeningAsync()
+        public async Task ConnectListenerAsync()
         {
             try
             {
@@ -195,7 +195,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        public void StopListening()
+        public void DisconnectListener()
         {
             try
             {
@@ -238,7 +238,7 @@ namespace FTC_Generic_Printing_App_POC
 
         public void Dispose()
         {
-            StopListening();
+            DisconnectListener();
             AppLogger.LogInfo("FirebaseManager disposed");
         }
 

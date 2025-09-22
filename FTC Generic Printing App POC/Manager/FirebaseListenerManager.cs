@@ -75,13 +75,11 @@ namespace FTC_Generic_Printing_App_POC.Manager
                     return;
                 }
 
-                // Start the listener in a background task but don't await it
-                // This ensures the UI updates even if the listener runs indefinitely
                 Task.Run(async () =>
                 {
                     try
                     {
-                        await _firebaseService.StartListeningAsync();
+                        await _firebaseService.ConnectListenerAsync();
                     }
                     catch (Exception ex)
                     {
@@ -123,7 +121,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
 
             try
             {
-                _firebaseService.StopListening();
+                _firebaseService.DisconnectListener();
                 NotificationService.ShowNotification("Escuchar evento finalizado");
                 NotifyListeningStateChanged();
             }
