@@ -32,6 +32,8 @@ namespace FTC_Generic_Printing_App_POC
 
                 if (configValid)
                 {
+                    // If we put await, then the UI thread gets locked.
+                    // Maybe it can be resolved on the future but it is not necessary for now.
                     FirebaseListenerManager.Instance.StartListeningAsync();
                 }
                 else
