@@ -4,9 +4,9 @@ using System.Text;
 
 namespace FTC_Generic_Printing_App_POC.Templates
 {
-    // Base class for all ticket templates with common functionality and ESC/POS commands
-    // This will be adjusted in the future as needed for different styles of tickets
-    public abstract class BaseTicketTemplate : ITicketTemplate
+    // Base class for all document templates with common functionality and ESC/POS commands
+    // This will be adjusted in the future as needed for different styles of documents
+    public abstract class BaseDocumentTemplate : IDocumentTemplate
     {
         #region ESC/POS Commands
         protected static readonly byte[] ESC_INIT = { 0x1B, 0x40 };               // Initialize printer
@@ -27,7 +27,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
 
         public abstract string TemplateId { get; }
 
-        public abstract List<byte[]> GenerateTicketCommands(dynamic ticketData);
+        public abstract List<byte[]> GenerateDocumentCommands(dynamic documentData);
 
         #region Helper Methods
         protected byte[] TextLine(string text)

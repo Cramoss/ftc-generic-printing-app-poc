@@ -190,7 +190,7 @@ namespace FTC_Generic_Printing_App_POC
                     DatabaseUrl = GetAppSetting(KEY_FIREBASE_DATABASE_URL, ""),
                     ProjectId = GetAppSetting(KEY_FIREBASE_PROJECT_ID, ""),
                     ApiKey = GetAppSetting(KEY_FIREBASE_API_KEY, ""),
-                    DocumentPath = "tickets" // Hardcoded for now
+                    DocumentPath = "tickets" // Hardcoded for now, might change in the future
                 };
 
                 AppLogger.LogInfo("Firebase configuration loaded successfully");

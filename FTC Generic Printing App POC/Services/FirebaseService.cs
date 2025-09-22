@@ -20,13 +20,12 @@ namespace FTC_Generic_Printing_App_POC
         private string firebaseUrl;
         private string projectId;
         private string apiKey;
-        private string databaseDocumentParentPath = "tickets";
+        private string databaseDocumentParentPath;
         private readonly string databaseDocumentTestingPath = "connection-test";
         private ConfigurationData currentTotemConfig;
         private bool isListening = false;
         private EventStreamResponse currentEventStream;
         private CancellationTokenSource cancellationTokenSource;
-        // Add this field to track processed document IDs
         private readonly HashSet<string> processedDocumentIds = new HashSet<string>();
         private readonly object lockObject = new object();
         #endregion
@@ -306,7 +305,7 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogFirebaseEvent("NEW_DOCUMENT",
                     $"Processing full document with ID: {rootId}, Data: {JsonConvert.SerializeObject(documentData)}");
 
-                // TODO: Process the complete ticket data here
+                // TODO: Process and print the complete document data here
 
                 await MarkDocumentAsRead(rootId);
             }

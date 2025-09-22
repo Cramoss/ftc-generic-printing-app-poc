@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace FTC_Generic_Printing_App_POC.Templates
 {
-    // Test ticket template for verifying printer functionality
-    public class TestTicketTemplate : BaseTicketTemplate
+    // Test document template for verifying printer functionality
+    public class TestDocumentTemplate : BaseDocumentTemplate
     {
         public override string TemplateId => "test";
 
-        public override List<byte[]> GenerateTicketCommands(dynamic ticketData)
+        public override List<byte[]> GenerateDocumentCommands(dynamic documentData)
         {
             var commands = new List<byte[]>();
             var config = ConfigurationManager.LoadTotemConfiguration();
@@ -20,7 +20,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
             commands.Add(ESC_INIT);
 
             // Header
-            AddHeaderText(commands, "TEST TICKET");
+            AddHeaderText(commands, "TEST DOCUMENT");
             commands.Add(LF);
 
             // Date info
@@ -40,7 +40,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
             }
 
             // Test message
-            AddText(commands, "Esto es un Ticket de test");
+            AddText(commands, "Esto es un doicument de prueba");
             AddText(commands, "Si puedes leer esto,");
             AddText(commands, "es porque la impresora está funcionando correctamente.");
             commands.Add(LF);

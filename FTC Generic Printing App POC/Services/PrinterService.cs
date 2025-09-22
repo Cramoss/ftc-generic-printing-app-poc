@@ -28,7 +28,7 @@ namespace FTC_Generic_Printing_App_POC.Services
 
         private string printerName;
         private bool isDisposed = false;
-        private readonly TicketTemplateManager templateManager;
+        private readonly DocumentTemplateManager templateManager;
         #endregion
 
         #region Native Methods for Direct Printing  
@@ -87,9 +87,9 @@ namespace FTC_Generic_Printing_App_POC.Services
                 this.printerName = printerName;
                 AppLogger.LogInfo($"Using specified printer: {this.printerName}");
             }
-            
+
             // Create template manager
-            templateManager = new TicketTemplateManager();
+            templateManager = new DocumentTemplateManager();
         }
 
         private string GetDefaultPrinterName()
@@ -109,20 +109,20 @@ namespace FTC_Generic_Printing_App_POC.Services
             return printerName;
         }
 
-        public async Task PrintTicketAsync(string ticketJson)
+        public async Task PrintDocumentAsync(string documentJson)
         {
             try
             {
                 AppLogger.LogPrintEvent("PRINT", "Starting print job on printer: " + printerName);
 
-                List<byte[]> commands = await templateManager.ProcessTicketAsync(ticketJson);                
+                List<byte[]> commands = await templateManager.ProcessDocumentAsync(documentJson);
                 SendBytesToPrinter(commands);
 
                 AppLogger.LogPrintEvent("PRINT", "Print job completed successfully");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error printing ticket", ex);
+                AppLogger.LogError("Error printing document", ex);
                 throw;
             }
         }
@@ -138,7 +138,7 @@ namespace FTC_Generic_Printing_App_POC.Services
                 if (OpenPrinter(printerName, out hPrinter, IntPtr.Zero))
                 {
                     DOCINFOA di = new DOCINFOA();
-                    di.pDocName = "Ticket";
+                    di.pDocName = "Document";
                     di.pDataType = "RAW";
 
                     // Start print job

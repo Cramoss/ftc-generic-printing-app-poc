@@ -143,7 +143,7 @@ namespace FTC_Generic_Printing_App_POC
         }
 
         // Printer
-        private void testTicketPrintButton_Click(object sender, EventArgs e)
+        private void testDocumentPrintButton_Click(object sender, EventArgs e)
         {
             TestPrinter();
         }
@@ -579,21 +579,21 @@ namespace FTC_Generic_Printing_App_POC
         private void TestPrinter()
         {
             AppLogger.LogInfo("Starting printer test");
-            testTicketPrintButton.Text = "Probando...";
-            testTicketPrintButton.Enabled = false;
+            testDocumentPrintButton.Text = "Probando...";
+            testDocumentPrintButton.Enabled = false;
 
             try
             {
-                string testTicketJson = @"{
+                string testDocumentJson = @"{
                     ""template"": ""test"",
-                    ""description"": ""Ticket de prueba""
+                    ""description"": ""Documento de prueba""
                 }";
 
-                printerService.PrintTicketAsync(testTicketJson).Wait();
+                printerService.PrintDocumentAsync(testDocumentJson).Wait();
 
                 AppLogger.LogInfo("Printer test completed successfully");
                 MessageBox.Show(
-                    "Ticket de prueba enviado a la impresora correctamente.",
+                    "Document de prueba enviado a la impresora correctamente.",
                     "Prueba de Impresión",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -602,15 +602,15 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogError("Printer test failed", ex);
                 MessageBox.Show(
-                    $"Error al imprimir ticket de prueba: {ex.Message}",
+                    $"Error al imprimir documento de prueba: {ex.Message}",
                     "Error de Impresión",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
             finally
             {
-                testTicketPrintButton.Text = "Probar";
-                testTicketPrintButton.Enabled = true;
+                testDocumentPrintButton.Text = "Probar";
+                testDocumentPrintButton.Enabled = true;
             }
         }
 
@@ -619,7 +619,6 @@ namespace FTC_Generic_Printing_App_POC
             this.Hide();
             AppLogger.LogInfo("Configuration form hidden");
         }
-
         #endregion
     }
 }

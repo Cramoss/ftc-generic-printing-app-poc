@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace FTC_Generic_Printing_App_POC.Templates
 {
-    // TODO: Adjust this template to replicate current Porcentaje ticket format.
+    // TODO: Adjust this template to replicate current Porcentaje document format.
     // TODO: Add barcode support.
     // Use the SafeGetValue method to extract data from the JSON payload. Current messages are placeholders.
-    public class PorcentajeTicketTemplate : BaseTicketTemplate
+    public class PorcentajeDocumentTemplate : BaseDocumentTemplate
     {
         public override string TemplateId => "porcentaje";
 
-        public override List<byte[]> GenerateTicketCommands(dynamic ticketData)
+        public override List<byte[]> GenerateDocumentCommands(dynamic documentData)
         {
             var commands = new List<byte[]>();
             var config = ConfigurationManager.LoadTotemConfiguration();
@@ -22,7 +22,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
             AddCenteredText(commands, "BIENVENIDO");
             commands.Add(LF);
 
-            // Ticket number in bigger text
+            // Document number in bigger text
             commands.Add(ESC_ALIGN_CENTER);
             commands.Add(ESC_BOLD_ON);
             commands.Add(ESC_DOUBLE_HEIGHT);
