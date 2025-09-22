@@ -9,6 +9,7 @@ using FireSharp.Response;
 using Newtonsoft.Json;
 using System.Configuration;
 using System.Net.Http;
+using System.Linq;
 
 namespace FTC_Generic_Printing_App_POC
 {
@@ -216,22 +217,106 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                AppLogger.LogFirebaseEvent("NEW_DATA_DETECTED", "Validating data..");
+                // Extract the entry ID
+                string pathParts = args.Path.TrimStart('/');
+                string[] pathSegments = pathParts.Split('/');
+                string rootId = pathSegments.FirstOrDefault();
 
-                if (!string.IsNullOrEmpty(args.Data) && args.Data != "null")
+                if (string.IsNullOrEmpty(rootId))
                 {
-                    // Parse and process the new ticket
-                    //var ticketData = JsonConvert.DeserializeObject<Dictionary<string, object>>(args.Data);
-
-                    AppLogger.LogFirebaseEvent("NEW_TICKET",
-                        $"New ticket detected at path: {args.Path}, Data: {args.Data}");
-
-                    // TODO: Process, map and print ticket
+                    AppLogger.LogWarning("Skipping new entry due to invalid path format. Skipping.");
+                    return;
                 }
+
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        string basePath = BuildDocumentPath();
+                        string documentPath = $"{basePath}/{rootId}";
+
+                        var documentResponse = await firebaseClient.GetAsync(documentPath);
+                        if (documentResponse == null || documentResponse.Body == "null" || string.IsNullOrEmpty(documentResponse.Body))
+                        {
+                            AppLogger.LogWarning("Document is incomplete. Skipping.");
+                            return;
+                        }
+
+                        var documentData = JsonConvert.DeserializeObject<Dictionary<string, object>>(documentResponse.Body);
+                        if (documentData == null)
+                        {
+                            return;
+                        }
+
+                        // Check if the document has already been processed
+                        if (documentData.ContainsKey("readed") && documentData["readed"] != null)
+                        {
+                            if (documentData["readed"].ToString().Equals("true", StringComparison.OrdinalIgnoreCase))
+                            {
+                                return;
+                            }
+                        }
+
+                        // Check if this document has required fields to be considered a new entry
+                        bool hasRequiredFields = documentData.ContainsKey("data") && documentData.ContainsKey("id_plantilla");
+
+                        if (hasRequiredFields)
+                        {
+                            await ProcessFullDocument(rootId, documentData);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogError($"Error checking document status: {ex.Message}", ex);
+                    }
+                });
             }
             catch (Exception ex)
             {
                 AppLogger.LogError($"Error handling value added event", ex);
+            }
+        }
+
+        private async Task ProcessFullDocument(string rootId, Dictionary<string, object> documentData)
+        {
+            try
+            {
+                AppLogger.LogFirebaseEvent("NEW_TICKET",
+                    $"Processing full ticket with ID: {rootId}, Data: {JsonConvert.SerializeObject(documentData)}");
+
+                // TODO: Process the complete ticket data here
+
+                await MarkDocumentAsRead(rootId);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError($"Error processing full document", ex);
+            }
+        }
+
+        private async Task MarkDocumentAsRead(string rootId)
+        {
+            try
+            {
+                string basePath = BuildDocumentPath();
+                string readPath = $"{basePath}/{rootId}/readed";
+
+                AppLogger.LogInfo($"Marking document {rootId} as read");
+
+                var response = await firebaseClient.SetAsync(readPath, true);
+
+                if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    AppLogger.LogInfo($"Successfully marked document {rootId} as read");
+                }
+                else
+                {
+                    AppLogger.LogWarning($"Failed to mark document {rootId} as read. Status: {response?.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError($"Error marking document as read", ex);
             }
         }
 
