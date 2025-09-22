@@ -41,7 +41,7 @@ namespace FTC_Generic_Printing_App_POC
                 var fileTarget = new FileTarget("fileTarget")
                 {
                     FileName = Path.Combine(logDirectory, "ftc-app-${shortdate}.log"),
-                    Layout = "${longdate} ${level:uppercase=true} ${logger} ${message} ${exception:format=tostring}"
+                    Layout = "${longdate} ${level:uppercase=true} ${message} ${exception:format=tostring}"
                 };
 
                 config.AddTarget(fileTarget);
