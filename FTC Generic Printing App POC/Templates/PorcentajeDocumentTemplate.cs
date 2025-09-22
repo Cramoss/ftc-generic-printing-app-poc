@@ -225,34 +225,26 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(ESC_ALIGN_CENTER);
 
                 // Set HRI character print position (below barcode)
-                commands.Add(GS_H);
-                commands.Add(new byte[] { 0x02 }); // Below barcode
+                commands.Add(new byte[] { 0x1D, 0x48, 0x02 });
 
-                // Set barcode height (80 dots)
-                commands.Add(GS_h);
-                commands.Add(new byte[] { 80 });
+                // Set barcode height
+                commands.Add(new byte[] { 0x1D, 0x68, 200 });
 
                 // Set barcode width
-                commands.Add(GS_w);
-                commands.Add(new byte[] { 0x02 }); // Width multiplier
+                commands.Add(new byte[] { 0x1D, 0x77, 0x04 });
 
-                // CODE128 first (if printer supports it)
-                // Using format: GS k 73 n d1...dn
-                commands.Add(GS_k);
-                commands.Add(new byte[] { 73 }); // CODE128 format
-                commands.Add(new byte[] { (byte)barcodeData.Length });
+                // Print CODE128 barcode
+                commands.Add(new byte[] { 0x1D, 0x6B, 0x08 });  // 0x08 = CODE128 in many printers
                 commands.Add(Encoding.ASCII.GetBytes(barcodeData));
+                commands.Add(new byte[] { 0x00 });  // NUL terminator
             }
-            catch
+            catch (Exception)
             {
-                // If CODE128 fails, try EAN13 or just print the number
-                // Some printers don't support CODE128
+                // Print the number as text in case barcode fails
                 commands.Add(ESC_BOLD_ON);
                 commands.Add(TextLine(barcodeData));
                 commands.Add(ESC_BOLD_OFF);
             }
-
-            commands.Add(LF);
         }
 
         // Helper method to wrap text for thermal printer width
