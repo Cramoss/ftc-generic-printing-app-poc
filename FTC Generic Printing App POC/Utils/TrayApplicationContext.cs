@@ -13,13 +13,13 @@ namespace FTC_Generic_Printing_App_POC
         private ContextMenuStrip trayMenu;
         private Configuration configForm;
         private bool isListening = false;
+        private FirebaseService _firebaseService;
         #endregion
 
         #region Initialization
         public TrayApplicationContext()
         {
             InitializeTrayIcon();
-            StartListening();
         }
 
         private void InitializeTrayIcon()
@@ -77,60 +77,83 @@ namespace FTC_Generic_Printing_App_POC
             {
                 if (FirebaseService != null && !FirebaseService.IsListening)
                 {
-                    Task.Run(async () =>
+                    // Check if the totem configuration is set up correctly
+                    bool canStartListening = false;
+                    try
                     {
-                        try
-                        {
-                            await FirebaseService.StartListeningAsync();
+                        FirebaseService.BuildDocumentPath();
+                        canStartListening = true;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        ShowTrayMessage("No se puede iniciar la escucha: Configuración de totem inválida");
+                        return;
+                    }
 
-                            if (configForm != null && !configForm.IsDisposed)
+                    if (canStartListening)
+                    {
+                        Task.Run(async () =>
+                        {
+                            try
                             {
-                                configForm.Invoke(new Action(() =>
+                                await FirebaseService.StartListeningAsync();
+
+                                if (FirebaseService.IsListening)
                                 {
-                                    isListening = true;
-                                    trayMenu.Items[1].Text = "Finalizar escuchar";
-                                    trayIcon.Text = "FTC Generic Printing App - Escuchando";
-                                    ShowTrayMessage("Escuchando eventos en Firebase");
-                                }));
-                            }
-                            else
-                            {
-                                var syncContext = SynchronizationContext.Current;
-                                if (syncContext != null)
-                                {
-                                    syncContext.Post(_ =>
+                                    if (configForm != null && !configForm.IsDisposed)
                                     {
-                                        isListening = true;
-                                        trayMenu.Items[1].Text = "Finalizar escuchar";
-                                        trayIcon.Text = "FTC Generic Printing App - Escuchando";
-                                        ShowTrayMessage("Escuchando eventos en Firebase");
-                                    }, null);
+                                        configForm.Invoke(new Action(() =>
+                                        {
+                                            isListening = true;
+                                            trayMenu.Items[1].Text = "Finalizar escuchar";
+                                            trayIcon.Text = "FTC Generic Printing App - Escuchando";
+                                            ShowTrayMessage("Escuchando eventos en Firebase");
+                                        }));
+                                    }
+                                    else
+                                    {
+                                        var syncContext = SynchronizationContext.Current;
+                                        if (syncContext != null)
+                                        {
+                                            syncContext.Post(_ =>
+                                            {
+                                                isListening = true;
+                                                trayMenu.Items[1].Text = "Finalizar escuchar";
+                                                trayIcon.Text = "FTC Generic Printing App - Escuchando";
+                                                ShowTrayMessage("Escuchando eventos en Firebase");
+                                            }, null);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    ShowTrayMessage("No se pudo iniciar la escucha en Firebase");
                                 }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            AppLogger.LogError("Error starting Firebase listener", ex);
+                            catch (Exception ex)
+                            {
+                                AppLogger.LogError("Error starting Firebase listener", ex);
 
-                            if (configForm != null && !configForm.IsDisposed)
-                            {
-                                configForm.Invoke(new Action(() =>
+                                if (configForm != null && !configForm.IsDisposed)
                                 {
-                                    ShowTrayMessage("Error al iniciar escucha en Firebase");
-                                }));
-                            }
-                            else
-                            {
-                                var syncContext = SynchronizationContext.Current;
-                                if (syncContext != null)
+                                    configForm.Invoke(new Action(() =>
+                                    {
+                                        ShowTrayMessage("Error al iniciar escucha en Firebase");
+                                    }));
+                                }
+                                else
                                 {
-                                    syncContext.Post(_ => ShowTrayMessage("Error al iniciar escucha en Firebase"), null);
+                                    var syncContext = SynchronizationContext.Current;
+                                    if (syncContext != null)
+                                    {
+                                        syncContext.Post(_ => ShowTrayMessage("Error al iniciar escucha en Firebase"), null);
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-                else
+                else if (FirebaseService != null && FirebaseService.IsListening)
                 {
                     isListening = true;
                     trayMenu.Items[1].Text = "Finalizar escuchar";
@@ -180,7 +203,25 @@ namespace FTC_Generic_Printing_App_POC
         }
         #endregion
 
-        public FirebaseService FirebaseService { get; set; }
+        public FirebaseService FirebaseService
+        {
+            get => _firebaseService;
+            set
+            {
+                _firebaseService = value;
+
+                // Update UI based on current FirebaseService state
+                if (_firebaseService != null && _firebaseService.IsListening)
+                {
+                    isListening = true;
+                    if (trayMenu != null && trayMenu.Items.Count > 1)
+                    {
+                        trayMenu.Items[1].Text = "Finalizar escuchar";
+                        trayIcon.Text = "FTC Generic Printing App - Escuchando";
+                    }
+                }
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

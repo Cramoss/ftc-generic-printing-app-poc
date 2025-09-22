@@ -34,6 +34,25 @@ namespace FTC_Generic_Printing_App_POC
         {
             this.ShowInTaskbar = false;
             AppLogger.LogInfo("Configuration form opened");
+
+            StopFirebaseListener();
+        }
+
+        private void StopFirebaseListener()
+        {
+            try
+            {
+                var trayContext = Program.TrayContext;
+                if (trayContext?.FirebaseService != null)
+                {
+                    AppLogger.LogInfo("Stopping Firebase listener while configuration form is open");
+                    trayContext.FirebaseService.StopListening();
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error stopping Firebase listener", ex);
+            }
         }
 
         protected override void SetVisibleCore(bool value)
@@ -42,6 +61,13 @@ namespace FTC_Generic_Printing_App_POC
 
             if (value)
             {
+                var trayContext = Program.TrayContext;
+                if (trayContext?.FirebaseService != null && trayContext.FirebaseService.IsListening)
+                {
+                    AppLogger.LogInfo("Stopping Firebase listener while configuration form is open");
+                    trayContext.FirebaseService.StopListening();
+                }
+
                 RefreshTotemConfigurationLabels();
                 RefreshStoresApiConfigurationLabels();
             }
@@ -192,12 +218,12 @@ namespace FTC_Generic_Printing_App_POC
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             e.Cancel = true;
-            CancelConfiguration();
+            ExitConfigurationForm();
         }
 
         private void exitConfigurationButton_Click(object sender, EventArgs e)
         {
-            CancelConfiguration();
+            ExitConfigurationForm();
         }
         #endregion
 
@@ -614,10 +640,28 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void CancelConfiguration()
+        private void ExitConfigurationForm()
         {
             this.Hide();
             AppLogger.LogInfo("Configuration form hidden");
+
+            // Restart the Firebase listener
+            var trayContext = Program.TrayContext;
+            if (trayContext?.FirebaseService != null)
+            {
+                AppLogger.LogInfo("Restarting Firebase listener after configuration form closed");
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        await trayContext.FirebaseService.StartListeningAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogError("Error starting Firebase listener", ex);
+                    }
+                });
+            }
         }
         #endregion
     }

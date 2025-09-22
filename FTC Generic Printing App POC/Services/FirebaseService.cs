@@ -98,7 +98,7 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        public void ReloadTotemConfiguration()
+        public void ReloadTotemConfiguration(bool autoStartListener = false)
         {
             try
             {
@@ -116,11 +116,12 @@ namespace FTC_Generic_Printing_App_POC
                 {
                     if (isListening)
                     {
-                        AppLogger.LogInfo("Configuration changed. Restarting Firebase listener");
+                        AppLogger.LogInfo("Configuration changed. Stopping Firebase listener");
                         StopListening();
                     }
 
-                    if (IsTotemConfigurationValid())
+                    // Only start the listener if explicitly requested
+                    if (autoStartListener && IsTotemConfigurationValid())
                     {
                         AppLogger.LogInfo("Starting Firebase listener with new configuration");
                         Task.Run(() => StartListeningAsync());
@@ -167,8 +168,19 @@ namespace FTC_Generic_Printing_App_POC
                         // Keep the listener alive
                         while (!cancellationTokenSource.Token.IsCancellationRequested)
                         {
-                            await Task.Delay(1000, cancellationTokenSource.Token);
+                            try
+                            {
+                                await Task.Delay(1000, cancellationTokenSource.Token);
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                break;
+                            }
                         }
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        AppLogger.LogInfo("Firebase listener task was canceled");
                     }
                     catch (Exception ex)
                     {
@@ -195,10 +207,24 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                cancellationTokenSource?.Cancel();
-                currentEventStream?.Dispose();
-                currentEventStream = null;
-                cancellationTokenSource = null;
+                // Set the flag first to prevent race conditions
+                isListening = false;
+
+                // Then cancel the token and dispose resources
+                try
+                {
+                    cancellationTokenSource?.Cancel();
+                    currentEventStream?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogError("Error while canceling listener", ex);
+                }
+                finally
+                {
+                    currentEventStream = null;
+                    cancellationTokenSource = null;
+                }
 
                 // Clear the processed document IDs when stopping the listener
                 lock (lockObject)
@@ -206,7 +232,6 @@ namespace FTC_Generic_Printing_App_POC
                     processedDocumentIds.Clear();
                 }
 
-                isListening = false;
                 AppLogger.LogFirebaseEvent("LISTENER_STOPPED", "FireSharp listener stopped");
             }
             catch (Exception ex)
@@ -284,6 +309,7 @@ namespace FTC_Generic_Printing_App_POC
                         if (hasRequiredFields)
                         {
                             await ProcessEntry(rootId, documentData);
+                            AppLogger.LogInfo($"Finished document {rootId} processing.");
                         }
                     }
                     catch (Exception ex)

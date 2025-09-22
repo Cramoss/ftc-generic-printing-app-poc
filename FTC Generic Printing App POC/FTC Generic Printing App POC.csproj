@@ -105,12 +105,12 @@
       <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\ConfigurationManager.cs" />
-    <Compile Include="Services\TicketTemplateManager.cs" />
-    <Compile Include="Templates\BaseTicketTemplate.cs" />
-    <Compile Include="Interfaces\ITicketTemplate.cs" />
-    <Compile Include="Templates\CleveronTicketTemplate.cs" />
-    <Compile Include="Templates\PorcentajeTicketTemplate.cs" />
-    <Compile Include="Templates\TestTicketTemplate.cs" />
+    <Compile Include="Services\DocumentTemplateManager.cs" />
+    <Compile Include="Templates\BaseDocumentTemplate.cs" />
+    <Compile Include="Interfaces\IDocumentTemplate.cs" />
+    <Compile Include="Templates\CleveronDocumentTemplate.cs" />
+    <Compile Include="Templates\PorcentajeDocumentTemplate.cs" />
+    <Compile Include="Templates\TestDocumentTemplate.cs" />
     <Compile Include="Utils\DefaultConfigKeys.cs" />
     <Compile Include="Forms\Configuration\FirebaseConfiguration.cs">
       <SubType>Form</SubType>

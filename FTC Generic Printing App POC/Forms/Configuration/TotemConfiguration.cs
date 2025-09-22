@@ -289,8 +289,9 @@ namespace FTC_Generic_Printing_App_POC
                 var trayContext = Program.TrayContext;
                 if (trayContext?.FirebaseService != null)
                 {
-                    AppLogger.LogInfo("Notifying Firebase service to reload configuration");
-                    trayContext.FirebaseService.ReloadTotemConfiguration();
+                    AppLogger.LogInfo("Notifying Firebase service to reload configuration without starting listener");
+                    // Prevent automatic listener start
+                    trayContext.FirebaseService.ReloadTotemConfiguration(false);
                 }
             }
             catch (Exception ex)
