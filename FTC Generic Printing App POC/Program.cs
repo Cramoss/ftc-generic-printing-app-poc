@@ -28,8 +28,7 @@ namespace FTC_Generic_Printing_App_POC
                 TrayContext = new TrayApplicationContext();
                 TrayContext.FirebaseService = firebaseService;
 
-                var config = ConfigurationManager.LoadTotemConfiguration();
-                bool configValid = ConfigurationManager.IsConfigurationValid(config);
+                bool configValid = ConfigurationManager.IsConfigurationValid(firebaseService.GetCurrentConfiguration());
 
                 if (configValid)
                 {
