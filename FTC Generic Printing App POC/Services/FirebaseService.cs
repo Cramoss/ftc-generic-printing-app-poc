@@ -53,7 +53,6 @@ namespace FTC_Generic_Printing_App_POC
             try
             {
                 currentTotemConfig = ConfigurationManager.LoadTotemConfiguration();
-                AppLogger.LogInfo($"Loaded current Totem configuration. Totem: {currentTotemConfig.IdTotem}, Store: {currentTotemConfig.StoreId}");
             }
             catch (Exception ex)
             {

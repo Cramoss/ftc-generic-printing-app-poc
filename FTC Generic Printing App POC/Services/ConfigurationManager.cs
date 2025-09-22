@@ -140,12 +140,20 @@ namespace FTC_Generic_Printing_App_POC
                     StoreId = GetAppSetting(KEY_TOTEM_STORE_ID, "")
                 };
 
-                AppLogger.LogInfo($"Totem configuration loaded. " +
-                    $"IdTotem: {config.IdTotem}, " +
-                    $"Country: {config.Country}, " +
-                    $"Business: {config.Business}, " +
-                    $"Store: {config.Store}, " +
-                    $"StoreId: {config.StoreId}");
+                if (!IsConfigurationValid(config))
+                {
+                    AppLogger.LogWarning("Totem configuration is incomplete or invalid. Please check the settings or configure a new Totem");
+                }
+                else
+                {
+                    AppLogger.LogInfo($"Totem configuration loaded. " +
+                        $"IdTotem: {config.IdTotem}, " +
+                        $"Country: {config.Country}, " +
+                        $"Business: {config.Business}, " +
+                        $"Store: {config.Store}, " +
+                        $"StoreId: {config.StoreId}");
+                }
+
                 return config;
             }
             catch (Exception ex)
