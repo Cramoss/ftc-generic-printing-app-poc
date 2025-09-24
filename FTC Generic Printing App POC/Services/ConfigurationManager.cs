@@ -1,5 +1,4 @@
-﻿using FTC_Generic_Printing_App_POC;
-using System;
+﻿using System;
 using System.Configuration;
 using System.IO;
 
@@ -28,6 +27,40 @@ namespace FTC_Generic_Printing_App_POC
 
         // Admin Password Key
         private const string KEY_ADMIN_PASSWORD = "AdminPassword";
+        #endregion
+
+        #region Properties
+        private static string UserConfigPath
+        {
+            get
+            {
+                string appDataPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "FTC Generic Printing App");
+
+                if (!Directory.Exists(appDataPath))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(appDataPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogError($"Failed to create application data folder: {appDataPath}", ex);
+                    }
+                }
+
+                return Path.Combine(appDataPath, "user.config");
+            }
+        }
+
+        private static string DefaultConfigPath
+        {
+            get
+            {
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "defaultConfig.xml");
+            }
+        }
         #endregion
 
         #region Initialization
@@ -75,7 +108,7 @@ namespace FTC_Generic_Printing_App_POC
                     string.IsNullOrEmpty(config.ClientSecret) ? clientSecret : config.ClientSecret
                 );
 
-                AppLogger.LogInfo("Store API default configuration saved to app.config");
+                AppLogger.LogInfo("Store API default configuration saved");
             }
         }
 
@@ -89,7 +122,7 @@ namespace FTC_Generic_Printing_App_POC
 
             if (needsUpdate)
             {
-                AppLogger.LogInfo("Firebase configuration not found in app.config. Loading from default config file");
+                AppLogger.LogInfo("Firebase configuration not found. Loading from default config file");
 
                 string databaseUrl = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_DB_URL);
                 string projectId = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_PROJECT_ID);
@@ -101,7 +134,7 @@ namespace FTC_Generic_Printing_App_POC
                     string.IsNullOrEmpty(config.ApiKey) ? apiKey : config.ApiKey
                 );
 
-                AppLogger.LogInfo("Firebase default configuration saved to app.config");
+                AppLogger.LogInfo("Firebase default configuration saved");
             }
         }
 
@@ -111,21 +144,127 @@ namespace FTC_Generic_Printing_App_POC
 
             if (string.IsNullOrEmpty(currentPassword))
             {
-                AppLogger.LogInfo("Admin password not found in app.config, loading from default config");
+                AppLogger.LogInfo("Admin password not found, loading from default config");
 
                 string defaultPassword = GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_ADMIN_PASSWORD);
 
-                var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                UpdateOrAddSetting(configFile, KEY_ADMIN_PASSWORD, defaultPassword);
-                configFile.Save(ConfigurationSaveMode.Modified);
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                try
+                {
+                    var configFile = GetConfigFile();
+                    UpdateOrAddSetting(configFile, KEY_ADMIN_PASSWORD, defaultPassword);
+                    configFile.Save(ConfigurationSaveMode.Modified);
 
-                AppLogger.LogInfo("Admin password default configuration saved to app.config");
+                    AppLogger.LogInfo("Admin password default configuration saved");
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogError("Error saving admin password default configuration", ex);
+                }
             }
         }
         #endregion
 
-        #region Core Methods
+        #region Helper Methods
+        private static System.Configuration.Configuration GetConfigFile()
+        {
+            try
+            {
+                ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap
+                {
+                    ExeConfigFilename = UserConfigPath
+                };
+
+                return System.Configuration.ConfigurationManager.OpenMappedExeConfiguration(
+                    fileMap, ConfigurationUserLevel.None);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error opening configuration file", ex);
+                throw;
+            }
+        }
+
+        private static string GetAppSetting(string key, string defaultValue)
+        {
+            try
+            {
+                var configFile = GetConfigFile();
+                var settings = configFile.AppSettings.Settings;
+                return settings[key]?.Value ?? defaultValue;
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogWarning($"Error reading setting {key} from user config, falling back to app.config: {ex.Message}");
+                return System.Configuration.ConfigurationManager.AppSettings[key] ?? defaultValue;
+            }
+        }
+
+        private static void UpdateOrAddSetting(System.Configuration.Configuration configFile, string key, string value)
+        {
+            if (configFile.AppSettings.Settings[key] == null)
+            {
+                configFile.AppSettings.Settings.Add(key, value);
+            }
+            else
+            {
+                configFile.AppSettings.Settings[key].Value = value;
+            }
+        }
+
+        public static bool IsConfigurationValid(ConfigurationData config)
+        {
+            bool isValid = !string.IsNullOrWhiteSpace(config.IdTotem) &&
+                          !string.IsNullOrWhiteSpace(config.Country) &&
+                          !string.IsNullOrWhiteSpace(config.Business) &&
+                          !string.IsNullOrWhiteSpace(config.Store) &&
+                          !string.IsNullOrWhiteSpace(config.StoreId);
+
+            AppLogger.LogInfo($"Totem configuration validation: {(isValid ? "VALID" : "INVALID")}");
+            return isValid;
+        }
+
+        public static string GetValueFromDefaultConfig(string key)
+        {
+            try
+            {
+                if (File.Exists(DefaultConfigPath))
+                {
+                    AppLogger.LogInfo($"defaultConfig.xml found at: {DefaultConfigPath}");
+
+                    var configXml = new System.Xml.XmlDocument();
+                    configXml.Load(DefaultConfigPath);
+
+                    var node = configXml.SelectSingleNode($"//appSettings/add[@key='{key}']");
+                    if (node != null)
+                    {
+                        string value = node.Attributes["value"]?.Value;
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            AppLogger.LogInfo($"Loaded default value for {key} from defaultConfig.xml");
+                            return value;
+                        }
+                    }
+                    else
+                    {
+                        AppLogger.LogWarning($"Key '{key}' not found in defaultConfig.xml");
+                    }
+                }
+                else
+                {
+                    AppLogger.LogWarning($"defaultConfig.xml not found at path: {DefaultConfigPath}");
+                }
+
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogWarning($"Could not load default value for {key}: {ex.Message}");
+                return string.Empty;
+            }
+        }
+        #endregion
+
+        #region Load Methods
         public static ConfigurationData LoadTotemConfiguration()
         {
             try
@@ -215,13 +354,15 @@ namespace FTC_Generic_Printing_App_POC
         {
             return GetAppSetting(KEY_ADMIN_PASSWORD, "");
         }
+        #endregion
 
+        #region Save Methods
         public static void SaveTotemConfiguration(ConfigurationData config)
         {
             try
             {
                 AppLogger.LogInfo("Saving Totem configuration...");
-                var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var configFile = GetConfigFile();
 
                 UpdateOrAddSetting(configFile, KEY_TOTEM_ID, config.IdTotem);
                 UpdateOrAddSetting(configFile, KEY_TOTEM_COUNTRY, config.Country);
@@ -230,9 +371,8 @@ namespace FTC_Generic_Printing_App_POC
                 UpdateOrAddSetting(configFile, KEY_TOTEM_STORE_ID, config.StoreId);
 
                 configFile.Save(ConfigurationSaveMode.Modified);
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
-                AppLogger.LogInfo($"Totem configuration saved successfully. " +
+                AppLogger.LogInfo($"Totem configuration saved successfully to {UserConfigPath}. " +
                     $"IdTotem: {config.IdTotem}, " +
                     $"Country: {config.Country}, " +
                     $"Business: {config.Business}, " +
@@ -252,7 +392,7 @@ namespace FTC_Generic_Printing_App_POC
             try
             {
                 AppLogger.LogInfo("Saving StoreApi configuration...");
-                var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var configFile = GetConfigFile();
 
                 UpdateOrAddSetting(configFile, KEY_STOREAPI_AUTH_URL, authUrl);
                 UpdateOrAddSetting(configFile, KEY_STOREAPI_STORES_URL, storesUrl);
@@ -260,9 +400,8 @@ namespace FTC_Generic_Printing_App_POC
                 UpdateOrAddSetting(configFile, KEY_STOREAPI_CLIENT_SECRET, clientSecret);
 
                 configFile.Save(ConfigurationSaveMode.Modified);
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
-                AppLogger.LogInfo($"StoreApi configuration saved successfully. URL: {storesUrl}");
+                AppLogger.LogInfo($"StoreApi configuration saved successfully to {UserConfigPath}. URL: {storesUrl}");
             }
             catch (Exception ex)
             {
@@ -276,16 +415,15 @@ namespace FTC_Generic_Printing_App_POC
             try
             {
                 AppLogger.LogInfo("Saving Firebase configuration...");
-                var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var configFile = GetConfigFile();
 
                 UpdateOrAddSetting(configFile, KEY_FIREBASE_DATABASE_URL, databaseUrl);
                 UpdateOrAddSetting(configFile, KEY_FIREBASE_PROJECT_ID, projectId);
                 UpdateOrAddSetting(configFile, KEY_FIREBASE_API_KEY, apiKey);
 
                 configFile.Save(ConfigurationSaveMode.Modified);
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
-                AppLogger.LogInfo("Firebase configuration saved successfully");
+                AppLogger.LogInfo($"Firebase configuration saved successfully to {UserConfigPath}");
             }
             catch (Exception ex)
             {
@@ -299,14 +437,13 @@ namespace FTC_Generic_Printing_App_POC
             try
             {
                 AppLogger.LogInfo("Saving admin password...");
-                var configFile = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var configFile = GetConfigFile();
 
                 UpdateOrAddSetting(configFile, KEY_ADMIN_PASSWORD, password);
 
                 configFile.Save(ConfigurationSaveMode.Modified);
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
 
-                AppLogger.LogInfo("Admin password saved successfully");
+                AppLogger.LogInfo($"Admin password saved successfully to {UserConfigPath}");
             }
             catch (Exception ex)
             {
@@ -318,71 +455,6 @@ namespace FTC_Generic_Printing_App_POC
         public static void SaveConfiguration(ConfigurationData config)
         {
             SaveTotemConfiguration(config);
-        }
-        #endregion
-
-        #region Helper Methods
-        public static bool IsConfigurationValid(ConfigurationData config)
-        {
-            bool isValid = !string.IsNullOrWhiteSpace(config.IdTotem) &&
-                          !string.IsNullOrWhiteSpace(config.Country) &&
-                          !string.IsNullOrWhiteSpace(config.Business) &&
-                          !string.IsNullOrWhiteSpace(config.Store) &&
-                          !string.IsNullOrWhiteSpace(config.StoreId);
-
-            AppLogger.LogInfo($"Totem configuration validation: {(isValid ? "VALID" : "INVALID")}");
-            return isValid;
-        }
-
-        private static string GetAppSetting(string key, string defaultValue)
-        {
-            return System.Configuration.ConfigurationManager.AppSettings[key] ?? defaultValue;
-        }
-
-        private static void UpdateOrAddSetting(System.Configuration.Configuration configFile, string key, string value)
-        {
-            if (configFile.AppSettings.Settings[key] == null)
-            {
-                configFile.AppSettings.Settings.Add(key, value);
-            }
-            else
-            {
-                configFile.AppSettings.Settings[key].Value = value;
-            }
-        }
-
-        public static string GetValueFromDefaultConfig(string key)
-        {
-            try
-            {
-                string defaultConfigPath = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "defaultConfig.xml");
-
-                if (File.Exists(defaultConfigPath))
-                {
-                    var configXml = new System.Xml.XmlDocument();
-                    configXml.Load(defaultConfigPath);
-
-                    var node = configXml.SelectSingleNode($"//appSettings/add[@key='{key}']");
-                    if (node != null)
-                    {
-                        string value = node.Attributes["value"]?.Value;
-                        if (!string.IsNullOrEmpty(value))
-                        {
-                            AppLogger.LogInfo($"Loaded default value for {key} from defaultConfig.xml");
-                            return value;
-                        }
-                    }
-                }
-
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                AppLogger.LogWarning($"Could not load default value for {key}: {ex.Message}");
-                return string.Empty;
-            }
         }
         #endregion
     }

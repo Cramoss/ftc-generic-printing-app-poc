@@ -10,6 +10,34 @@ namespace FTC_Generic_Printing_App_POC
     {
         #region Fields
         private static readonly Logger logger;
+        private static readonly string appName = "FTC Generic Printing App POC";
+        #endregion
+
+        #region Properties
+        private static string LogDirectory
+        {
+            get
+            {
+                string logDirectory = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    appName,
+                    "logs");
+
+                if (!Directory.Exists(logDirectory))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(logDirectory);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to create log directory: {ex.Message}");
+                    }
+                }
+
+                return logDirectory;
+            }
+        }
         #endregion
 
         #region Initialization
@@ -29,36 +57,46 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                // Create logs directory if it doesn't exist
-                string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
-                if (!Directory.Exists(logDirectory))
-                {
-                    Directory.CreateDirectory(logDirectory);
-                }
-
+                // Create a new logging configuration
                 var config = new LoggingConfiguration();
 
                 var fileTarget = new FileTarget("fileTarget")
                 {
-                    FileName = Path.Combine(logDirectory, "ftc-app-${shortdate}.log"),
+                    FileName = Path.Combine(LogDirectory, appName + "-${shortdate}.log"),
+                    Layout = "${longdate} ${level:uppercase=true} ${message} ${exception:format=tostring}"
+                };
+
+                // Add a console target for debugging purposes
+                var consoleTarget = new ConsoleTarget("consoleTarget")
+                {
                     Layout = "${longdate} ${level:uppercase=true} ${message} ${exception:format=tostring}"
                 };
 
                 config.AddTarget(fileTarget);
+                config.AddTarget(consoleTarget);
 
-                // Add rule for all loggers
-                var rule = new LoggingRule("*", LogLevel.Debug, fileTarget);
-                config.LoggingRules.Add(rule);
+                // Add rules for all loggers
+                var fileRule = new LoggingRule("*", LogLevel.Debug, fileTarget);
+                var consoleRule = new LoggingRule("*", LogLevel.Debug, consoleTarget);
+                config.LoggingRules.Add(fileRule);
+                config.LoggingRules.Add(consoleRule);
 
                 LogManager.Configuration = config;
-                LogManager.GetCurrentClassLogger().Info("Using default NLog configuration. App.config file may be missing");
+
+                // Log initialization message
+                LogManager.GetCurrentClassLogger().Info($"Logging initialized. Log files will be written to {LogDirectory}");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Failed to configure default logging: {ex.Message}");
             }
         }
-        #endregion
+
+        // Method to get the current log file path - useful for troubleshooting
+        public static string GetCurrentLogFilePath()
+        {
+            return Path.Combine(LogDirectory, $"{appName}-{DateTime.Now:yyyy-MM-dd}.log");
+        }
 
         #region Helper Methods
         public static void LogInfo(string message)
@@ -96,3 +134,4 @@ namespace FTC_Generic_Printing_App_POC
         #endregion
     }
 }
+#endregion
