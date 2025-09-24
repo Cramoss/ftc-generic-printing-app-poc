@@ -40,6 +40,9 @@ namespace FTC_Generic_Printing_App_POC
             {
                 FirebaseListenerManager.Instance.StopListening();
             }
+
+            // Display the current printer name set as default by Windows
+            UpdateCurrentPrinterLabel();
         }
 
         protected override void SetVisibleCore(bool value)
@@ -622,6 +625,22 @@ namespace FTC_Generic_Printing_App_POC
             {
                 testDocumentPrintButton.Text = "Probar";
                 testDocumentPrintButton.Enabled = true;
+            }
+        }
+
+        private void UpdateCurrentPrinterLabel()
+        {
+            try
+            {
+                string printerName = printerService.GetPrinterName();
+                currentPrinter.Text = !string.IsNullOrEmpty(printerName) ? printerName : "No configurada";
+
+                AppLogger.LogInfo($"Current default printer displayed: {printerName}");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("Error getting current printer name", ex);
+                currentPrinter.Text = "Error";
             }
         }
 
