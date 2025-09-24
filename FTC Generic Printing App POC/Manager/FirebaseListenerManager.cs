@@ -89,8 +89,8 @@ namespace FTC_Generic_Printing_App_POC.Manager
 
                 // Wait a moment to allow the listener to start to update UI state.
                 // Maybe not the best way, but Firebase SDK does not provide a callback for successful start.
-                // Delay can be adjusted for slower machines, for 2000ms is good for now.
-                await Task.Delay(2000);
+                // Delay can be adjusted for slower machines, for 3000ms is good for now.
+                await Task.Delay(3000);
 
                 if (_firebaseService.IsListening)
                 {
