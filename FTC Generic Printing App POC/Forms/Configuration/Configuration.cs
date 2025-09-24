@@ -597,7 +597,7 @@ namespace FTC_Generic_Printing_App_POC
             try
             {
                 var testDocument = new Newtonsoft.Json.Linq.JObject();
-                testDocument["template"] = "test";
+                testDocument["id_plantilla"] = "test";
                 testDocument["data"] = "Documento de prueba";
 
                 printerService.PrintDocumentAsync(testDocument).Wait();
