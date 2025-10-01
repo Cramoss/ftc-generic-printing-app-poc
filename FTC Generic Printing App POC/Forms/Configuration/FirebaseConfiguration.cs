@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,12 +16,46 @@ namespace FTC_Generic_Printing_App_POC
     {
         #region Fields
         private FirebaseService firebaseManager;
+        private readonly Regex urlRegex = new Regex(@"^(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$", RegexOptions.Compiled);
+        private readonly Regex projectIdRegex = new Regex(@"^[a-zA-Z0-9-]+$", RegexOptions.Compiled); // Alphanumeric and hyphens
         #endregion
 
         #region Initialization
         public FirebaseConfiguration()
         {
             InitializeComponent();
+            SetupTextBoxValidation();
+        }
+
+        private void SetupTextBoxValidation()
+        {
+            firebaseDatabaseTextBox.MaxLength = 200;
+            firebaseProjectIdTextBox.MaxLength = 200;
+            firebaseKeyTextBox.MaxLength = 200;
+
+            // Add validation handlers
+            firebaseProjectIdTextBox.KeyPress += ProjectId_KeyPress;
+            firebaseKeyTextBox.KeyPress += AlphanumericOnly_KeyPress;
+        }
+
+        private void AlphanumericOnly_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Allow only letters, numbers, and control characters
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+                AppLogger.LogWarning($"Blocked non-alphanumeric character: {e.KeyChar}");
+            }
+        }
+
+        private void ProjectId_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Allow letters, numbers, hyphen, and control characters
+            if (!char.IsLetterOrDigit(e.KeyChar) && e.KeyChar != '-' && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+                AppLogger.LogWarning($"Blocked invalid character for Project ID: {e.KeyChar}");
+            }
         }
 
         private void FirebaseConfiguration_Load(object sender, EventArgs e)
@@ -64,7 +99,7 @@ namespace FTC_Generic_Printing_App_POC
                 string projectId = firebaseProjectIdTextBox.Text.Trim();
                 string apiKey = firebaseKeyTextBox.Text.Trim();
 
-                // TODO: Improve or add more validations.
+                // URL validation for Database URL
                 if (string.IsNullOrEmpty(databaseUrl))
                 {
                     AppLogger.LogWarning("Validation failed: Firebase Database URL is empty");
@@ -74,6 +109,16 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
+                if (!IsValidUrl(databaseUrl))
+                {
+                    AppLogger.LogWarning("Validation failed: Firebase Database URL has invalid format");
+                    MessageBox.Show("La URL de base de datos debe tener un formato válido (http:// o https://)", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    firebaseDatabaseTextBox.Focus();
+                    return;
+                }
+
+                // Validate Project ID
                 if (string.IsNullOrEmpty(projectId))
                 {
                     AppLogger.LogWarning("Validation failed: Firebase Project ID is empty");
@@ -83,10 +128,29 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
+                if (!IsValidProjectId(projectId))
+                {
+                    AppLogger.LogWarning("Validation failed: Project ID contains invalid characters");
+                    MessageBox.Show("El ID del proyecto solo puede contener letras, números y guiones.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    firebaseProjectIdTextBox.Focus();
+                    return;
+                }
+
+                // Validate API Key
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     AppLogger.LogWarning("Validation failed: Firebase API Key is empty");
                     MessageBox.Show("Por favor ingrese una API Key válida.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    firebaseKeyTextBox.Focus();
+                    return;
+                }
+
+                if (!apiKey.All(char.IsLetterOrDigit))
+                {
+                    AppLogger.LogWarning("Validation failed: API Key contains non-alphanumeric characters");
+                    MessageBox.Show("La API Key solo puede contener letras y números.", "Error de validación",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     firebaseKeyTextBox.Focus();
                     return;
@@ -202,6 +266,18 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogError("Error hiding Firebase configuration form and resetting edit panel", ex);
             }
+        }
+        #endregion
+
+        #region Utils
+        private bool IsValidUrl(string url)
+        {
+            return !string.IsNullOrWhiteSpace(url) && urlRegex.IsMatch(url);
+        }
+
+        private bool IsValidProjectId(string projectId)
+        {
+            return !string.IsNullOrWhiteSpace(projectId) && projectIdRegex.IsMatch(projectId);
         }
         #endregion
     }
