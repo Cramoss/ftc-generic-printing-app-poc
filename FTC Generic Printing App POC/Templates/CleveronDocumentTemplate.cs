@@ -54,15 +54,21 @@ namespace FTC_Generic_Printing_App_POC.Templates
             commands.Add(ESC_ALIGN_CENTER);
             commands.Add(ESC_BOLD_ON);
             commands.Add(ESC_MAX_HEIGHT);
-            commands.Add(TextLine(footer));
+
+            // Use wrapped text with appropriate width for the MAX_HEIGHT font size
+            var wrappedLines = WrapText(footer, 24);
+            foreach (var line in wrappedLines)
+            {
+                commands.Add(TextLine(line));
+                commands.Add(LF);
+            }
 
             commands.Add(ESC_NORMAL);
             commands.Add(ESC_BOLD_OFF);
 
             commands.Add(LF);
-            commands.Add(LF);
-
             AddDivider(commands);
+            commands.Add(LF);
         }
 
         private void PrintLogoImage(List<byte[]> commands, string resourceName)
