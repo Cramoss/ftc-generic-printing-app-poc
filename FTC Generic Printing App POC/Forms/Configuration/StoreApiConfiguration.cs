@@ -5,17 +5,18 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
 namespace FTC_Generic_Printing_App_POC
 {
-    // TODO: Hide icon from taskbar when form is open.
     public partial class StoreApiConfiguration : Form
     {
         #region Fields
         private readonly StoresApiService apiService;
+        private readonly Regex urlRegex = new Regex(@"^(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$", RegexOptions.Compiled);
         #endregion
 
         #region Initialization
@@ -23,6 +24,19 @@ namespace FTC_Generic_Printing_App_POC
         {
             apiService = new StoresApiService();
             InitializeComponent();
+            SetupTextBoxValidation();
+        }
+
+        private void SetupTextBoxValidation()
+        {
+            storesApiUrlTextBox.MaxLength = 200;
+            storesApiAuthUrlTextBox.MaxLength = 200;
+            storesApiClientIdTextBox.MaxLength = 200;
+            storesApiClientSecretTextBox.MaxLength = 200;
+
+            // Set up validation handlers for alphanumeric fields
+            storesApiClientIdTextBox.KeyPress += AlphanumericOnly_KeyPress;
+            storesApiClientSecretTextBox.KeyPress += AlphanumericOnly_KeyPress;
         }
 
         private void StoresApiConfiguration_Load(object sender, EventArgs e)
@@ -67,7 +81,7 @@ namespace FTC_Generic_Printing_App_POC
                 string storesApiClientId = storesApiClientIdTextBox.Text.Trim();
                 string storesApiClientSecret = storesApiClientSecretTextBox.Text.Trim();
 
-                // TODO: Improve or add more validations.
+                // Stores API URL format validation
                 if (string.IsNullOrEmpty(storesApiUrl))
                 {
                     AppLogger.LogWarning("Validation failed: Stores API URL is empty");
@@ -77,15 +91,35 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                if (string.IsNullOrEmpty(storesApiAuthUrl))
+                if (!IsValidUrl(storesApiUrl))
                 {
-                    AppLogger.LogWarning("Validation failed: Stores API Auth URL is empty");
-                    MessageBox.Show("Por favor ingrese una URL válida.", "Error de validación",
+                    AppLogger.LogWarning("Validation failed: Stores API URL has invalid format");
+                    MessageBox.Show("La URL debe tener un formato válido (http:// o https://)", "Error de validación",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     storesApiUrlTextBox.Focus();
                     return;
                 }
 
+                // AUTH URL format validation
+                if (string.IsNullOrEmpty(storesApiAuthUrl))
+                {
+                    AppLogger.LogWarning("Validation failed: Stores API Auth URL is empty");
+                    MessageBox.Show("Por favor ingrese una URL válida.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    storesApiAuthUrlTextBox.Focus();
+                    return;
+                }
+
+                if (!IsValidUrl(storesApiAuthUrl))
+                {
+                    AppLogger.LogWarning("Validation failed: Stores API Auth URL has invalid format");
+                    MessageBox.Show("La URL de autenticación debe tener un formato válido (http:// o https://)", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    storesApiAuthUrlTextBox.Focus();
+                    return;
+                }
+
+                // Validate Client ID
                 if (string.IsNullOrEmpty(storesApiClientId))
                 {
                     AppLogger.LogWarning("Validation failed: Stores API Client ID is empty");
@@ -95,10 +129,29 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
+                if (!storesApiClientId.All(char.IsLetterOrDigit))
+                {
+                    AppLogger.LogWarning("Validation failed: Client ID contains non-alphanumeric characters");
+                    MessageBox.Show("El Client ID solo puede contener letras y números.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    storesApiClientIdTextBox.Focus();
+                    return;
+                }
+
+                // Validate Client Secret
                 if (string.IsNullOrEmpty(storesApiClientSecret))
                 {
                     AppLogger.LogWarning("Validation failed: Stores API Client Secret is empty");
                     MessageBox.Show("Por favor ingrese un Client Secret válido.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    storesApiClientSecretTextBox.Focus();
+                    return;
+                }
+
+                if (!storesApiClientSecret.All(char.IsLetterOrDigit))
+                {
+                    AppLogger.LogWarning("Validation failed: Client Secret contains non-alphanumeric characters");
+                    MessageBox.Show("El Client Secret solo puede contener letras y números.", "Error de validación",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     storesApiClientSecretTextBox.Focus();
                     return;
@@ -215,6 +268,22 @@ namespace FTC_Generic_Printing_App_POC
             {
                 AppLogger.LogError("Error hiding Store API configuration form and resetting edit panel", ex);
             }
+        }
+        private void AlphanumericOnly_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Allow only letters, numbers, and control characters
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+                AppLogger.LogWarning($"[StoreAPI] Blocked non-alphanumeric character: {e.KeyChar}");
+            }
+        }
+        #endregion
+
+        #region Utils
+        private bool IsValidUrl(string url)
+        {
+            return !string.IsNullOrWhiteSpace(url) && urlRegex.IsMatch(url);
         }
         #endregion
     }
