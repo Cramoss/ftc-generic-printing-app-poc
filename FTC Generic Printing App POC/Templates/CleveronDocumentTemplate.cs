@@ -31,7 +31,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                         PrintTurnoFooter(commands, turnoToken);
                     }
 
-                    PrintLogoImage(commands, "FTC_Generic_Printing_App_POC.Resources.cleveron_locker.png");
+                    PrintLogoImage(commands, "FTC_Generic_Printing_App_POC.Resources.cleveron_locker_optimized.png");
                 }
 
                 commands.Add(LF);
@@ -67,12 +67,13 @@ namespace FTC_Generic_Printing_App_POC.Templates
         {
             try
             {
-                // TODO: Adjust cleveron locker image to avoid HighContrast image processing mode.
+                AppLogger.LogInfo($"Printing logo image from resource: {resourceName}");
+
                 var config = new ThermalPrinterImageUtility.ImageConfig
                 {
                     PrinterWidth = 384,
-                    ProcessingMode = ThermalPrinterImageUtility.ImageProcessingMode.HighContrast,
-                    ContrastThreshold = 240,
+                    ProcessingMode = ThermalPrinterImageUtility.ImageProcessingMode.None,
+                    ContrastThreshold = 128,
                     MaintainAspectRatio = true
                 };
 
