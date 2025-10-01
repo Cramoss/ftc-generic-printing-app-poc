@@ -17,7 +17,8 @@ namespace FTC_Generic_Printing_App_POC.Services
             templates = new Dictionary<string, IDocumentTemplate>(StringComparer.OrdinalIgnoreCase)
             {
                 { "test", new TestDocumentTemplate() },
-                { "porcentaje", new PorcentajeDocumentTemplate() }
+                { "porcentaje", new PorcentajeDocumentTemplate() },
+                { "cleveron", new CleveronDocumentTemplate() }
             };
 
             AppLogger.LogInfo($"DocumentTemplateManager initialized with {templates.Count} templates");

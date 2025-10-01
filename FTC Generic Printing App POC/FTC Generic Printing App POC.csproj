@@ -136,6 +136,7 @@
     <Compile Include="Forms\Configuration\TotemConfiguration.Designer.cs">
       <DependentUpon>TotemConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\ThermalPrinterImageUtility.cs" />
     <Compile Include="Utils\TrayApplicationContext.cs" />
     <EmbeddedResource Include="Forms\Configuration\Configuration.resx">
       <DependentUpon>Configuration.cs</DependentUpon>
@@ -175,7 +176,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\cleveron_locker.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

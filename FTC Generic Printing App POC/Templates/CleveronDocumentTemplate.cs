@@ -1,64 +1,101 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using FTC_Generic_Printing_App_POC.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
 namespace FTC_Generic_Printing_App_POC.Templates
 {
-    // TODO: Adjust this template to replicate current Cleveron document format.
-    // TODO: Add image support.
-    // Use the SafeGetValue method to extract data from the JSON payload. Current messages are placeholders.
     public class CleveronDocumentTemplate : BaseDocumentTemplate
     {
         public override string TemplateId => "cleveron";
 
+        private readonly byte[] ESC_MAX_HEIGHT = new byte[] { 0x1B, 0x21, 0x70 };
+
         public override List<byte[]> GenerateDocumentCommands(JObject document)
         {
             var commands = new List<byte[]>();
-            var config = ConfigurationManager.LoadTotemConfiguration();
 
             // Initialize printer
             commands.Add(ESC_INIT);
-
-            // First custom message
-            AddCenteredText(commands, "BIENVENIDO");
-            commands.Add(LF);
-
-            // Document number in bigger text
             commands.Add(ESC_ALIGN_CENTER);
-            commands.Add(ESC_BOLD_ON);
-            commands.Add(ESC_DOUBLE_HEIGHT);
-            AddText(commands, "A01");
-            commands.Add(ESC_BOLD_OFF);
-            commands.Add(ESC_NORMAL);
-            commands.Add(LF);
-            commands.Add(LF);
 
-            // Second custom message
-            AddCenteredText(commands, "Proin elementum ligula in molestie interdum. " +
-                "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.");
-            commands.Add(LF);
+            try
+            {
+                var dataToken = document["data"];
 
-            // Third custom message
-            AddCenteredText(commands, "Proin elementum ligula in molestie interdum.");
-            commands.Add(LF);
+                if (dataToken != null)
+                {
+                    JToken turnoToken = dataToken["turno"];
+                    if (turnoToken != null)
+                    {
+                        PrintTurnoFooter(commands, turnoToken);
+                    }
 
-            // Percentage in normal text
-            commands.Add(ESC_ALIGN_CENTER);
-            commands.Add(ESC_BOLD_ON);
-            AddText(commands, "60%");
-            commands.Add(ESC_BOLD_OFF);
-            commands.Add(LF);
-            commands.Add(LF);
+                    PrintLogoImage(commands, "FTC_Generic_Printing_App_POC.Resources.cleveron_locker.png");
+                }
 
-            // Footer
-            AddDivider(commands);
-            AddCenteredText(commands, "Senectus et netus et malesuada fames ac turpis egestas");
-            commands.Add(LF);
+                commands.Add(LF);
+                commands.Add(LF);
+            }
+            catch (Exception ex)
+            {
+                AddCenteredText(commands, "Error printing document");
+                commands.Add(LF);
+            }
 
-            // Cut the paper
             AddCutCommand(commands);
 
             return commands;
+        }
+
+        private void PrintTurnoFooter(List<byte[]> commands, JToken turno)
+        {
+            string footer = SafeGetValue(turno, "footer", "BIENVENIDO");
+            commands.Add(ESC_ALIGN_CENTER);
+            commands.Add(ESC_BOLD_ON);
+            commands.Add(ESC_MAX_HEIGHT);
+            commands.Add(TextLine(footer));
+
+            commands.Add(ESC_NORMAL);
+            commands.Add(ESC_BOLD_OFF);
+
+            commands.Add(LF);
+            commands.Add(LF);
+        }
+
+        private void PrintLogoImage(List<byte[]> commands, string resourceName)
+        {
+            try
+            {
+                // TODO: Adjust cleveron locker image to avoid HighContrast image processing mode.
+                var config = new ThermalPrinterImageUtility.ImageConfig
+                {
+                    PrinterWidth = 384,
+                    ProcessingMode = ThermalPrinterImageUtility.ImageProcessingMode.HighContrast,
+                    ContrastThreshold = 240,
+                    MaintainAspectRatio = true
+                };
+
+                var imageCommands = ThermalPrinterImageUtility.LoadEmbeddedImageAsCommands(resourceName, config);
+
+                if (imageCommands != null && imageCommands.Count > 0)
+                {
+                    commands.Add(ESC_ALIGN_CENTER);
+                    commands.AddRange(imageCommands);
+                }
+                else
+                {
+                    commands.Add(ESC_ALIGN_CENTER);
+                    commands.Add(TextLine("Image not available"));
+                }
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogError($"Error printing image: {ex.Message}", ex);
+                commands.Add(ESC_ALIGN_CENTER);
+                commands.Add(TextLine("Error printing image"));
+                commands.Add(LF);
+            }
         }
     }
 }
