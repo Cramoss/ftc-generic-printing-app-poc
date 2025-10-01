@@ -61,6 +61,8 @@ namespace FTC_Generic_Printing_App_POC.Templates
 
             commands.Add(LF);
             commands.Add(LF);
+
+            AddDivider(commands);
         }
 
         private void PrintLogoImage(List<byte[]> commands, string resourceName)

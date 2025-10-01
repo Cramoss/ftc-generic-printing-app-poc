@@ -65,7 +65,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
         protected void AddDivider(List<byte[]> commands)
         {
             commands.Add(ESC_ALIGN_CENTER);
-            commands.Add(TextLine("========================"));
+            commands.Add(TextLine("====================================="));
             commands.Add(LF);
             commands.Add(ESC_ALIGN_LEFT);
         }
