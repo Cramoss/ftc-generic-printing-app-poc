@@ -151,6 +151,19 @@ namespace FTC_Generic_Printing_App_POC
         {
             countryComboBox.SelectedIndexChanged += OnCountryChanged;
             businessComboBox.SelectedIndexChanged += OnBusinessChanged;
+
+            idTotemTextBox.MaxLength = 4;
+            idTotemTextBox.KeyPress += IdTotemTextBox_KeyPress;
+        }
+
+        private void IdTotemTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Allow only alphanumeric characters and control keys (like backspace)
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true; // Suppress the character
+                AppLogger.LogWarning($"Blocked non-alphanumeric character: {e.KeyChar}");
+            }
         }
 
         private void OnCountryChanged(object sender, EventArgs e)
@@ -223,11 +236,29 @@ namespace FTC_Generic_Printing_App_POC
                 string selectedStore = selectedStoreObj?.name ?? "";
                 string selectedStoreId = selectedStoreObj?.id ?? "";
 
-                // TODO: Improve or add more validations.
                 if (string.IsNullOrEmpty(idTotem))
                 {
                     AppLogger.LogWarning("Validation failed: ID Totem is empty");
                     MessageBox.Show("Por favor ingrese un ID Totem válido.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    idTotemTextBox.Focus();
+                    return;
+                }
+
+                if (idTotem.Length > 4)
+                {
+                    AppLogger.LogWarning("Validation failed: ID Totem exceeds maximum length");
+                    MessageBox.Show("El ID Totem no puede tener más de 4 caracteres.", "Error de validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    idTotemTextBox.Focus();
+                    return;
+                }
+
+                // Alphanumeric characters only validation
+                if (!idTotem.All(char.IsLetterOrDigit))
+                {
+                    AppLogger.LogWarning("Validation failed: ID Totem contains non-alphanumeric characters");
+                    MessageBox.Show("El ID Totem solo puede contener letras y números.", "Error de validación",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     idTotemTextBox.Focus();
                     return;
