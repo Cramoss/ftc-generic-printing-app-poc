@@ -24,6 +24,11 @@ namespace FTC_Generic_Printing_App_POC.Templates
         private readonly byte[] GS_w = new byte[] { 0x1D, 0x77 }; // Set barcode width
         private readonly byte[] GS_k = new byte[] { 0x1D, 0x6B }; // Print barcode
 
+        // GS Commands for really big text
+        private readonly byte[] GS_TEXT_MAGNIFICATION = new byte[] { 0x1D, 0x21, 0x33 }; // Magnify text 3x3
+        private readonly byte[] GS_TEXT_MAGNIFICATION_LARGE = new byte[] { 0x1D, 0x21, 0x56 }; // Magnify text large (5x6)
+        private readonly byte[] GS_TEXT_MAGNIFICATION_MAX = new byte[] { 0x1D, 0x21, 0x77 }; // Magnify text max
+
         public override List<byte[]> GenerateDocumentCommands(JObject document)
         {
             var commands = new List<byte[]>();
@@ -83,9 +88,9 @@ namespace FTC_Generic_Printing_App_POC.Templates
             // Turno number
             string turnoNumber = SafeGetValue(turno, "number", "---");
             commands.Add(ESC_BOLD_ON);
-            commands.Add(ESC_MAX_HEIGHT);
+            commands.Add(GS_TEXT_MAGNIFICATION_LARGE);
             commands.Add(TextLine(turnoNumber));
-            commands.Add(ESC_NORMAL);
+            commands.Add(ESC_NORMAL); // Reset to normal
             commands.Add(ESC_BOLD_OFF);
             commands.Add(LF);
             commands.Add(LF);
@@ -131,7 +136,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
             if (!string.IsNullOrEmpty(promocion))
             {
                 commands.Add(ESC_BOLD_ON);
-                commands.Add(ESC_MAX_HEIGHT);
+                commands.Add(GS_TEXT_MAGNIFICATION_LARGE);
                 commands.Add(TextLine(promocion));
                 commands.Add(ESC_NORMAL);
                 commands.Add(ESC_BOLD_OFF);
