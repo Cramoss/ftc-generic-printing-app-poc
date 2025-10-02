@@ -93,6 +93,7 @@
     <Compile Include="Manager\FirebaseListenerManager.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\PrinterService.cs" />
+    <Compile Include="Services\SingleInstanceService.cs" />
     <Compile Include="Services\StoresApiService.cs" />
     <Compile Include="Forms\Configuration\Configuration.cs">
       <SubType>Form</SubType>

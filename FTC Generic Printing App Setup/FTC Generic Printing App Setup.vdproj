@@ -874,12 +874,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6DE58B8BC8B66E46B95349D602DD2DAD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_2233E03CA20D465EA670842FF83971ED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1627,6 +1621,12 @@
         "OwnerKey" = "8:_5BA7DDBA738C8A5166477B46A9CCBD75"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6DE58B8BC8B66E46B95349D602DD2DAD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -1645,6 +1645,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -1661,6 +1677,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -5714,8 +5738,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FTC Generic Printing App POC"
-        "ProductCode" = "8:{20CA76AE-F8F9-4D84-BB92-7DD84CC3FDF7}"
-        "PackageCode" = "8:{66A4D35E-1900-4FBD-BA32-4E4EC8438AF0}"
+        "ProductCode" = "8:{4BF67F12-53F4-42FA-B4B9-DCF09BC9C172}"
+        "PackageCode" = "8:{87D19811-C690-48AB-87AE-AED90940C868}"
         "UpgradeCode" = "8:{F7BD1E86-5DDC-4C5E-BA3A-3140281C0DCB}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
