@@ -215,6 +215,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                     commands.Add(TextLine(line));
                     commands.Add(LF);
                 }
+                AddText(commands, "CRS");
             }
 
             // Reset alignment
