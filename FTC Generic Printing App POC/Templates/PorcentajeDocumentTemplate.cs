@@ -206,8 +206,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
             string footerText = SafeGetValue(cupon, "footer");
             if (!string.IsNullOrEmpty(footerText))
             {
-                // Remove HTML tags (simple approach for <br>)
-                footerText = footerText.Replace("<br>", " ").Replace("<BR>", " ");
+                footerText = footerText.Replace("<br>", "\n").Replace("<BR>", "\n");
 
                 commands.Add(ESC_FONT_A);
                 var wrappedLines = WrapText(footerText, 40);
