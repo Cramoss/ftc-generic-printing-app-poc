@@ -123,10 +123,22 @@ namespace FTC_Generic_Printing_App_POC
 
         private void ExitApplication(object sender, EventArgs e)
         {
+            if (FirebaseListenerManager.Instance.IsListening)
+            {
+                FirebaseListenerManager.Instance.StopListening();
+            }
+
+            // Hide and dispose tray icon
             trayIcon.Visible = false;
             trayIcon.Dispose();
 
+            this.Dispose();
+
+            // Exit the application
             Application.Exit();
+
+            // Force termination of any background threads
+            Environment.Exit(0);
         }
         #endregion
 
@@ -145,9 +157,20 @@ namespace FTC_Generic_Printing_App_POC
         {
             if (disposing)
             {
+                if (FirebaseListenerManager.Instance.IsListening)
+                {
+                    FirebaseListenerManager.Instance.StopListening();
+                }
+
                 // Unsubscribe from event
                 FirebaseListenerManager.Instance.ListeningStateChanged -= OnListeningStateChanged;
-                trayIcon?.Dispose();
+
+                // Dispose the tray icon
+                if (trayIcon != null)
+                {
+                    trayIcon.Dispose();
+                    trayIcon = null;
+                }
             }
             base.Dispose(disposing);
         }
