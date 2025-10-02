@@ -45,29 +45,29 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(ESC_BOLD_OFF);
                 commands.Add(LF);
                 commands.Add(LF);
-
                 AddDivider(commands);
                 commands.Add(LF);
-                commands.Add(LF);
-
-                PrintTurnoSection(commands);
 
                 // Display totem configuration if configured
                 if (!string.IsNullOrEmpty(config.IdTotem))
                 {
                     commands.Add(ESC_ALIGN_LEFT);
                     commands.Add(ESC_BOLD_ON);
-                    commands.Add(TextLine("CONFIGURACIÓN DEL TOTEM ACTUAL"));
+                    commands.Add(TextLine("TOTEM CONFIGURADO\n\n"));
                     commands.Add(ESC_BOLD_OFF);
 
                     AddText(commands, $"ID Totem: {config.IdTotem}");
                     AddText(commands, $"Tienda: {config.Store} ({config.StoreId})");
                     AddText(commands, $"País: {config.Country}");
                     AddText(commands, $"Negocio: {config.Business}");
+
                     commands.Add(LF);
+                    AddDivider(commands);
                     commands.Add(LF);
                     commands.Add(ESC_ALIGN_CENTER);
                 }
+
+                PrintTurnoSection(commands);
 
                 PrintCuponSection(commands);
 
