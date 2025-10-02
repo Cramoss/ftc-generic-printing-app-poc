@@ -153,8 +153,6 @@ namespace FTC_Generic_Printing_App_POC
                 }
 
                 string fullPath = BuildDocumentPath();
-                AppLogger.LogInfo($"Starting FireSharp listener on path: {fullPath}");
-
                 cancellationTokenSource = new CancellationTokenSource();
 
                 await Task.Run(async () =>
@@ -320,8 +318,7 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                AppLogger.LogFirebaseEvent("NEW_DOCUMENT",
-                    $"Processing new document with ID: {rootId}");
+                AppLogger.LogFirebaseEvent("NEW_DOCUMENT", $"ID: [{rootId}]. DATA: {document}");
 
                 await printerService.PrintDocumentAsync(document);
                 AppLogger.LogInfo($"Document {rootId} sent to printer successfully");
@@ -373,7 +370,6 @@ namespace FTC_Generic_Printing_App_POC
 
             string countryCode = MapCountryToCode(currentTotemConfig.Country);
             string path = $"{databaseDocumentParentPath}/{countryCode}/{currentTotemConfig.Business.ToLower()}/{currentTotemConfig.StoreId}/{currentTotemConfig.IdTotem}";
-            AppLogger.LogInfo($"Built Firebase document path: {path}");
             return path;
         }
 

@@ -51,8 +51,6 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                AppLogger.LogInfo($"Received listening state changed event: {isListening}");
-
                 // Forces UI updates happen on the UI thread
                 if (trayMenu.InvokeRequired)
                 {
@@ -97,8 +95,6 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                AppLogger.LogInfo($"Updating tray UI for listening state: {isListening}");
-
                 if (isListening)
                 {
                     trayMenu.Items[1].Text = "Finalizar escuchar";
@@ -112,8 +108,6 @@ namespace FTC_Generic_Printing_App_POC
 
                 // Force a refresh of the tray menu
                 trayMenu.Refresh();
-
-                AppLogger.LogInfo($"Updated tray UI for listening state: {isListening}");
             }
             catch (Exception ex)
             {

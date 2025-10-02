@@ -114,10 +114,6 @@ namespace FTC_Generic_Printing_App_POC.Services
             try
             {
                 AppLogger.LogInfo("Starting print process");
-
-                string templateId = document["template"]?.ToString() ?? "default";
-                AppLogger.LogInfo($"Using template: {templateId}");
-
                 var commands = await templateManager.ProcessDocumentAsync(document);
 
                 SendBytesToPrinter(commands);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FTC_Generic_Printing_App_POC.Templates;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ namespace FTC_Generic_Printing_App_POC.Services
                 { "cleveron", new CleveronDocumentTemplate() }
             };
 
-            AppLogger.LogInfo($"DocumentTemplateManager initialized with {templates.Count} templates");
+            AppLogger.LogInfo($"DocumentTemplateManager initialized with {templates.Count} templates: ({string.Join(", ", templates.Keys)})");
         }
 
         public async Task<List<byte[]>> ProcessDocumentAsync(Newtonsoft.Json.Linq.JObject document)

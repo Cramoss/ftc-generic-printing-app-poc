@@ -3,6 +3,7 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.IO;
+using System.Text;
 
 namespace FTC_Generic_Printing_App_POC
 {
@@ -63,13 +64,15 @@ namespace FTC_Generic_Printing_App_POC
                 var fileTarget = new FileTarget("fileTarget")
                 {
                     FileName = Path.Combine(LogDirectory, appName + "-${shortdate}.log"),
-                    Layout = "${longdate} ${level:uppercase=true} ${message} ${exception:format=tostring}"
+                    Layout = "${longdate} ${level:uppercase=true} ${message} ${exception:format=tostring}",
+                    Encoding = Encoding.UTF8,
                 };
 
                 // Add a console target for debugging purposes
                 var consoleTarget = new ConsoleTarget("consoleTarget")
                 {
-                    Layout = "${longdate} ${level:uppercase=true} ${message} ${exception:format=tostring}"
+                    Layout = "${longdate} ${level:uppercase=true} ${message} ${exception:format=tostring}",
+                    Encoding = Encoding.UTF8
                 };
 
                 config.AddTarget(fileTarget);
@@ -84,7 +87,7 @@ namespace FTC_Generic_Printing_App_POC
                 LogManager.Configuration = config;
 
                 // Log initialization message
-                LogManager.GetCurrentClassLogger().Info($"Logging initialized. Log files will be written to {LogDirectory}");
+                LogManager.GetCurrentClassLogger().Info($"Logging initialized with UTF-8 encoding. Log files will be written to {LogDirectory}");
             }
             catch (Exception ex)
             {

@@ -94,7 +94,6 @@ namespace FTC_Generic_Printing_App_POC.Manager
 
                 if (_firebaseService.IsListening)
                 {
-                    AppLogger.LogInfo("Firebase listener started");
                     Services.NotificationService.ShowNotification("Escuchando eventos en Firebase");
 
                     NotifyListeningStateChanged();
@@ -150,8 +149,6 @@ namespace FTC_Generic_Printing_App_POC.Manager
             try
             {
                 bool currentState = _firebaseService?.IsListening ?? false;
-                AppLogger.LogInfo($"Notifying listening state changed to: {currentState}");
-
                 ListeningStateChanged?.Invoke(this, currentState);
             }
             catch (Exception ex)
