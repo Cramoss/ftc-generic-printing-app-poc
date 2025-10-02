@@ -10,7 +10,7 @@ namespace FTC_Generic_Printing_App_POC
     {
         #region Fields
         private static readonly Logger logger;
-        private static readonly string appName = "FTC Generic Printing App POC";
+        private static readonly string appName = "FTC Generic Printing App POC"; // TODO: Remove POC on final version
         #endregion
 
         #region Properties

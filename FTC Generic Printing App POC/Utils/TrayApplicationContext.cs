@@ -37,7 +37,7 @@ namespace FTC_Generic_Printing_App_POC
             {
                 Icon = SystemIcons.Application,
                 ContextMenuStrip = trayMenu,
-                Text = "FTC Generic Printing App",
+                Text = "FTC Generic Printing App POC", // TODO: Remove POC on final version
                 Visible = true
             };
 

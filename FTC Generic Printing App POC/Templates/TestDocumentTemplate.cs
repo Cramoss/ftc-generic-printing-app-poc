@@ -79,6 +79,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                 commands.Add(ESC_NORMAL);
                 commands.Add(ESC_FONT_B);
                 commands.Add(TextLine($"Impreso: {DateTime.Now.ToString("dd/MM/yyyy HH:mm")}"));
+                // TODO: Remove POC on final version
                 commands.Add(TextLine("FTC Generic Printing App POC"));
                 commands.Add(LF);
                 commands.Add(ESC_FONT_A);

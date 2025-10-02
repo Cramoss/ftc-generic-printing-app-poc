@@ -31,6 +31,7 @@ namespace FTC_Generic_Printing_App_POC.Templates
                         PrintTurnoFooter(commands, turnoToken);
                     }
 
+                    // TODO: Remove POC on final version
                     PrintLogoImage(commands, "FTC_Generic_Printing_App_POC.Resources.cleveron_locker_optimized.png");
                 }
 

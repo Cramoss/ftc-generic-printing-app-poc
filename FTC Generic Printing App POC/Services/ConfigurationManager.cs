@@ -36,7 +36,7 @@ namespace FTC_Generic_Printing_App_POC
             {
                 string appDataPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "FTC Generic Printing App");
+                    "FTC Generic Printing App POC"); // TODO: Remove POC on final version
 
                 if (!Directory.Exists(appDataPath))
                 {

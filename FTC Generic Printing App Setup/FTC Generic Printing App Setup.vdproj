@@ -1684,6 +1684,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -5738,8 +5746,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FTC Generic Printing App POC"
-        "ProductCode" = "8:{4BF67F12-53F4-42FA-B4B9-DCF09BC9C172}"
-        "PackageCode" = "8:{87D19811-C690-48AB-87AE-AED90940C868}"
+        "ProductCode" = "8:{2B36DC5D-E318-4488-A5D6-0C7E10AD4826}"
+        "PackageCode" = "8:{59C91D42-B2DD-4142-8B47-497A94B1C214}"
         "UpgradeCode" = "8:{F7BD1E86-5DDC-4C5E-BA3A-3140281C0DCB}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -6288,7 +6296,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2233E03CA20D465EA670842FF83971ED"
             {
-            "SourcePath" = "8:..\\FTC Generic Printing App POC\\obj\\Debug\\FTC Generic Printing App POC.exe"
+            "SourcePath" = "8:..\\FTC Generic Printing App POC\\obj\\Release\\FTC Generic Printing App POC.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_DB09A91AFC4744D5BABBE830822F9705"

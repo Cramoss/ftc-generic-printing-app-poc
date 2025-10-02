@@ -41,7 +41,7 @@ namespace FTC_Generic_Printing_App_POC.Utils
 
         // Load an embedded resource image and convert to thermal printer (POS) commands
         // Images should be added to the project as Embedded Resource on the Resources folder from the project root.
-        // If so, the resource path should be (example): "FTC_Generic_Printing_App_POC.Resources.your_image.png"
+        // If so, the resource path should be (example): "FTC_Generic_Printing_App.Resources.your_image.png"
         public static List<byte[]> LoadEmbeddedImageAsCommands(
             string resourceName,
             ImageConfig config = null)

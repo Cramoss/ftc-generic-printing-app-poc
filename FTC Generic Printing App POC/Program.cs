@@ -9,6 +9,7 @@ namespace FTC_Generic_Printing_App_POC
     static class Program
     {
         public static TrayApplicationContext TrayContext { get; private set; }
+        // TODO: Remove POC on final version
         private const string AppMutexName = "FTC_Generic_Printing_App_POC_SingleInstanceMutex";
 
         [STAThread]
