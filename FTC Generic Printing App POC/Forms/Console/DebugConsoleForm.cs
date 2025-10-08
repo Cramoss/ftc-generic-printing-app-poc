@@ -10,10 +10,7 @@ namespace FTC_Generic_Printing_App_POC.Forms
     public partial class DebugConsoleForm : Form
     {
         // TODO: Add log level filtering combobox.
-        // TODO: Add "Clear" button to clear logs.
         // TODO: Add Checkbox to toggle auto-scroll.
-        // TODO: Add button to copy logs to clipboard.
-        // TODO: Add button to open log file location.
         // TODO: Improve text colors for better readability.
         public DebugConsoleForm()
         {
