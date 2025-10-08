@@ -30,6 +30,7 @@
         {
             this.logTextBox = new System.Windows.Forms.RichTextBox();
             this.copyClipboardButton = new System.Windows.Forms.Button();
+            this.openLogFolderButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // logTextBox
@@ -50,11 +51,22 @@
             this.copyClipboardButton.UseVisualStyleBackColor = true;
             this.copyClipboardButton.Click += new System.EventHandler(this.copyClipboardButton_Click);
             // 
+            // openLogFolderButton
+            // 
+            this.openLogFolderButton.Location = new System.Drawing.Point(196, 524);
+            this.openLogFolderButton.Name = "openLogFolderButton";
+            this.openLogFolderButton.Size = new System.Drawing.Size(169, 23);
+            this.openLogFolderButton.TabIndex = 2;
+            this.openLogFolderButton.Text = "Abrir carpeta de logs";
+            this.openLogFolderButton.UseVisualStyleBackColor = true;
+            this.openLogFolderButton.Click += new System.EventHandler(this.openLogFolderButton_Click);
+            // 
             // DebugConsoleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(774, 595);
+            this.Controls.Add(this.openLogFolderButton);
             this.Controls.Add(this.copyClipboardButton);
             this.Controls.Add(this.logTextBox);
             this.Name = "DebugConsoleForm";
@@ -67,5 +79,6 @@
 
         private System.Windows.Forms.RichTextBox logTextBox;
         private System.Windows.Forms.Button copyClipboardButton;
+        private System.Windows.Forms.Button openLogFolderButton;
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.IO;
 
 namespace FTC_Generic_Printing_App_POC.Forms
 {
@@ -138,6 +139,31 @@ namespace FTC_Generic_Printing_App_POC.Forms
             {
                 MessageBox.Show($"Error al copiar al portapapeles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 AppLogger.LogError("Error copiando logs al portapapeles", ex);
+            }
+        }
+
+        private void openLogFolderButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string logFilePath = AppLogger.GetCurrentLogFilePath();
+                string logDirectory = Path.GetDirectoryName(logFilePath);
+
+                if (!Directory.Exists(logDirectory))
+                {
+                    MessageBox.Show($"El directorio de logs no existe: {logDirectory}",
+                        "Directorio no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                System.Diagnostics.Process.Start("explorer.exe", logDirectory);
+                AppLogger.LogInfo($"Opened log directory: {logDirectory}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir el directorio de logs: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppLogger.LogError("Error opening log directory", ex);
             }
         }
     }
