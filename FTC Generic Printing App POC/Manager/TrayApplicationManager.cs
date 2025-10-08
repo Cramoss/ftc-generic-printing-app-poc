@@ -29,7 +29,8 @@ namespace FTC_Generic_Printing_App_POC.Manager
             trayMenu = new ContextMenuStrip();
             trayMenu.Items.Add("Configuración", null, ShowSettings);
             trayMenu.Items.Add("Escuchar evento", null, ToggleListening);
-            trayMenu.Items.Add("-"); // Separator
+            trayMenu.Items.Add("Consola", null, ShowDebugConsole);
+            trayMenu.Items.Add("-");
             trayMenu.Items.Add("Salir", null, ExitApplication);
 
             // TODO: Update default Windows icon.
@@ -136,6 +137,12 @@ namespace FTC_Generic_Printing_App_POC.Manager
 
             // Force termination of any background threads
             Environment.Exit(0);
+        }
+
+        private void ShowDebugConsole(object sender, EventArgs e)
+        {
+            // Toggle the debug console visibility
+            DebugManager.Instance.ToggleConsole();
         }
         #endregion
 
