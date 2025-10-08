@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FTC_Generic_Printing_App_POC.Utils;
+using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace FTC_Generic_Printing_App_POC.Forms
@@ -88,6 +90,55 @@ namespace FTC_Generic_Printing_App_POC.Forms
             Info,
             Warning,
             Error
+        }
+
+        private void copyClipboardButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string allText = logTextBox.Text;
+
+                if (string.IsNullOrEmpty(allText))
+                {
+                    MessageBox.Show("No hay contenido para copiar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Split the text into lines
+                string[] lines = allText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+                // Get last 500 lines
+                string[] lastLines = lines.Length <= 500 ?
+                    lines :
+                    lines.Skip(Math.Max(0, lines.Length - 500)).ToArray();
+
+                // Join the lines
+                string clipboardText = string.Join(Environment.NewLine, lastLines);
+
+                var staThread = new System.Threading.Thread(() =>
+                {
+                    try
+                    {
+                        Clipboard.SetText(clipboardText);
+                    }
+                    catch (Exception ex)
+                    {
+                        AppLogger.LogError($"Error in clipboard thread: {ex.Message}", ex);
+                    }
+                });
+
+                // Set thread to STA mode
+                staThread.SetApartmentState(System.Threading.ApartmentState.STA);
+                staThread.Start();
+                staThread.Join(); // Wait for the thread to complete
+
+                AppLogger.LogInfo("Copied last 500 lines into clipboard.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al copiar al portapapeles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppLogger.LogError("Error copiando logs al portapapeles", ex);
+            }
         }
     }
 }

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.logTextBox = new System.Windows.Forms.RichTextBox();
+            this.copyClipboardButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // logTextBox
@@ -39,11 +40,22 @@
             this.logTextBox.TabIndex = 0;
             this.logTextBox.Text = "";
             // 
+            // copyClipboardButton
+            // 
+            this.copyClipboardButton.Location = new System.Drawing.Point(12, 524);
+            this.copyClipboardButton.Name = "copyClipboardButton";
+            this.copyClipboardButton.Size = new System.Drawing.Size(177, 23);
+            this.copyClipboardButton.TabIndex = 1;
+            this.copyClipboardButton.Text = "Copiar al portapapeles";
+            this.copyClipboardButton.UseVisualStyleBackColor = true;
+            this.copyClipboardButton.Click += new System.EventHandler(this.copyClipboardButton_Click);
+            // 
             // DebugConsoleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(774, 529);
+            this.ClientSize = new System.Drawing.Size(774, 595);
+            this.Controls.Add(this.copyClipboardButton);
             this.Controls.Add(this.logTextBox);
             this.Name = "DebugConsoleForm";
             this.Text = "Consola - FTC Generic Printing App";
@@ -54,5 +66,6 @@
         #endregion
 
         private System.Windows.Forms.RichTextBox logTextBox;
+        private System.Windows.Forms.Button copyClipboardButton;
     }
 }
