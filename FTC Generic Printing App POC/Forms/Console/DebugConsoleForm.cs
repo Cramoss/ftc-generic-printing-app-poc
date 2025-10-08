@@ -166,5 +166,19 @@ namespace FTC_Generic_Printing_App_POC.Forms
                 AppLogger.LogError("Error opening log directory", ex);
             }
         }
+
+        private void clearLogsButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                logTextBox.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al limpiar la consola: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppLogger.LogError("Error clearing console logs", ex);
+            }
+        }
     }
 }

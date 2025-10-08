@@ -31,6 +31,7 @@
             this.logTextBox = new System.Windows.Forms.RichTextBox();
             this.copyClipboardButton = new System.Windows.Forms.Button();
             this.openLogFolderButton = new System.Windows.Forms.Button();
+            this.clearLogsButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // logTextBox
@@ -61,11 +62,22 @@
             this.openLogFolderButton.UseVisualStyleBackColor = true;
             this.openLogFolderButton.Click += new System.EventHandler(this.openLogFolderButton_Click);
             // 
+            // clearLogsButton
+            // 
+            this.clearLogsButton.Location = new System.Drawing.Point(372, 524);
+            this.clearLogsButton.Name = "clearLogsButton";
+            this.clearLogsButton.Size = new System.Drawing.Size(102, 23);
+            this.clearLogsButton.TabIndex = 3;
+            this.clearLogsButton.Text = "Limpiar";
+            this.clearLogsButton.UseVisualStyleBackColor = true;
+            this.clearLogsButton.Click += new System.EventHandler(this.clearLogsButton_Click);
+            // 
             // DebugConsoleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(774, 595);
+            this.Controls.Add(this.clearLogsButton);
             this.Controls.Add(this.openLogFolderButton);
             this.Controls.Add(this.copyClipboardButton);
             this.Controls.Add(this.logTextBox);
@@ -80,5 +92,6 @@
         private System.Windows.Forms.RichTextBox logTextBox;
         private System.Windows.Forms.Button copyClipboardButton;
         private System.Windows.Forms.Button openLogFolderButton;
+        private System.Windows.Forms.Button clearLogsButton;
     }
 }
