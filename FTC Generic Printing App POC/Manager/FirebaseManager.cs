@@ -1,20 +1,18 @@
 ﻿using FTC_Generic_Printing_App_POC.Services;
+using FTC_Generic_Printing_App_POC.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FTC_Generic_Printing_App_POC.Manager
 {
     // Manager class to handle Firebase listener lifecycle and state
-    public class FirebaseListenerManager
+    public class FirebaseManager
     {
-        private static FirebaseListenerManager _instance;
+        private static FirebaseManager _instance;
         private static readonly object _lockObject = new object();
 
-        public static FirebaseListenerManager Instance
+        public static FirebaseManager Instance
         {
             get
             {
@@ -24,7 +22,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
                     {
                         if (_instance == null)
                         {
-                            _instance = new FirebaseListenerManager();
+                            _instance = new FirebaseManager();
                         }
                     }
                 }
@@ -36,7 +34,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
 
         private FirebaseService _firebaseService;
 
-        private FirebaseListenerManager()
+        private FirebaseManager()
         {
         }
 
@@ -64,7 +62,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
 
             try
             {
-                // Check if the current Totem Firebase path configuration is valid
+                // Check if the current Totem Firebase path settings are valid
                 try
                 {
                     _firebaseService.BuildDocumentPath();
@@ -131,16 +129,16 @@ namespace FTC_Generic_Printing_App_POC.Manager
             }
         }
 
-        public void ReloadConfiguration(bool autoStartListener = false)
+        public void ReloadSettings(bool autoStartListener = false)
         {
             if (_firebaseService != null)
             {
-                AppLogger.LogInfo("Reloading totem configuration via FirebaseListenerManager");
-                _firebaseService.ReloadTotemConfiguration(autoStartListener);
+                AppLogger.LogInfo("Reloading Totem settings via FirebaseListenerManager");
+                _firebaseService.ReloadTotemSettings(autoStartListener);
             }
             else
             {
-                AppLogger.LogError("Cannot reload configuration. Firebase service is not initialized");
+                AppLogger.LogError("Cannot reload Totem settings. Firebase service is not initialized");
             }
         }
 

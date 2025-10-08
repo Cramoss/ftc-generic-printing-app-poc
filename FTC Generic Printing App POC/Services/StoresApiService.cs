@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Models.Auth;
+using FTC_Generic_Printing_App_POC.Utils;
+using FTC_Generic_Printing_App_POC.Models;
 using Newtonsoft.Json;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Services
 {
     public class StoresApiService
     {
@@ -21,34 +24,33 @@ namespace FTC_Generic_Printing_App_POC
         #region Initialization
         public StoresApiService()
         {
-            var config = ConfigurationManager.LoadStoresApiConfiguration();
+            var storesApiSettings = SettingsManager.LoadStoresApiSettings();
 
-            AUTH_URL = config.AuthUrl;
-            STORES_URL = config.StoresUrl;
-            CLIENT_ID = config.ClientId;
-            CLIENT_SECRET = config.ClientSecret;
-            AppLogger.LogInfo("ApiService initialized with configuration values");
+            AUTH_URL = storesApiSettings.AuthUrl;
+            STORES_URL = storesApiSettings.StoresUrl;
+            CLIENT_ID = storesApiSettings.ClientId;
+            CLIENT_SECRET = storesApiSettings.ClientSecret;
         }
         #endregion
 
         #region Core Methods
-        public void ReloadConfiguration()
+        public void ReloadSettings()
         {
             try
             {
-                AppLogger.LogInfo("Reloading API service configuration");
-                var config = ConfigurationManager.LoadStoresApiConfiguration();
+                AppLogger.LogInfo("Reloading Stores API service settings");
+                var storesApiSettings = SettingsManager.LoadStoresApiSettings();
 
-                AUTH_URL = config.AuthUrl;
-                STORES_URL = config.StoresUrl;
-                CLIENT_ID = config.ClientId;
-                CLIENT_SECRET = config.ClientSecret;
+                AUTH_URL = storesApiSettings.AuthUrl;
+                STORES_URL = storesApiSettings.StoresUrl;
+                CLIENT_ID = storesApiSettings.ClientId;
+                CLIENT_SECRET = storesApiSettings.ClientSecret;
 
-                AppLogger.LogInfo("API service configuration reloaded successfully");
+                AppLogger.LogInfo("Stores API service settings reloaded successfully");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Failed to reload API service configuration", ex);
+                AppLogger.LogError("Failed to reload Stores API service settings", ex);
             }
         }
 
@@ -164,33 +166,5 @@ namespace FTC_Generic_Printing_App_POC
             return $"{businessCode}-{countryCode}";
         }
         #endregion
-    }
-
-    public class AuthResponse
-    {
-        public string access_token { get; set; }
-        public string token_type { get; set; }
-        public int expires_in { get; set; }
-    }
-
-    public class Store
-    {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string country { get; set; }
-        public string buName { get; set; }
-        public override string ToString()
-        {
-            return name;
-        }
-    }
-
-    public class ConfigurationData
-    {
-        public string IdTotem { get; set; } = "";
-        public string Country { get; set; } = "";
-        public string Business { get; set; } = "";
-        public string Store { get; set; } = "";
-        public string StoreId { get; set; } = "";
     }
 }

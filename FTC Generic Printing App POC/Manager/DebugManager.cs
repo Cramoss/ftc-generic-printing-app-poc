@@ -1,13 +1,13 @@
-﻿using FTC_Generic_Printing_App_POC.Manager;
-using FTC_Generic_Printing_App_POC.UI;
+﻿using FTC_Generic_Printing_App_POC.Forms;
 using System;
 using System.Windows.Forms;
+using FTC_Generic_Printing_App_POC.Utils;
 
 namespace FTC_Generic_Printing_App_POC.Manager
 {
-    public class DebugConsoleManager : IDisposable
+    public class DebugManager : IDisposable
     {
-        private static DebugConsoleManager instance;
+        private static DebugManager instance;
         private static object syncRoot = new object();
 
         private DebugConsoleForm consoleForm;
@@ -15,7 +15,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
         private int consoleHotkeyId;
         private bool isDisposed = false;
 
-        public static DebugConsoleManager Instance
+        public static DebugManager Instance
         {
             get
             {
@@ -25,7 +25,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
                     {
                         if (instance == null)
                         {
-                            instance = new DebugConsoleManager();
+                            instance = new DebugManager();
                         }
                     }
                 }
@@ -33,7 +33,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
             }
         }
 
-        private DebugConsoleManager()
+        private DebugManager()
         {
             Initialize();
         }

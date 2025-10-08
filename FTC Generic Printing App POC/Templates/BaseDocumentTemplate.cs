@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FTC_Generic_Printing_App_POC.Interfaces;
 using Newtonsoft.Json.Linq;
 
-namespace FTC_Generic_Printing_App_POC.Interfaces
+namespace FTC_Generic_Printing_App_POC.Templates
 {
     // Base class for all document templates with common functionality and ESC/POS commands
     // This will be adjusted in the future as needed for different styles of documents

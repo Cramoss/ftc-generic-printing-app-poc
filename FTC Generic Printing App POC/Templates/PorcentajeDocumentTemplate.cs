@@ -1,9 +1,10 @@
+using FTC_Generic_Printing_App_POC.Manager;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FTC_Generic_Printing_App_POC.Interfaces
+namespace FTC_Generic_Printing_App_POC.Templates
 {
     public class PorcentajeDocumentTemplate : BaseDocumentTemplate
     {
@@ -32,7 +33,7 @@ namespace FTC_Generic_Printing_App_POC.Interfaces
         public override List<byte[]> GenerateDocumentCommands(JObject document)
         {
             var commands = new List<byte[]>();
-            var config = ConfigurationManager.LoadTotemConfiguration();
+            var totemSettings = SettingsManager.LoadTotemSettings();
 
             // Initialize printer
             commands.Add(ESC_INIT);

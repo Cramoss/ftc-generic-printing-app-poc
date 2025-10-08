@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Utils;
+using System;
 using System.Windows.Forms;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Forms.Prompts
 {
-    public partial class ConfigurationAdminPasswordPrompt : Form
+    public partial class AdminPasswordPromptForm : Form
     {
         #region Fields
         public bool IsPasswordVerified { get; private set; }
         #endregion
 
         #region Initialization
-        public ConfigurationAdminPasswordPrompt()
+        public AdminPasswordPromptForm()
         {
             InitializeComponent();
             adminPasswordTextBox.UseSystemPasswordChar = true;
@@ -42,14 +37,14 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                // Get the password from defaultConfig.xml
-                string correctPassword = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_ADMIN_PASSWORD);
+                // Get the password from defaultSettings.xml
+                string correctPassword = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_ADMIN_PASSWORD);
 
                 if (string.IsNullOrEmpty(correctPassword))
                 {
-                    // If no password is found in defaultConfig.xml, use a hardcoded one
+                    // If no password is found in defaultSettings.xml, use a hardcoded one
                     correctPassword = "F4l4b3ll4";
-                    AppLogger.LogWarning("Admin password not found in defaultConfig.xml, using hardcoded password");
+                    AppLogger.LogWarning("Admin password not found in defaultSettings.xml, using hardcoded password");
                 }
 
                 if (adminPasswordTextBox.Text == correctPassword)

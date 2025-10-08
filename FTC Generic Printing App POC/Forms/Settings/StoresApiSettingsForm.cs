@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Services;
+using FTC_Generic_Printing_App_POC.Utils;
+using System;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Forms.Settings
 {
-    public partial class StoreApiConfiguration : Form
+    public partial class StoresApiSettingsForm : Form
     {
         #region Fields
-        private readonly StoresApiService apiService;
+        private readonly StoresApiService storesApiService;
         private readonly Regex urlRegex = new Regex(@"^(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$", RegexOptions.Compiled);
         #endregion
 
         #region Initialization
-        public StoreApiConfiguration()
+        public StoresApiSettingsForm()
         {
-            apiService = new StoresApiService();
+            storesApiService = new StoresApiService();
             InitializeComponent();
             SetupTextBoxValidation();
         }
@@ -39,42 +35,42 @@ namespace FTC_Generic_Printing_App_POC
             storesApiClientSecretTextBox.KeyPress += AlphanumericOnly_KeyPress;
         }
 
-        private void StoresApiConfiguration_Load(object sender, EventArgs e)
+        private void StoresApiSettings_Load(object sender, EventArgs e)
         {
             this.ShowInTaskbar = false;
-            AppLogger.LogInfo("Stores API Configuration form opened");
+            AppLogger.LogInfo("Stores API settings form opened");
         }
         #endregion
 
         #region Event Handlers
-        private void saveStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        private void saveStoresApiSettingsButton_Click(object sender, EventArgs e)
         {
-            SaveConfiguration();
+            SaveSettings();
             ClearForm();
         }
 
-        private void cleanStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        private void cleanStoresApiSettingsButton_Click(object sender, EventArgs e)
         {
             ClearForm();
         }
 
-        private void restoreDefaultStoreApiConfigurationButton_Click(object sender, EventArgs e)
+        private void restoreDefaultStoresApiSettingsButton_Click(object sender, EventArgs e)
         {
-            RestoreDefaultConfiguration();
+            RestoreDefaultSettings();
         }
 
-        private void cancelStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        private void cancelStoresApiSettingsButton_Click(object sender, EventArgs e)
         {
-            CancelConfiguration();
+            CancelSettings();
         }
         #endregion
 
         #region Core Methods
-        private void SaveConfiguration()
+        private void SaveSettings()
         {
             try
             {
-                AppLogger.LogInfo("User clicked Save Stores API Configuration button");
+                AppLogger.LogInfo("User clicked Save Stores API settings button");
 
                 string storesApiUrl = storesApiUrlTextBox.Text.Trim();
                 string storesApiAuthUrl = storesApiAuthUrlTextBox.Text.Trim();
@@ -157,21 +153,21 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                ConfigurationManager.SaveStoresApiConfiguration(
+                SettingsManager.SaveStoresApiSettings(
                     storesApiAuthUrl,
                     storesApiUrl,
                     storesApiClientId,
                     storesApiClientSecret
                 );
 
-                apiService.ReloadConfiguration();
+                storesApiService.ReloadSettings();
 
-                AppLogger.LogInfo($"Store API configuration saved with URL: {storesApiUrl}");
+                AppLogger.LogInfo($"Stores API settings saved with URL: {storesApiUrl}");
                 this.Hide();
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error saving Store API configuration", ex);
+                AppLogger.LogError("Error saving Stores API settings", ex);
                 MessageBox.Show("Error al guardar configuración: " + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -186,19 +182,19 @@ namespace FTC_Generic_Printing_App_POC
                 storesApiClientIdTextBox.Text = "";
                 storesApiClientSecretTextBox.Text = "";
 
-                AppLogger.LogInfo("Stores API edit configuration panel controls reset to default values");
+                AppLogger.LogInfo("Stores API edit settings panel controls reset to default values");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error resetting Stores API edit configuration panel", ex);
+                AppLogger.LogError("Error resetting Stores API edit settings panel", ex);
             }
         }
 
-        private void RestoreDefaultConfiguration()
+        private void RestoreDefaultSettings()
         {
             try
             {
-                AppLogger.LogInfo("User clicked Restore Default Stores API Configuration button");
+                AppLogger.LogInfo("User clicked Restore Default Stores API settings button");
 
                 DialogResult result = MessageBox.Show(
                     "¿Está seguro que desea restaurar la configuración de Stores API a los valores predeterminados?" +
@@ -209,16 +205,16 @@ namespace FTC_Generic_Printing_App_POC
 
                 if (result == DialogResult.Yes)
                 {
-                    // Get default values from defaultConfig.xml
-                    string authUrl = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_AUTH_URL);
-                    string storesUrl = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_URL);
-                    string clientId = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_ID);
-                    string clientSecret = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_STORES_API_CLIENT_SECRET);
+                    // Get default values from defaultSettings.xml
+                    string authUrl = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_STORES_API_AUTH_URL);
+                    string storesUrl = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_STORES_API_URL);
+                    string clientId = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_STORES_API_CLIENT_ID);
+                    string clientSecret = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_STORES_API_CLIENT_SECRET);
 
                     if (string.IsNullOrEmpty(authUrl) || string.IsNullOrEmpty(storesUrl) ||
                         string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
                     {
-                        AppLogger.LogWarning("Some default Store API configuration values were not found");
+                        AppLogger.LogWarning("Some default Stores API settings values were not found");
                         MessageBox.Show(
                             "Algunos valores predeterminados no fueron encontrados en el archivo de configuración predeterminada.",
                             "Error de restauración",
@@ -227,11 +223,11 @@ namespace FTC_Generic_Printing_App_POC
                         return;
                     }
 
-                    ConfigurationManager.SaveStoresApiConfiguration(authUrl, storesUrl, clientId, clientSecret);
+                    SettingsManager.SaveStoresApiSettings(authUrl, storesUrl, clientId, clientSecret);
 
-                    apiService.ReloadConfiguration();
+                    storesApiService.ReloadSettings();
 
-                    AppLogger.LogInfo("Store API configuration restored to default values successfully");
+                    AppLogger.LogInfo("Stores API settings restored to default values successfully");
                     MessageBox.Show(
                         "La configuración de Stores API ha sido restaurada a los valores predeterminados correctamente.",
                         "Restauración exitosa",
@@ -242,12 +238,12 @@ namespace FTC_Generic_Printing_App_POC
                 }
                 else
                 {
-                    AppLogger.LogInfo("User cancelled restoring Store API default configuration");
+                    AppLogger.LogInfo("User cancelled restoring Stores API default settings");
                 }
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error restoring Store API default configuration", ex);
+                AppLogger.LogError("Error restoring Stores API default settings", ex);
                 MessageBox.Show(
                     "Error al restaurar la configuración predeterminada: " + ex.Message,
                     "Error",
@@ -256,17 +252,17 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void CancelConfiguration()
+        private void CancelSettings()
         {
             try
             {
                 this.Hide();
                 ClearForm();
-                AppLogger.LogInfo("Store API configuration form hidden and edit panel reset values");
+                AppLogger.LogInfo("Stores API settings form hidden and edit panel reset values");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error hiding Store API configuration form and resetting edit panel", ex);
+                AppLogger.LogError("Error hiding Stores API settings form and resetting edit panel", ex);
             }
         }
         private void AlphanumericOnly_KeyPress(object sender, KeyPressEventArgs e)
@@ -275,7 +271,7 @@ namespace FTC_Generic_Printing_App_POC
             if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
             {
                 e.Handled = true;
-                AppLogger.LogWarning($"[StoreAPI] Blocked non-alphanumeric character: {e.KeyChar}");
+                AppLogger.LogWarning($"[StoresAPI] Blocked non-alphanumeric character: {e.KeyChar}");
             }
         }
         #endregion

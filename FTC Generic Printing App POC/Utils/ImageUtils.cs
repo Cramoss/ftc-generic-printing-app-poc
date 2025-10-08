@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 
 namespace FTC_Generic_Printing_App_POC.Utils
 {
-    public class ThermalPrinterImageUtility
+    public class ImageUtils
     {
         // The selected image processing mode should be based on the image type.
         // - Images with high contrast and simple lines (e.g. logos) work best with HighContrast mode.
@@ -25,7 +24,7 @@ namespace FTC_Generic_Printing_App_POC.Utils
             Invert
         }
 
-        public class ImageConfig
+        public class ImageSettings
         {
             // Target width in pixels (For thermal printers: 384, 576, 832)
             public int PrinterWidth { get; set; } = 384;
@@ -44,9 +43,9 @@ namespace FTC_Generic_Printing_App_POC.Utils
         // If so, the resource path should be (example): "FTC_Generic_Printing_App.Resources.your_image.png"
         public static List<byte[]> LoadEmbeddedImageAsCommands(
             string resourceName,
-            ImageConfig config = null)
+            ImageSettings settings = null)
         {
-            config = config ?? new ImageConfig();
+            settings = settings ?? new ImageSettings();
 
             try
             {
@@ -64,7 +63,7 @@ namespace FTC_Generic_Printing_App_POC.Utils
 
                     using (Bitmap originalImage = new Bitmap(resourceStream))
                     {
-                        return ProcessImageToCommands(originalImage, config);
+                        return ProcessImageToCommands(originalImage, settings);
                     }
                 }
             }
@@ -76,13 +75,13 @@ namespace FTC_Generic_Printing_App_POC.Utils
         }
 
         // Process a bitmap image into thermal printer (POS) commands
-        private static List<byte[]> ProcessImageToCommands(Bitmap originalImage, ImageConfig config)
+        private static List<byte[]> ProcessImageToCommands(Bitmap originalImage, ImageSettings settings)
         {
             // Calculate dimensions
-            int newWidth = config.PrinterWidth;
+            int newWidth = settings.PrinterWidth;
             int newHeight = originalImage.Height;
 
-            if (config.MaintainAspectRatio)
+            if (settings.MaintainAspectRatio)
             {
                 newHeight = (int)((float)originalImage.Height / originalImage.Width * newWidth);
             }
@@ -92,10 +91,10 @@ namespace FTC_Generic_Printing_App_POC.Utils
                 // Apply processing based on mode (see ImageProcessingMode)
                 Bitmap processedImage = resizedImage;
 
-                switch (config.ProcessingMode)
+                switch (settings.ProcessingMode)
                 {
                     case ImageProcessingMode.HighContrast:
-                        processedImage = ApplyHighContrast(resizedImage, config.ContrastThreshold);
+                        processedImage = ApplyHighContrast(resizedImage, settings.ContrastThreshold);
                         break;
 
                     case ImageProcessingMode.Dithering:
@@ -268,15 +267,15 @@ namespace FTC_Generic_Printing_App_POC.Utils
         // Load an image from normal file path (not as Embedded Resource) and convert to thermal printer commands
         public static List<byte[]> LoadImageFromFileAsCommands(
             string filePath,
-            ImageConfig config = null)
+            ImageSettings settings = null)
         {
-            config = config ?? new ImageConfig();
+            settings = settings ?? new ImageSettings();
 
             try
             {
                 using (Bitmap originalImage = new Bitmap(filePath))
                 {
-                    return ProcessImageToCommands(originalImage, config);
+                    return ProcessImageToCommands(originalImage, settings);
                 }
             }
             catch (Exception ex)

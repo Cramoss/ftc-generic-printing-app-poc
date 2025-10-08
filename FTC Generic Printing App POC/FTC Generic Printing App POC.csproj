@@ -90,74 +90,79 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Utils\DebugConsoleForm.cs">
+    <Compile Include="Forms\Console\DebugConsoleForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Utils\DebugConsoleForm.Designer.cs">
+    <Compile Include="Forms\Console\DebugConsoleForm.Designer.cs">
       <DependentUpon>DebugConsoleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Manager\DebugConsoleManager.cs" />
-    <Compile Include="Manager\FirebaseListenerManager.cs" />
+    <Compile Include="Manager\DebugManager.cs" />
+    <Compile Include="Manager\FirebaseManager.cs" />
     <Compile Include="Manager\GlobalHotkeyManager.cs" />
+    <Compile Include="Models\Auth\AuthResponse.cs" />
+    <Compile Include="Models\Settings\FirebaseSettings.cs" />
+    <Compile Include="Models\Settings\StoresApiSettings.cs" />
+    <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\Totem.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\PrinterService.cs" />
     <Compile Include="Services\SingleInstanceService.cs" />
     <Compile Include="Services\StoresApiService.cs" />
-    <Compile Include="Forms\Configuration\Configuration.cs">
+    <Compile Include="Forms\Settings\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Configuration\Configuration.Designer.cs">
-      <DependentUpon>Configuration.cs</DependentUpon>
+    <Compile Include="Forms\Settings\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.cs">
+    <Compile Include="Forms\Prompts\AdminPasswordPromptForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.Designer.cs">
-      <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
+    <Compile Include="Forms\Prompts\AdminPasswordPromptForm.Designer.cs">
+      <DependentUpon>AdminPasswordPromptForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Manager\ConfigurationManager.cs" />
-    <Compile Include="Manager\DocumentTemplateManager.cs" />
+    <Compile Include="Manager\SettingsManager.cs" />
+    <Compile Include="Manager\TemplatesManager.cs" />
     <Compile Include="Templates\BaseDocumentTemplate.cs" />
     <Compile Include="Interfaces\IDocumentTemplate.cs" />
     <Compile Include="Templates\CleveronDocumentTemplate.cs" />
     <Compile Include="Templates\PorcentajeDocumentTemplate.cs" />
     <Compile Include="Templates\TestDocumentTemplate.cs" />
-    <Compile Include="Utils\DefaultConfigKeys.cs" />
-    <Compile Include="Forms\Configuration\FirebaseConfiguration.cs">
+    <Compile Include="Utils\DefaultSettingsKeys.cs" />
+    <Compile Include="Forms\Settings\FirebaseSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Configuration\FirebaseConfiguration.Designer.cs">
-      <DependentUpon>FirebaseConfiguration.cs</DependentUpon>
+    <Compile Include="Forms\Settings\FirebaseSettingsForm.Designer.cs">
+      <DependentUpon>FirebaseSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\FirebaseService.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\Configuration\StoreApiConfiguration.cs">
+    <Compile Include="Forms\Settings\StoresApiSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Configuration\StoreApiConfiguration.Designer.cs">
-      <DependentUpon>StoreApiConfiguration.cs</DependentUpon>
+    <Compile Include="Forms\Settings\StoresApiSettingsForm.Designer.cs">
+      <DependentUpon>StoresApiSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Configuration\TotemConfiguration.cs">
+    <Compile Include="Forms\Settings\TotemSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Configuration\TotemConfiguration.Designer.cs">
-      <DependentUpon>TotemConfiguration.cs</DependentUpon>
+    <Compile Include="Forms\Settings\TotemSettingsForm.Designer.cs">
+      <DependentUpon>TotemSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\ThermalPrinterImageUtility.cs" />
-    <Compile Include="Utils\TrayApplicationContext.cs" />
-    <EmbeddedResource Include="Forms\Configuration\Configuration.resx">
-      <DependentUpon>Configuration.cs</DependentUpon>
+    <Compile Include="Utils\ImageUtils.cs" />
+    <Compile Include="Manager\TrayApplicationManager.cs" />
+    <EmbeddedResource Include="Forms\Settings\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Utils\DebugConsoleForm.resx">
+    <EmbeddedResource Include="Forms\Console\DebugConsoleForm.resx">
       <DependentUpon>DebugConsoleForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.resx">
-      <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Prompts\AdminPasswordPromptForm.resx">
+      <DependentUpon>AdminPasswordPromptForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Configuration\FirebaseConfiguration.resx">
-      <DependentUpon>FirebaseConfiguration.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Settings\FirebaseSettingsForm.resx">
+      <DependentUpon>FirebaseSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -168,11 +173,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\Configuration\StoreApiConfiguration.resx">
-      <DependentUpon>StoreApiConfiguration.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Settings\StoresApiSettingsForm.resx">
+      <DependentUpon>StoresApiSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Configuration\TotemConfiguration.resx">
-      <DependentUpon>TotemConfiguration.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Settings\TotemSettingsForm.resx">
+      <DependentUpon>TotemSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -194,6 +199,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\cleveron_locker_optimized.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">

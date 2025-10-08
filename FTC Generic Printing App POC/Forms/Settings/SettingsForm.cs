@@ -1,44 +1,42 @@
-﻿using FTC_Generic_Printing_App_POC.Manager;
+﻿using FTC_Generic_Printing_App_POC.Forms.Prompts;
+using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Services;
+using FTC_Generic_Printing_App_POC.Utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Forms.Settings
 {
-    public partial class Configuration : Form
+    public partial class SettingsForm : Form
     {
         #region Fields
-        private readonly StoresApiService apiService;
-        private readonly Services.PrinterService printerService;
-        private bool isStoreApiInfoVisible = false;
+        private readonly StoresApiService storesApiService;
+        private readonly PrinterService printerService;
+        private bool isStoresApiInfoVisible = false;
         private bool isFirebaseInfoVisible = false;
-        private System.Windows.Forms.Timer storeApiInfoTimer;
-        private System.Windows.Forms.Timer firebaseInfoTimer;
+        private Timer storesApiInfoTimer;
+        private Timer firebaseInfoTimer;
         #endregion
 
         #region Initialization
-        public Configuration()
+        public SettingsForm()
         {
-            apiService = new StoresApiService();
-            printerService = new Services.PrinterService();
+            storesApiService = new StoresApiService();
+            printerService = new PrinterService();
             InitializeComponent();
-            LoadSavedConfiguration();
+            LoadSavedSettings();
         }
 
-        private void Configuration_Load(object sender, EventArgs e)
+        private void Settings_Load(object sender, EventArgs e)
         {
             this.ShowInTaskbar = true;
-            AppLogger.LogInfo("Configuration form opened");
+            AppLogger.LogInfo("Settings form opened");
 
-            if (FirebaseListenerManager.Instance.IsListening)
+            if (FirebaseManager.Instance.IsListening)
             {
-                FirebaseListenerManager.Instance.StopListening();
+                FirebaseManager.Instance.StopListening();
             }
 
             // Display the current printer name set as default by Windows
@@ -51,35 +49,35 @@ namespace FTC_Generic_Printing_App_POC
 
             if (value)
             {
-                if (FirebaseListenerManager.Instance.IsListening)
+                if (FirebaseManager.Instance.IsListening)
                 {
-                    AppLogger.LogInfo("Stopping Firebase listener while configuration form is open");
-                    FirebaseListenerManager.Instance.StopListening();
+                    AppLogger.LogInfo("Stopping Firebase listener while settings form is open");
+                    FirebaseManager.Instance.StopListening();
                 }
 
-                RefreshTotemConfigurationLabels();
-                RefreshStoresApiConfigurationLabels();
+                RefreshTotemSettingsLabels();
+                RefreshStoresApiSettingsLabels();
             }
         }
 
-        private void LoadSavedConfiguration()
+        private void LoadSavedSettings()
         {
             try
             {
-                AppLogger.LogInfo("Loading saved Totem configuration..");
-                var config = ConfigurationManager.LoadTotemConfiguration();
+                AppLogger.LogInfo("Loading saved Totem settings..");
+                var totemSettings = SettingsManager.LoadTotemSettings();
 
-                currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
-                currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
-                currentBusiness.Text = !string.IsNullOrEmpty(config.Business) ? config.Business : "No configurado";
-                currentStore.Text = !string.IsNullOrEmpty(config.Store) ? config.Store : "No configurado";
-                currentStoreId.Text = !string.IsNullOrEmpty(config.StoreId) ? config.StoreId : "No configurado";
+                currentTotemId.Text = !string.IsNullOrEmpty(totemSettings.IdTotem) ? totemSettings.IdTotem : "No configurado";
+                currentCountry.Text = !string.IsNullOrEmpty(totemSettings.Country) ? totemSettings.Country : "No configurado";
+                currentBusiness.Text = !string.IsNullOrEmpty(totemSettings.Business) ? totemSettings.Business : "No configurado";
+                currentStore.Text = !string.IsNullOrEmpty(totemSettings.Store) ? totemSettings.Store : "No configurado";
+                currentStoreId.Text = !string.IsNullOrEmpty(totemSettings.StoreId) ? totemSettings.StoreId : "No configurado";
 
-                AppLogger.LogInfo("Configuration loaded into the form and labels updated");
+                AppLogger.LogInfo("Totem settings loaded into the form and labels updated");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error loading configuration into the form", ex);
+                AppLogger.LogError("Error loading Totem settings into the form", ex);
 
                 // TODO: Use constant ERROR label
                 currentTotemId.Text = "Error";
@@ -93,32 +91,32 @@ namespace FTC_Generic_Printing_App_POC
 
         #region Event Handlers
         // Totem
-        private void editTotemConfigurationButton_Click(object sender, EventArgs e)
+        private void editTotemSettingsButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("Opening Totem configuration form");
-            TotemConfiguration totemConfigForm = new TotemConfiguration();
-            totemConfigForm.ShowDialog();
+            AppLogger.LogInfo("Opening Totem settings form");
+            TotemSettingsForm totemSettingsForm = new TotemSettingsForm();
+            totemSettingsForm.ShowDialog();
 
-            RefreshTotemConfigurationLabels();
+            RefreshTotemSettingsLabels();
         }
-        private void refreshCurrentTotemConfigurationButton_Click(object sender, EventArgs e)
+        private void refreshCurrentTotemSettingsButton_Click(object sender, EventArgs e)
         {
-            RefreshTotemConfigurationLabels();
+            RefreshTotemSettingsLabels();
         }
 
         // Stores API
-        private void editStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        private void editStoresApiSettingsButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("Opening Stores API configuration panel");
-            StoreApiConfiguration storeApiConfigForm = new StoreApiConfiguration();
-            storeApiConfigForm.ShowDialog();
+            AppLogger.LogInfo("Opening Stores API settings panel");
+            StoresApiSettingsForm storesApiSettingsForm = new StoresApiSettingsForm();
+            storesApiSettingsForm.ShowDialog();
 
-            RefreshStoresApiConfigurationLabels();
+            RefreshStoresApiSettingsLabels();
         }
 
-        private void refreshCurrentStoresApiConfigurationButton_Click(object sender, EventArgs e)
+        private void refreshCurrentStoresApiSettingsButton_Click(object sender, EventArgs e)
         {
-            RefreshStoresApiConfigurationLabels();
+            RefreshStoresApiSettingsLabels();
         }
 
         private async void testStoresApiConnectivityButton_Click(object sender, EventArgs e)
@@ -133,18 +131,18 @@ namespace FTC_Generic_Printing_App_POC
         }
 
         // Firebase
-        private void editFirebaseConfigurationButton_Click(object sender, EventArgs e)
+        private void editFirebaseSettingsButton_Click(object sender, EventArgs e)
         {
-            AppLogger.LogInfo("Opening Firebase configuration panel");
-            FirebaseConfiguration firebaseConfigurationForm = new FirebaseConfiguration();
-            firebaseConfigurationForm.ShowDialog();
+            AppLogger.LogInfo("Opening Firebase settings panel");
+            FirebaseSettingsForm firebaseSettingsForm = new FirebaseSettingsForm();
+            firebaseSettingsForm.ShowDialog();
 
-            RefreshFirebaseConfigurationLabels();
+            RefreshFirebaseSettingsLabels();
         }
 
-        private void refreshCurrentFirebaseConfigurationButton_Click(object sender, EventArgs e)
+        private void refreshCurrentFirebaseSettingsButton_Click(object sender, EventArgs e)
         {
-            RefreshFirebaseConfigurationLabels();
+            RefreshFirebaseSettingsLabels();
         }
 
         private async void testFirebaseConnectivityButton_Click(object sender, EventArgs e)
@@ -207,33 +205,33 @@ namespace FTC_Generic_Printing_App_POC
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             e.Cancel = true;
-            ExitConfigurationForm();
+            ExitSettingsForm();
         }
 
-        private void exitConfigurationButton_Click(object sender, EventArgs e)
+        private void exitSettingsButton_Click(object sender, EventArgs e)
         {
-            ExitConfigurationForm();
+            ExitSettingsForm();
         }
         #endregion
 
         #region Core Methods
-        private void RefreshTotemConfigurationLabels()
+        private void RefreshTotemSettingsLabels()
         {
             try
             {
-                var config = ConfigurationManager.LoadTotemConfiguration();
+                var totemSettings = SettingsManager.LoadTotemSettings();
 
-                currentTotemId.Text = !string.IsNullOrEmpty(config.IdTotem) ? config.IdTotem : "No configurado";
-                currentCountry.Text = !string.IsNullOrEmpty(config.Country) ? config.Country : "No configurado";
-                currentBusiness.Text = !string.IsNullOrEmpty(config.Business) ? config.Business : "No configurado";
-                currentStore.Text = !string.IsNullOrEmpty(config.Store) ? config.Store : "No configurado";
-                currentStoreId.Text = !string.IsNullOrEmpty(config.StoreId) ? config.StoreId : "No configurado";
+                currentTotemId.Text = !string.IsNullOrEmpty(totemSettings.IdTotem) ? totemSettings.IdTotem : "No configurado";
+                currentCountry.Text = !string.IsNullOrEmpty(totemSettings.Country) ? totemSettings.Country : "No configurado";
+                currentBusiness.Text = !string.IsNullOrEmpty(totemSettings.Business) ? totemSettings.Business : "No configurado";
+                currentStore.Text = !string.IsNullOrEmpty(totemSettings.Store) ? totemSettings.Store : "No configurado";
+                currentStoreId.Text = !string.IsNullOrEmpty(totemSettings.StoreId) ? totemSettings.StoreId : "No configurado";
 
-                AppLogger.LogInfo("Configuration labels refreshed");
+                AppLogger.LogInfo("Totem settings labels refreshed");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error refreshing configuration labels", ex);
+                AppLogger.LogError("Error refreshing Totem settings labels", ex);
 
                 currentTotemId.Text = "Error";
                 currentCountry.Text = "Error";
@@ -243,49 +241,49 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void RefreshStoresApiConfigurationLabels()
+        private void RefreshStoresApiSettingsLabels()
         {
             try
             {
-                AppLogger.LogInfo("Refreshing Store API configuration labels");
-                var storeApiConfig = ConfigurationManager.LoadStoresApiConfiguration();
+                AppLogger.LogInfo("Refreshing Stores API settings labels");
+                var storesApiSettings = SettingsManager.LoadStoresApiSettings();
 
-                if (isStoreApiInfoVisible)
+                if (isStoresApiInfoVisible)
                 {
-                    AppLogger.LogInfo("Store API info is currently visible, refreshing with actual values");
+                    AppLogger.LogInfo("Stores API info is currently visible, refreshing with actual values");
 
-                    currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
-                        storeApiConfig.StoresUrl : "No configurado";
+                    currentStoresApiUrl.Text = !string.IsNullOrEmpty(storesApiSettings.StoresUrl) ?
+                        storesApiSettings.StoresUrl : "No configurado";
 
-                    currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
-                        storeApiConfig.AuthUrl : "No configurado";
+                    currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storesApiSettings.AuthUrl) ?
+                        storesApiSettings.AuthUrl : "No configurado";
 
-                    currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
-                        storeApiConfig.ClientId : "No configurado";
+                    currentStoresApiClientId.Text = !string.IsNullOrEmpty(storesApiSettings.ClientId) ?
+                        storesApiSettings.ClientId : "No configurado";
 
-                    currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
-                        storeApiConfig.ClientSecret : "No configurado";
+                    currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storesApiSettings.ClientSecret) ?
+                        storesApiSettings.ClientSecret : "No configurado";
                 }
                 else
                 {
-                    currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
+                    currentStoresApiUrl.Text = !string.IsNullOrEmpty(storesApiSettings.StoresUrl) ?
                         "Oculto" : "No configurado";
 
-                    currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
+                    currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storesApiSettings.AuthUrl) ?
                         "Oculto" : "No configurado";
 
-                    currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
+                    currentStoresApiClientId.Text = !string.IsNullOrEmpty(storesApiSettings.ClientId) ?
                         "Oculto" : "No configurado";
 
-                    currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
+                    currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storesApiSettings.ClientSecret) ?
                         "Oculto" : "No configurado";
                 }
 
-                AppLogger.LogInfo("Store API configuration labels refreshed successfully");
+                AppLogger.LogInfo("Stores API settings labels refreshed successfully");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error refreshing Store API configuration labels", ex);
+                AppLogger.LogError("Error refreshing Stores API settings labels", ex);
 
                 currentStoresApiUrl.Text = "Error";
                 currentStoresApiAuthUrl.Text = "Error";
@@ -302,23 +300,23 @@ namespace FTC_Generic_Printing_App_POC
 
             try
             {
-                AppLogger.LogInfo("Starting Store API connectivity test");
-                apiService.ReloadConfiguration();
+                AppLogger.LogInfo("Starting Stores API connectivity test");
+                storesApiService.ReloadSettings();
 
-                string token = await apiService.GetAccessTokenAsync();
+                string token = await storesApiService.GetAccessTokenAsync();
                 if (string.IsNullOrEmpty(token))
                 {
-                    throw new Exception("Store API returned empty token");
+                    throw new Exception("Stores API returned empty token");
                 }
                 storesApiStatus.Text = "OK";
                 storesApiStatus.BackColor = Color.LightGreen;
-                AppLogger.LogInfo("Store API connectivity test passed");
+                AppLogger.LogInfo("Stores API connectivity test passed");
             }
             catch (Exception ex)
             {
                 storesApiStatus.Text = "ERROR";
                 storesApiStatus.BackColor = Color.LightCoral;
-                AppLogger.LogError("Store API connectivity test failed", ex);
+                AppLogger.LogError("Stores API connectivity test failed", ex);
             }
             finally
             {
@@ -333,19 +331,19 @@ namespace FTC_Generic_Printing_App_POC
         // Note 2: This button requires admin password verification.
         private void ShowStoresApiInfo()
         {
-            if (isStoreApiInfoVisible)
+            if (isStoresApiInfoVisible)
             {
-                AppLogger.LogInfo("Hiding Store API sensitive information");
+                AppLogger.LogInfo("Hiding Stores API sensitive information");
 
-                isStoreApiInfoVisible = false;
-                RefreshStoresApiConfigurationLabels();
+                isStoresApiInfoVisible = false;
+                RefreshStoresApiSettingsLabels();
                 showStoresApiInfoButton.Text = "Mostrar info";
 
-                if (storeApiInfoTimer != null)
+                if (storesApiInfoTimer != null)
                 {
-                    storeApiInfoTimer.Stop();
-                    storeApiInfoTimer.Dispose();
-                    storeApiInfoTimer = null;
+                    storesApiInfoTimer.Stop();
+                    storesApiInfoTimer.Dispose();
+                    storesApiInfoTimer = null;
                 }
 
                 return;
@@ -353,7 +351,7 @@ namespace FTC_Generic_Printing_App_POC
 
             AppLogger.LogInfo("Show Stores API info button clicked");
 
-            using (var passwordPrompt = new ConfigurationAdminPasswordPrompt())
+            using (var passwordPrompt = new AdminPasswordPromptForm())
             {
                 if (passwordPrompt.ShowDialog() == DialogResult.OK && passwordPrompt.IsPasswordVerified)
                 {
@@ -361,47 +359,47 @@ namespace FTC_Generic_Printing_App_POC
                     {
                         AppLogger.LogInfo("Admin password verification successful");
 
-                        var storeApiConfig = ConfigurationManager.LoadStoresApiConfiguration();
+                        var storesApiSettings = SettingsManager.LoadStoresApiSettings();
 
-                        currentStoresApiUrl.Text = !string.IsNullOrEmpty(storeApiConfig.StoresUrl) ?
-                            storeApiConfig.StoresUrl : "No configurado";
+                        currentStoresApiUrl.Text = !string.IsNullOrEmpty(storesApiSettings.StoresUrl) ?
+                            storesApiSettings.StoresUrl : "No configurado";
 
-                        currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storeApiConfig.AuthUrl) ?
-                            storeApiConfig.AuthUrl : "No configurado";
+                        currentStoresApiAuthUrl.Text = !string.IsNullOrEmpty(storesApiSettings.AuthUrl) ?
+                            storesApiSettings.AuthUrl : "No configurado";
 
-                        currentStoresApiClientId.Text = !string.IsNullOrEmpty(storeApiConfig.ClientId) ?
-                            storeApiConfig.ClientId : "No configurado";
+                        currentStoresApiClientId.Text = !string.IsNullOrEmpty(storesApiSettings.ClientId) ?
+                            storesApiSettings.ClientId : "No configurado";
 
-                        currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storeApiConfig.ClientSecret) ?
-                            storeApiConfig.ClientSecret : "No configurado";
+                        currentStoresApiClientSecret.Text = !string.IsNullOrEmpty(storesApiSettings.ClientSecret) ?
+                            storesApiSettings.ClientSecret : "No configurado";
 
                         showStoresApiInfoButton.Text = "Ocultar info";
-                        isStoreApiInfoVisible = true;
+                        isStoresApiInfoVisible = true;
 
-                        if (storeApiInfoTimer != null)
+                        if (storesApiInfoTimer != null)
                         {
-                            storeApiInfoTimer.Stop();
-                            storeApiInfoTimer.Dispose();
+                            storesApiInfoTimer.Stop();
+                            storesApiInfoTimer.Dispose();
                         }
 
-                        storeApiInfoTimer = new System.Windows.Forms.Timer();
-                        storeApiInfoTimer.Interval = 30000;
-                        storeApiInfoTimer.Tick += (s, args) =>
+                        storesApiInfoTimer = new System.Windows.Forms.Timer();
+                        storesApiInfoTimer.Interval = 30000;
+                        storesApiInfoTimer.Tick += (s, args) =>
                         {
-                            isStoreApiInfoVisible = false;
-                            RefreshStoresApiConfigurationLabels();
+                            isStoresApiInfoVisible = false;
+                            RefreshStoresApiSettingsLabels();
                             showStoresApiInfoButton.Text = "Mostrar info";
-                            storeApiInfoTimer.Stop();
-                            storeApiInfoTimer.Dispose();
-                            storeApiInfoTimer = null;
-                            AppLogger.LogInfo("Store API sensitive information hidden automatically after timeout");
+                            storesApiInfoTimer.Stop();
+                            storesApiInfoTimer.Dispose();
+                            storesApiInfoTimer = null;
+                            AppLogger.LogInfo("Stores API sensitive information hidden automatically after timeout");
                         };
-                        storeApiInfoTimer.Start();
-                        AppLogger.LogInfo("Store API sensitive information will be hidden in 30 seconds");
+                        storesApiInfoTimer.Start();
+                        AppLogger.LogInfo("Stores API sensitive information will be hidden in 30 seconds");
                     }
                     catch (Exception ex)
                     {
-                        AppLogger.LogError("Error displaying Store API information", ex);
+                        AppLogger.LogError("Error displaying Stores API information", ex);
                         MessageBox.Show("Error al mostrar la información: " + ex.Message, "Error",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -479,7 +477,7 @@ namespace FTC_Generic_Printing_App_POC
                 AppLogger.LogInfo("Hiding Firebase sensitive information");
 
                 isFirebaseInfoVisible = false;
-                RefreshFirebaseConfigurationLabels();
+                RefreshFirebaseSettingsLabels();
                 showFirebaseInfoButton.Text = "Mostrar info";
 
                 if (firebaseInfoTimer != null)
@@ -494,7 +492,7 @@ namespace FTC_Generic_Printing_App_POC
 
             AppLogger.LogInfo("Show Firebase info button clicked");
 
-            using (var passwordPrompt = new ConfigurationAdminPasswordPrompt())
+            using (var passwordPrompt = new AdminPasswordPromptForm())
             {
                 if (passwordPrompt.ShowDialog() == DialogResult.OK && passwordPrompt.IsPasswordVerified)
                 {
@@ -502,16 +500,16 @@ namespace FTC_Generic_Printing_App_POC
                     {
                         AppLogger.LogInfo("Admin password verification successful");
 
-                        var firebaseConfig = ConfigurationManager.LoadFirebaseConfiguration();
+                        var firebaseSettings = SettingsManager.LoadFirebaseSettings();
 
-                        currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
-                            firebaseConfig.DatabaseUrl : "No configurado";
+                        currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseSettings.DatabaseUrl) ?
+                            firebaseSettings.DatabaseUrl : "No configurado";
 
-                        currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
-                            firebaseConfig.ProjectId : "No configurado";
+                        currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseSettings.ProjectId) ?
+                            firebaseSettings.ProjectId : "No configurado";
 
-                        currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
-                            firebaseConfig.ApiKey : "No configurado";
+                        currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseSettings.ApiKey) ?
+                            firebaseSettings.ApiKey : "No configurado";
 
                         showFirebaseInfoButton.Text = "Ocultar info";
                         isFirebaseInfoVisible = true;
@@ -527,7 +525,7 @@ namespace FTC_Generic_Printing_App_POC
                         firebaseInfoTimer.Tick += (s, args) =>
                         {
                             isFirebaseInfoVisible = false;
-                            RefreshFirebaseConfigurationLabels();
+                            RefreshFirebaseSettingsLabels();
                             showFirebaseInfoButton.Text = "Mostrar info";
                             firebaseInfoTimer.Stop();
                             firebaseInfoTimer.Dispose();
@@ -547,43 +545,43 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void RefreshFirebaseConfigurationLabels()
+        private void RefreshFirebaseSettingsLabels()
         {
             try
             {
-                AppLogger.LogInfo("Refreshing Firebase configuration labels");
-                var firebaseConfig = ConfigurationManager.LoadFirebaseConfiguration();
+                AppLogger.LogInfo("Refreshing Firebase settings labels");
+                var firebaseSettings = SettingsManager.LoadFirebaseSettings();
 
                 if (isFirebaseInfoVisible)
                 {
                     AppLogger.LogInfo("Firebase info is currently visible, refreshing with actual values");
 
-                    currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
-                        firebaseConfig.DatabaseUrl : "No configurado";
+                    currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseSettings.DatabaseUrl) ?
+                        firebaseSettings.DatabaseUrl : "No configurado";
 
-                    currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
-                        firebaseConfig.ProjectId : "No configurado";
+                    currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseSettings.ProjectId) ?
+                        firebaseSettings.ProjectId : "No configurado";
 
-                    currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
-                        firebaseConfig.ApiKey : "No configurado";
+                    currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseSettings.ApiKey) ?
+                        firebaseSettings.ApiKey : "No configurado";
                 }
                 else
                 {
-                    currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseConfig.DatabaseUrl) ?
+                    currentFirebaseDatabase.Text = !string.IsNullOrEmpty(firebaseSettings.DatabaseUrl) ?
                         "Oculto" : "No configurado";
 
-                    currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseConfig.ProjectId) ?
+                    currentFirebaseProjectId.Text = !string.IsNullOrEmpty(firebaseSettings.ProjectId) ?
                         "Oculto" : "No configurado";
 
-                    currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseConfig.ApiKey) ?
+                    currentFirebaseApiKey.Text = !string.IsNullOrEmpty(firebaseSettings.ApiKey) ?
                         "Oculto" : "No configurado";
                 }
 
-                AppLogger.LogInfo("Firebase configuration labels refreshed successfully");
+                AppLogger.LogInfo("Firebase settings labels refreshed successfully");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error refreshing Firebase configuration labels", ex);
+                AppLogger.LogError("Error refreshing Firebase settings labels", ex);
 
                 currentFirebaseDatabase.Text = "Error";
                 currentFirebaseProjectId.Text = "Error";
@@ -644,21 +642,21 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void ExitConfigurationForm()
+        private void ExitSettingsForm()
         {
             this.Hide();
-            AppLogger.LogInfo("Configuration form hidden");
+            AppLogger.LogInfo("Settings form hidden");
 
-            if (!FirebaseListenerManager.Instance.IsListening)
+            if (!FirebaseManager.Instance.IsListening)
             {
-                AppLogger.LogInfo("Starting Firebase listener after configuration form closed");
+                AppLogger.LogInfo("Starting Firebase listener after settings form closed");
 
                 // Task.Run to avoid blocking the UI thread
                 Task.Run(async () =>
                 {
                     try
                     {
-                        await FirebaseListenerManager.Instance.StartListeningAsync();
+                        await FirebaseManager.Instance.StartListeningAsync();
                         AppLogger.LogInfo("Firebase listener started successfully after form closed");
                     }
                     catch (Exception ex)

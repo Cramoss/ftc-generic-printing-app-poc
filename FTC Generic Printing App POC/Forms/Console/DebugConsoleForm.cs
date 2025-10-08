@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace FTC_Generic_Printing_App_POC.UI
+namespace FTC_Generic_Printing_App_POC.Forms
 {
     public partial class DebugConsoleForm : Form
     {

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FireSharp;
-using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
 using Newtonsoft.Json;
-using System.Configuration;
 using System.Net.Http;
 using System.Linq;
-using FTC_Generic_Printing_App_POC.Services;
 using Newtonsoft.Json.Linq;
+using FTC_Generic_Printing_App_POC.Utils;
+using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Models;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Services
 {
     public class FirebaseService : IDisposable
     {
@@ -24,7 +24,7 @@ namespace FTC_Generic_Printing_App_POC
         private string apiKey;
         private string databaseDocumentParentPath;
         private readonly string databaseDocumentTestingPath = "connection-test";
-        private ConfigurationData currentTotemConfig;
+        private Totem totem;
         private bool isListening = false;
         private EventStreamResponse currentEventStream;
         private CancellationTokenSource cancellationTokenSource;
@@ -37,7 +37,7 @@ namespace FTC_Generic_Printing_App_POC
         public FirebaseService()
         {
             LoadFirebaseSettings();
-            LoadCurrentConfiguration();
+            LoadTotemSettings();
             InitializeFirebase();
             printerService = new PrinterService();
             AppLogger.LogInfo($"Firebase initialized for project: {projectId}");
@@ -45,23 +45,23 @@ namespace FTC_Generic_Printing_App_POC
 
         private void LoadFirebaseSettings()
         {
-            var config = ConfigurationManager.LoadFirebaseConfiguration();
-            firebaseUrl = config.DatabaseUrl;
-            projectId = config.ProjectId;
-            apiKey = config.ApiKey;
-            databaseDocumentParentPath = config.DocumentPath;
+            var firebaseSettings = SettingsManager.LoadFirebaseSettings();
+            firebaseUrl = firebaseSettings.DatabaseUrl;
+            projectId = firebaseSettings.ProjectId;
+            apiKey = firebaseSettings.ApiKey;
+            databaseDocumentParentPath = firebaseSettings.DocumentPath;
         }
 
-        private void LoadCurrentConfiguration()
+        private void LoadTotemSettings()
         {
             try
             {
-                currentTotemConfig = ConfigurationManager.LoadTotemConfiguration();
+                totem = SettingsManager.LoadTotemSettings();
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error loading current Totem configuration", ex);
-                currentTotemConfig = new ConfigurationData();
+                AppLogger.LogError("Error loading current Totem settings", ex);
+                totem = new Totem();
             }
         }
 
@@ -86,53 +86,53 @@ namespace FTC_Generic_Printing_App_POC
         #endregion
 
         #region Core Methods
-        public void ReloadConfiguration()
+        public void ReloadSettings()
         {
             try
             {
-                AppLogger.LogInfo("Reloading Firebase configuration");
+                AppLogger.LogInfo("Reloading Firebase settings");
                 LoadFirebaseSettings();
                 InitializeFirebase();
-                AppLogger.LogInfo("Firebase configuration reloaded successfully");
+                AppLogger.LogInfo("Firebase settings reloaded successfully");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Failed to reload Firebase configuration", ex);
+                AppLogger.LogError("Failed to reload Firebase settings", ex);
             }
         }
 
-        public void ReloadTotemConfiguration(bool autoStartListener = false)
+        public void ReloadTotemSettings(bool autoStartListener = false)
         {
             try
             {
-                AppLogger.LogInfo("Reloading totem configuration...");
-                var previousConfig = currentTotemConfig;
-                LoadCurrentConfiguration();
+                AppLogger.LogInfo("Reloading totem settings...");
+                var previousSettings = totem;
+                LoadTotemSettings();
 
-                AppLogger.LogInfo($"Reloaded totem configuration: " +
-                    $"IdTotem={currentTotemConfig?.IdTotem ?? "null"}, " +
-                    $"Country={currentTotemConfig?.Country ?? "null"}, " +
-                    $"Business={currentTotemConfig?.Business ?? "null"}, " +
-                    $"StoreId={currentTotemConfig?.StoreId ?? "null"}");
+                AppLogger.LogInfo($"Reloaded totem settings: " +
+                    $"IdTotem={totem?.IdTotem ?? "null"}, " +
+                    $"Country={totem?.Country ?? "null"}, " +
+                    $"Business={totem?.Business ?? "null"}, " +
+                    $"StoreId={totem?.StoreId ?? "null"}");
 
-                if (!ConfigurationEquals(previousConfig, currentTotemConfig))
+                if (!SettingsEquals(previousSettings, totem))
                 {
                     if (isListening)
                     {
-                        AppLogger.LogInfo("Configuration changed. Stopping Firebase listener");
+                        AppLogger.LogInfo("Settings changed. Stopping Firebase listener");
                         DisconnectListener();
                     }
 
-                    if (autoStartListener && IsTotemConfigurationValid())
+                    if (autoStartListener && AreTotemSettingsValid())
                     {
-                        AppLogger.LogInfo("Starting Firebase listener with new configuration");
+                        AppLogger.LogInfo("Starting Firebase listener with new settings");
                         Task.Run(() => ConnectListenerAsync());
                     }
                 }
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error reloading totem configuration", ex);
+                AppLogger.LogError("Error reloading Totem settings", ex);
             }
         }
 
@@ -146,9 +146,9 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                if (!IsTotemConfigurationValid())
+                if (!AreTotemSettingsValid())
                 {
-                    AppLogger.LogError("Cannot start Firebase listener. Totem configuration is invalid");
+                    AppLogger.LogError("Cannot start Firebase listener. Totem settings are invalid");
                     return;
                 }
 
@@ -363,46 +363,46 @@ namespace FTC_Generic_Printing_App_POC
         #region Helper Methods
         public string BuildDocumentPath()
         {
-            if (!IsTotemConfigurationValid())
+            if (!AreTotemSettingsValid())
             {
-                throw new InvalidOperationException("Configuration is not valid for building Firebase path");
+                throw new InvalidOperationException("Settings are not valid for building Firebase path");
             }
 
-            string countryCode = MapCountryToCode(currentTotemConfig.Country);
-            string path = $"{databaseDocumentParentPath}/{countryCode}/{currentTotemConfig.Business.ToLower()}/{currentTotemConfig.StoreId}/{currentTotemConfig.IdTotem}";
+            string countryCode = MapCountryToCode(totem.Country);
+            string path = $"{databaseDocumentParentPath}/{countryCode}/{totem.Business.ToLower()}/{totem.StoreId}/{totem.IdTotem}";
             return path;
         }
 
-        public ConfigurationData GetCurrentConfiguration()
+        public Totem GetCurrentTotem()
         {
-            return currentTotemConfig;
+            return totem;
         }
 
-        private bool IsTotemConfigurationValid()
+        private bool AreTotemSettingsValid()
         {
-            if (currentTotemConfig == null) return false;
+            if (totem == null) return false;
 
-            bool isValid = !string.IsNullOrWhiteSpace(currentTotemConfig.IdTotem) &&
-                          !string.IsNullOrWhiteSpace(currentTotemConfig.Country) &&
-                          !string.IsNullOrWhiteSpace(currentTotemConfig.Business) &&
-                          !string.IsNullOrWhiteSpace(currentTotemConfig.StoreId);
+            bool isValid = !string.IsNullOrWhiteSpace(totem.IdTotem) &&
+                          !string.IsNullOrWhiteSpace(totem.Country) &&
+                          !string.IsNullOrWhiteSpace(totem.Business) &&
+                          !string.IsNullOrWhiteSpace(totem.StoreId);
 
             if (!isValid)
             {
-                AppLogger.LogError("Totem configuration is invalid or incomplete");
+                AppLogger.LogError("Totem settings are invalid or incomplete");
             }
 
             return isValid;
         }
 
-        private bool ConfigurationEquals(ConfigurationData config1, ConfigurationData config2)
+        private bool SettingsEquals(Totem currentTotem, Totem newTotem)
         {
-            if (config1 == null || config2 == null) return false;
+            if (currentTotem == null || newTotem == null) return false;
 
-            return config1.IdTotem == config2.IdTotem &&
-                   config1.Country == config2.Country &&
-                   config1.Business == config2.Business &&
-                   config1.StoreId == config2.StoreId;
+            return currentTotem.IdTotem == newTotem.IdTotem &&
+                   currentTotem.Country == newTotem.Country &&
+                   currentTotem.Business == newTotem.Business &&
+                   currentTotem.StoreId == newTotem.StoreId;
         }
 
         private string MapCountryToCode(string country)
@@ -513,9 +513,9 @@ namespace FTC_Generic_Printing_App_POC
         {
             try
             {
-                if (!IsTotemConfigurationValid())
+                if (!AreTotemSettingsValid())
                 {
-                    AppLogger.LogError("Cannot test document path. Configuration is invalid");
+                    AppLogger.LogError("Cannot test document path. Settings are invalid");
                     return false;
                 }
 

@@ -1,32 +1,33 @@
-﻿using FTC_Generic_Printing_App_POC.Manager;
+﻿using FTC_Generic_Printing_App_POC.Forms.Settings;
 using FTC_Generic_Printing_App_POC.Services;
+using FTC_Generic_Printing_App_POC.Utils;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Manager
 {
-    public class TrayApplicationContext : ApplicationContext
+    public class TrayApplicationManager : ApplicationContext
     {
         #region Fields
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
-        private Configuration configForm;
+        private SettingsForm settingsForm;
         #endregion
 
         #region Initialization
-        public TrayApplicationContext()
+        public TrayApplicationManager()
         {
             InitializeTrayIcon();
             NotificationService.Initialize(trayIcon);
-            FirebaseListenerManager.Instance.ListeningStateChanged += OnListeningStateChanged;
+            FirebaseManager.Instance.ListeningStateChanged += OnListeningStateChanged;
         }
 
         private void InitializeTrayIcon()
         {
             // Create the tray menu
             trayMenu = new ContextMenuStrip();
-            trayMenu.Items.Add("Configuración", null, ShowConfiguration);
+            trayMenu.Items.Add("Configuración", null, ShowSettings);
             trayMenu.Items.Add("Escuchar evento", null, ToggleListening);
             trayMenu.Items.Add("-"); // Separator
             trayMenu.Items.Add("Salir", null, ExitApplication);
@@ -41,8 +42,8 @@ namespace FTC_Generic_Printing_App_POC
                 Visible = true
             };
 
-            // Double-click to show configuration
-            trayIcon.DoubleClick += ShowConfiguration;
+            // Double-click to show settings
+            trayIcon.DoubleClick += ShowSettings;
         }
         #endregion
 
@@ -67,27 +68,27 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void ShowConfiguration(object sender, EventArgs e)
+        private void ShowSettings(object sender, EventArgs e)
         {
-            if (configForm == null || configForm.IsDisposed)
+            if (settingsForm == null || settingsForm.IsDisposed)
             {
-                configForm = new Configuration();
+                settingsForm = new SettingsForm();
             }
 
-            configForm.Show();
-            configForm.WindowState = FormWindowState.Normal;
-            configForm.BringToFront();
+            settingsForm.Show();
+            settingsForm.WindowState = FormWindowState.Normal;
+            settingsForm.BringToFront();
         }
 
         private async void ToggleListening(object sender, EventArgs e)
         {
-            if (FirebaseListenerManager.Instance.IsListening)
+            if (FirebaseManager.Instance.IsListening)
             {
-                FirebaseListenerManager.Instance.StopListening();
+                FirebaseManager.Instance.StopListening();
             }
             else
             {
-                await FirebaseListenerManager.Instance.StartListeningAsync();
+                await FirebaseManager.Instance.StartListeningAsync();
             }
         }
 
@@ -117,11 +118,11 @@ namespace FTC_Generic_Printing_App_POC
 
         private void ExitApplication(object sender, EventArgs e)
         {
-            FTC_Generic_Printing_App_POC.Manager.DebugConsoleManager.Instance.Dispose();
+            FTC_Generic_Printing_App_POC.Manager.DebugManager.Instance.Dispose();
 
-            if (FirebaseListenerManager.Instance.IsListening)
+            if (FirebaseManager.Instance.IsListening)
             {
-                FirebaseListenerManager.Instance.StopListening();
+                FirebaseManager.Instance.StopListening();
             }
 
             // Hide and dispose tray icon
@@ -142,10 +143,10 @@ namespace FTC_Generic_Printing_App_POC
         {
             set
             {
-                FirebaseListenerManager.Instance.Initialize(value);
+                FirebaseManager.Instance.Initialize(value);
 
                 // Updates the UI based on current Firebase state
-                UpdateTrayUI(FirebaseListenerManager.Instance.IsListening);
+                UpdateTrayUI(FirebaseManager.Instance.IsListening);
             }
         }
 
@@ -153,15 +154,15 @@ namespace FTC_Generic_Printing_App_POC
         {
             if (disposing)
             {
-                FTC_Generic_Printing_App_POC.Manager.DebugConsoleManager.Instance.Dispose();
+                FTC_Generic_Printing_App_POC.Manager.DebugManager.Instance.Dispose();
 
-                if (FirebaseListenerManager.Instance.IsListening)
+                if (FirebaseManager.Instance.IsListening)
                 {
-                    FirebaseListenerManager.Instance.StopListening();
+                    FirebaseManager.Instance.StopListening();
                 }
 
                 // Unsubscribe from event
-                FirebaseListenerManager.Instance.ListeningStateChanged -= OnListeningStateChanged;
+                FirebaseManager.Instance.ListeningStateChanged -= OnListeningStateChanged;
 
                 // Dispose the tray icon
                 if (trayIcon != null)

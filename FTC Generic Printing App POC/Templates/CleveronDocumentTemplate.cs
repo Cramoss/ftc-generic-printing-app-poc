@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace FTC_Generic_Printing_App_POC.Interfaces
+namespace FTC_Generic_Printing_App_POC.Templates
 {
     public class CleveronDocumentTemplate : BaseDocumentTemplate
     {
@@ -78,15 +78,15 @@ namespace FTC_Generic_Printing_App_POC.Interfaces
             {
                 AppLogger.LogInfo($"Printing logo image from resource: {resourceName}");
 
-                var config = new ThermalPrinterImageUtility.ImageConfig
+                var config = new ImageUtils.ImageSettings
                 {
                     PrinterWidth = 384,
-                    ProcessingMode = ThermalPrinterImageUtility.ImageProcessingMode.None,
+                    ProcessingMode = ImageUtils.ImageProcessingMode.None,
                     ContrastThreshold = 128,
                     MaintainAspectRatio = true
                 };
 
-                var imageCommands = ThermalPrinterImageUtility.LoadEmbeddedImageAsCommands(resourceName, config);
+                var imageCommands = ImageUtils.LoadEmbeddedImageAsCommands(resourceName, config);
 
                 if (imageCommands != null && imageCommands.Count > 0)
                 {

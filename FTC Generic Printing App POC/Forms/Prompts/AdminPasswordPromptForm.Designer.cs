@@ -1,6 +1,6 @@
-﻿namespace FTC_Generic_Printing_App_POC
+﻿namespace FTC_Generic_Printing_App_POC.Forms.Prompts
 {
-    partial class ConfigurationAdminPasswordPrompt
+    partial class AdminPasswordPromptForm
     {
         /// <summary>
         /// Required designer variable.
@@ -71,7 +71,7 @@
             this.acceptPasswordButton.UseVisualStyleBackColor = true;
             this.acceptPasswordButton.Click += new System.EventHandler(this.acceptPasswordButton_Click);
             // 
-            // ConfigurationAdminPasswordPrompt
+            // AdminPasswordPrompt
             // 
             this.AcceptButton = this.acceptPasswordButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -84,7 +84,7 @@
             this.Controls.Add(this.enterAdminPasswordLabel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ConfigurationAdminPasswordPrompt";
+            this.Name = "AdminPasswordPrompt";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Verificación de Administrador";
             this.TopMost = true;

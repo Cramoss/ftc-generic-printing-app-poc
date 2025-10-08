@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
-using System.IO;
-using System.IO.Ports;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace FTC_Generic_Printing_App_POC.Services
@@ -30,7 +27,7 @@ namespace FTC_Generic_Printing_App_POC.Services
 
         private string printerName;
         private bool isDisposed = false;
-        private readonly DocumentTemplateManager templateManager;
+        private readonly TemplatesManager templateManager;
         #endregion
 
         #region Native Methods for Direct Printing  
@@ -90,7 +87,7 @@ namespace FTC_Generic_Printing_App_POC.Services
                 AppLogger.LogInfo($"Using specified printer: {this.printerName}");
             }
 
-            templateManager = new DocumentTemplateManager();
+            templateManager = new TemplatesManager();
         }
 
         private string GetDefaultPrinterName()

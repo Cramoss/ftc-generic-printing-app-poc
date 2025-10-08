@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FTC_Generic_Printing_App_POC.Interfaces;
-using Newtonsoft.Json;
+using FTC_Generic_Printing_App_POC.Templates;
+using FTC_Generic_Printing_App_POC.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace FTC_Generic_Printing_App_POC.Manager
 {
-    public class DocumentTemplateManager
+    public class TemplatesManager
     {
         private readonly Dictionary<string, IDocumentTemplate> templates;
 
-        public DocumentTemplateManager()
+        public TemplatesManager()
         {
             // Document template registration. New templates can be added here.
             templates = new Dictionary<string, IDocumentTemplate>(StringComparer.OrdinalIgnoreCase)
@@ -25,7 +25,7 @@ namespace FTC_Generic_Printing_App_POC.Manager
             AppLogger.LogInfo($"DocumentTemplateManager initialized with {templates.Count} templates: ({string.Join(", ", templates.Keys)})");
         }
 
-        public async Task<List<byte[]>> ProcessDocumentAsync(Newtonsoft.Json.Linq.JObject document)
+        public async Task<List<byte[]>> ProcessDocumentAsync(JObject document)
         {
             try
             {

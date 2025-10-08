@@ -1,4 +1,4 @@
-﻿namespace FTC_Generic_Printing_App_POC.UI
+﻿namespace FTC_Generic_Printing_App_POC.Forms
 {
     partial class DebugConsoleForm
     {
@@ -46,7 +46,7 @@
             this.ClientSize = new System.Drawing.Size(774, 529);
             this.Controls.Add(this.logTextBox);
             this.Name = "DebugConsoleForm";
-            this.Text = "DebugConsoleForm";
+            this.Text = "Consola - FTC Generic Printing App";
             this.ResumeLayout(false);
 
         }

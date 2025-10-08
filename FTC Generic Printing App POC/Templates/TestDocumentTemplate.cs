@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FTC_Generic_Printing_App_POC.Interfaces
+namespace FTC_Generic_Printing_App_POC.Templates
 {
     // Test document template for verifying printer functionality
     // Based on the Porcentaje template but with fake hardcoded data and additional ESC/POS commands
@@ -29,7 +30,7 @@ namespace FTC_Generic_Printing_App_POC.Interfaces
         public override List<byte[]> GenerateDocumentCommands(JObject document)
         {
             var commands = new List<byte[]>();
-            var config = ConfigurationManager.LoadTotemConfiguration();
+            var totemSettings = SettingsManager.LoadTotemSettings();
 
             // Initialize printer
             commands.Add(ESC_INIT);
@@ -48,18 +49,18 @@ namespace FTC_Generic_Printing_App_POC.Interfaces
                 AddDivider(commands);
                 commands.Add(LF);
 
-                // Display totem configuration if configured
-                if (!string.IsNullOrEmpty(config.IdTotem))
+                // Display totem settings if set
+                if (!string.IsNullOrEmpty(totemSettings.IdTotem))
                 {
                     commands.Add(ESC_ALIGN_LEFT);
                     commands.Add(ESC_BOLD_ON);
                     commands.Add(TextLine("TOTEM CONFIGURADO\n\n"));
                     commands.Add(ESC_BOLD_OFF);
 
-                    AddText(commands, $"ID Totem: {config.IdTotem}");
-                    AddText(commands, $"Tienda: {config.Store} ({config.StoreId})");
-                    AddText(commands, $"País: {config.Country}");
-                    AddText(commands, $"Negocio: {config.Business}");
+                    AddText(commands, $"ID Totem: {totemSettings.IdTotem}");
+                    AddText(commands, $"Tienda: {totemSettings.Store} ({totemSettings.StoreId})");
+                    AddText(commands, $"País: {totemSettings.Country}");
+                    AddText(commands, $"Negocio: {totemSettings.Business}");
 
                     commands.Add(LF);
                     AddDivider(commands);

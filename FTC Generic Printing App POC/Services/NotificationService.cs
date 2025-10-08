@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace FTC_Generic_Printing_App_POC.Services
 {
@@ -16,7 +11,8 @@ namespace FTC_Generic_Printing_App_POC.Services
             _trayIcon = trayIcon;
         }
 
-        public static void ShowNotification(string message, string title = "FTC Printing App", ToolTipIcon icon = ToolTipIcon.Info)
+        // TODO: Remove POC from notification title
+        public static void ShowNotification(string message, string title = "FTC Printing App POC", ToolTipIcon icon = ToolTipIcon.Info)
         {
             if (_trayIcon != null)
             {

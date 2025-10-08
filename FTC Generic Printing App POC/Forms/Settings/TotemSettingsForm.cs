@@ -1,40 +1,38 @@
 ﻿using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Models;
+using FTC_Generic_Printing_App_POC.Services;
+using FTC_Generic_Printing_App_POC.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Forms.Settings
 {
-    public partial class TotemConfiguration : Form
+    public partial class TotemSettingsForm : Form
     {
         #region Fields
-        private readonly StoresApiService apiService;
+        private readonly StoresApiService storesApiService;
         private List<Store> availableStores;
         private bool isLoadingStores = false;
         #endregion
 
         #region Initialization
-        public TotemConfiguration()
+        public TotemSettingsForm()
         {
             InitializeComponent();
-            apiService = new StoresApiService();
+            storesApiService = new StoresApiService();
             availableStores = new List<Store>();
             PopulateComboBoxes();
             ClearForm();
             SetupEventHandlers();
         }
 
-        private void TotemConfiguration_Load(object sender, EventArgs e)
+        private void TotemSettings_Load(object sender, EventArgs e)
         {
             this.ShowInTaskbar = false;
-            AppLogger.LogInfo("Totem Configuration form opened");
+            AppLogger.LogInfo("Totem settings form opened");
         }
 
         private async Task LoadStoresAsync()
@@ -56,7 +54,7 @@ namespace FTC_Generic_Printing_App_POC
 
                 AppLogger.LogInfo($"Loading stores for Country: {selectedCountry}, Business: {selectedBusiness}");
 
-                availableStores = await apiService.GetStoresAsync(selectedCountry, selectedBusiness);
+                availableStores = await storesApiService.GetStoresAsync(selectedCountry, selectedBusiness);
                 storeComboBox.Items.Clear();
 
                 if (availableStores.Count > 0)
@@ -67,10 +65,10 @@ namespace FTC_Generic_Printing_App_POC
                     }
 
                     // Try to select previously saved store
-                    var savedConfig = ConfigurationManager.LoadTotemConfiguration();
-                    if (!string.IsNullOrEmpty(savedConfig.StoreId))
+                    var totemSettings = SettingsManager.LoadTotemSettings();
+                    if (!string.IsNullOrEmpty(totemSettings.StoreId))
                     {
-                        var savedStore = availableStores.FirstOrDefault(s => s.id == savedConfig.StoreId);
+                        var savedStore = availableStores.FirstOrDefault(s => s.id == totemSettings.StoreId);
                         if (savedStore != null)
                         {
                             storeComboBox.SelectedItem = savedStore;
@@ -200,33 +198,33 @@ namespace FTC_Generic_Printing_App_POC
         {
             e.Cancel = true;
             this.Hide();
-            AppLogger.LogInfo("Totem configuration form hidden");
+            AppLogger.LogInfo("Totem settings form hidden");
         }
 
-        private void saveTotemConfigurationButton_Click(object sender, EventArgs e)
+        private void saveTotemSettingsButton_Click(object sender, EventArgs e)
         {
-            SaveConfiguration();
+            SaveSettings();
             ClearForm();
         }
 
-        private void cleanTotemConfigurationButton_Click(object sender, EventArgs e)
+        private void cleanTotemSettingsButton_Click(object sender, EventArgs e)
         {
             ClearForm();
-            AppLogger.LogInfo("Totem configuration form cleaned");
+            AppLogger.LogInfo("Totem settings form cleaned");
         }
 
-        private void cancelTotemConfgurationButton_Click(object sender, EventArgs e)
+        private void cancelTotemSettingsButton_Click(object sender, EventArgs e)
         {
-            CancelConfiguration();
+            CancelSettings();
         }
         #endregion
 
         #region Core Methods
-        private void SaveConfiguration()
+        private void SaveSettings()
         {
             try
             {
-                AppLogger.LogInfo("User clicked Save Totem Configuration button");
+                AppLogger.LogInfo("User clicked Save Totem settings button");
 
                 string idTotem = idTotemTextBox.Text.Trim();
                 string selectedCountry = countryComboBox.SelectedItem?.ToString() ?? "";
@@ -291,7 +289,7 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                var config = new ConfigurationData
+                var totem = new Totem
                 {
                     IdTotem = idTotem,
                     Country = selectedCountry,
@@ -300,30 +298,30 @@ namespace FTC_Generic_Printing_App_POC
                     StoreId = selectedStoreId
                 };
 
-                ConfigurationManager.SaveTotemConfiguration(config);
-                NotifyFirebaseConfigurationChanged();
+                SettingsManager.SaveTotemSettings(totem);
+                NotifyFirebaseSettingsChanged();
 
-                AppLogger.LogInfo($"Totem configuration saved with StoreId: {selectedStoreId}, Store: {selectedStore}");
+                AppLogger.LogInfo($"Totem settings saved with StoreId: {selectedStoreId}, Store: {selectedStore}");
                 this.Hide();
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error saving Totem configuration", ex);
+                AppLogger.LogError("Error saving Totem settings", ex);
                 MessageBox.Show("Error al guardar configuración: " + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void NotifyFirebaseConfigurationChanged()
+        private void NotifyFirebaseSettingsChanged()
         {
             try
             {
-                AppLogger.LogInfo("Reloading Firebase configuration");
-                FirebaseListenerManager.Instance.ReloadConfiguration(false);
+                AppLogger.LogInfo("Reloading Firebase settings");
+                FirebaseManager.Instance.ReloadSettings(false);
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Failed to notify Firebase about configuration change", ex);
+                AppLogger.LogError("Failed to notify Firebase about settings change", ex);
             }
         }
 
@@ -339,11 +337,11 @@ namespace FTC_Generic_Printing_App_POC
 
                 ResetStoreComboBox();
 
-                AppLogger.LogInfo("Totem configuration controls reset to default values");
+                AppLogger.LogInfo("Totem settings controls reset to default values");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error resetting Totem edit configuration panel", ex);
+                AppLogger.LogError("Error resetting Totem edit settings panel", ex);
             }
         }
 
@@ -355,17 +353,17 @@ namespace FTC_Generic_Printing_App_POC
             storeComboBox.Enabled = false;
         }
 
-        private void CancelConfiguration()
+        private void CancelSettings()
         {
             try
             {
                 this.Hide();
                 ClearForm();
-                AppLogger.LogInfo("Totem configuration form hidden and edit panel reset values");
+                AppLogger.LogInfo("Totem settings form hidden and edit panel reset values");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error hiding Totem configuration form and resetting edit panel", ex);
+                AppLogger.LogError("Error hiding Totem settings form and resetting edit panel", ex);
             }
         }
         #endregion

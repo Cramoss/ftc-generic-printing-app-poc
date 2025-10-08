@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+﻿using FTC_Generic_Printing_App_POC.Manager;
+using FTC_Generic_Printing_App_POC.Services;
+using FTC_Generic_Printing_App_POC.Utils;
+using System;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Forms.Settings
 {
     // TODO: Hide icon from taskbar when form is open.
-    public partial class FirebaseConfiguration : Form
+    public partial class FirebaseSettingsForm : Form
     {
         #region Fields
         private FirebaseService firebaseManager;
@@ -21,7 +18,7 @@ namespace FTC_Generic_Printing_App_POC
         #endregion
 
         #region Initialization
-        public FirebaseConfiguration()
+        public FirebaseSettingsForm()
         {
             InitializeComponent();
             SetupTextBoxValidation();
@@ -58,42 +55,42 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void FirebaseConfiguration_Load(object sender, EventArgs e)
+        private void FirebaseSettings_Load(object sender, EventArgs e)
         {
             this.ShowInTaskbar = false;
-            AppLogger.LogInfo("Firebase Configuration form opened");
+            AppLogger.LogInfo("Firebase settings form opened");
         }
         #endregion
 
         #region Event Handlers
-        private void saveFirebaseConfigurationButton_Click(object sender, EventArgs e)
+        private void saveFirebaseSettingsButton_Click(object sender, EventArgs e)
         {
-            SaveConfiguration();
+            SaveSettings();
             ClearForm();
         }
 
-        private void cleanFirebaseConfigurationButton_Click(object sender, EventArgs e)
+        private void cleanFirebaseSettingsButton_Click(object sender, EventArgs e)
         {
             ClearForm();
         }
 
-        private void restoreDefaultDefaultConfigurationButton_Click(object sender, EventArgs e)
+        private void restoreDefaultFirebaseSettingsButton_Click(object sender, EventArgs e)
         {
-            RestoreDefaultConfiguration();
+            RestoreDefaultSettings();
         }
 
-        private void cancelFirebaseConfigurationButton_Click(object sender, EventArgs e)
+        private void cancelFirebaseSettingsButton_Click(object sender, EventArgs e)
         {
-            CancelConfiguration();
+            CancelSettings();
         }
         #endregion
 
         #region Core Methods
-        private void SaveConfiguration()
+        private void SaveSettings()
         {
             try
             {
-                AppLogger.LogInfo("User clicked Save Firebase Configuration button");
+                AppLogger.LogInfo("User clicked Save Firebase settings button");
 
                 string databaseUrl = firebaseDatabaseTextBox.Text.Trim();
                 string projectId = firebaseProjectIdTextBox.Text.Trim();
@@ -156,19 +153,19 @@ namespace FTC_Generic_Printing_App_POC
                     return;
                 }
 
-                ConfigurationManager.SaveFirebaseConfiguration(databaseUrl, projectId, apiKey);
+                SettingsManager.SaveFirebaseSettings(databaseUrl, projectId, apiKey);
 
                 if (firebaseManager != null)
                 {
-                    firebaseManager.ReloadConfiguration();
+                    firebaseManager.ReloadSettings();
                 }
 
-                AppLogger.LogInfo($"Firebase configuration saved successfully");
+                AppLogger.LogInfo($"Firebase settings saved successfully");
                 this.Hide();
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error saving Firebase configuration", ex);
+                AppLogger.LogError("Error saving Firebase settings", ex);
                 MessageBox.Show("Error al guardar configuración: " + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -182,54 +179,54 @@ namespace FTC_Generic_Printing_App_POC
                 firebaseProjectIdTextBox.Text = "";
                 firebaseKeyTextBox.Text = "";
 
-                AppLogger.LogInfo("Firebase edit configuration panel controls reset to default values");
+                AppLogger.LogInfo("Firebase edit settings panel controls reset to default values");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error resetting Firebase edit configuration panel", ex);
+                AppLogger.LogError("Error resetting Firebase edit settings panel", ex);
             }
         }
 
-        private void RestoreDefaultConfiguration()
+        private void RestoreDefaultSettings()
         {
             try
             {
-                AppLogger.LogInfo("User clicked Restore Default Firebase Configuration button");
+                AppLogger.LogInfo("User clicked Restore Default Firebase settings button");
 
                 DialogResult result = MessageBox.Show(
                     "¿Está seguro que desea restaurar la configuración de Firebase a los valores predeterminados?" +
                     Environment.NewLine + Environment.NewLine +
-                    "Los valores actuales serán reemplazados por los valores predeterminados del archivo defaultConfig.xml",
+                    "Los valores actuales serán reemplazados por los valores predeterminados del archivo defaultSettings.xml",
                     "Confirmar restauración",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
                 if (result == DialogResult.Yes)
                 {
-                    // Get default values from defaultConfig.xml
-                    string databaseUrl = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_DB_URL);
-                    string projectId = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_PROJECT_ID);
-                    string apiKey = ConfigurationManager.GetValueFromDefaultConfig(DefaultConfigKeys.CONFIG_DEFAULT_FIREBASE_API_KEY);
+                    // Get default values from defaultSettings.xml
+                    string databaseUrl = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_FIREBASE_DB_URL);
+                    string projectId = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_FIREBASE_PROJECT_ID);
+                    string apiKey = SettingsManager.GetValueFromDefaultSettings(DefaultSettingsKeys.SETTINGS_DEFAULT_FIREBASE_API_KEY);
 
                     if (string.IsNullOrEmpty(databaseUrl) || string.IsNullOrEmpty(projectId) || string.IsNullOrEmpty(apiKey))
                     {
-                        AppLogger.LogWarning("Some default Firebase configuration values were not found in defaultConfig.xml");
+                        AppLogger.LogWarning("Some default Firebase settings values were not found in defaultSettings.xml");
                         MessageBox.Show(
-                            "Algunos valores predeterminados no fueron encontrados en el archivo defaultConfig.xml",
+                            "Algunos valores predeterminados no fueron encontrados en el archivo defaultSettings.xml",
                             "Error de restauración",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning);
                         return;
                     }
 
-                    ConfigurationManager.SaveFirebaseConfiguration(databaseUrl, projectId, apiKey);
+                    SettingsManager.SaveFirebaseSettings(databaseUrl, projectId, apiKey);
 
                     if (firebaseManager != null)
                     {
-                        firebaseManager.ReloadConfiguration();
+                        firebaseManager.ReloadSettings();
                     }
 
-                    AppLogger.LogInfo("Firebase configuration restored to default values successfully");
+                    AppLogger.LogInfo("Firebase settings restored to default values successfully");
                     MessageBox.Show(
                         "La configuración de Firebase ha sido restaurada a los valores predeterminados correctamente.",
                         "Restauración exitosa",
@@ -240,12 +237,12 @@ namespace FTC_Generic_Printing_App_POC
                 }
                 else
                 {
-                    AppLogger.LogInfo("User cancelled restoring Firebase default configuration");
+                    AppLogger.LogInfo("User cancelled restoring Firebase default settings");
                 }
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error restoring Firebase default configuration", ex);
+                AppLogger.LogError("Error restoring Firebase default settings", ex);
                 MessageBox.Show(
                     "Error al restaurar la configuración predeterminada: " + ex.Message,
                     "Error",
@@ -254,17 +251,17 @@ namespace FTC_Generic_Printing_App_POC
             }
         }
 
-        private void CancelConfiguration()
+        private void CancelSettings()
         {
             try
             {
                 this.Hide();
                 ClearForm();
-                AppLogger.LogInfo("Firebase configuration form hidden and edit panel reset values");
+                AppLogger.LogInfo("Firebase settings form hidden and edit panel reset values");
             }
             catch (Exception ex)
             {
-                AppLogger.LogError("Error hiding Firebase configuration form and resetting edit panel", ex);
+                AppLogger.LogError("Error hiding Firebase settings form and resetting edit panel", ex);
             }
         }
         #endregion

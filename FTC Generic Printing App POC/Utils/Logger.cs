@@ -5,7 +5,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace FTC_Generic_Printing_App_POC
+namespace FTC_Generic_Printing_App_POC.Utils
 {
     public static class AppLogger
     {
@@ -154,7 +154,7 @@ namespace FTC_Generic_Printing_App_POC
                 // Prevent initialization during logging to avoid circular references
                 if (debugConsoleInitialized)
                 {
-                    Manager.DebugConsoleManager.Instance?.AppendLog(logMessage);
+                    Manager.DebugManager.Instance?.AppendLog(logMessage);
                 }
             }
             catch
