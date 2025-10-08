@@ -90,7 +90,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\Utils\DebugConsoleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Utils\DebugConsoleForm.Designer.cs">
+      <DependentUpon>DebugConsoleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Manager\DebugConsoleManager.cs" />
     <Compile Include="Manager\FirebaseListenerManager.cs" />
+    <Compile Include="Manager\GlobalHotkeyManager.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\PrinterService.cs" />
     <Compile Include="Services\SingleInstanceService.cs" />
@@ -107,7 +115,7 @@
     <Compile Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.Designer.cs">
       <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\ConfigurationManager.cs" />
+    <Compile Include="Manager\ConfigurationManager.cs" />
     <Compile Include="Manager\DocumentTemplateManager.cs" />
     <Compile Include="Templates\BaseDocumentTemplate.cs" />
     <Compile Include="Interfaces\IDocumentTemplate.cs" />
@@ -141,6 +149,9 @@
     <Compile Include="Utils\TrayApplicationContext.cs" />
     <EmbeddedResource Include="Forms\Configuration\Configuration.resx">
       <DependentUpon>Configuration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Utils\DebugConsoleForm.resx">
+      <DependentUpon>DebugConsoleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Prompts\ConfigurationAdminPasswordPrompt.resx">
       <DependentUpon>ConfigurationAdminPasswordPrompt.cs</DependentUpon>

@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace FTC_Generic_Printing_App_POC.Templates
+namespace FTC_Generic_Printing_App_POC.Interfaces
 {
     public class CleveronDocumentTemplate : BaseDocumentTemplate
     {

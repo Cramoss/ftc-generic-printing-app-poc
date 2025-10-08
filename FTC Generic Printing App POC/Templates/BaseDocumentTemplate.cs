@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace FTC_Generic_Printing_App_POC.Templates
+namespace FTC_Generic_Printing_App_POC.Interfaces
 {
     // Base class for all document templates with common functionality and ESC/POS commands
     // This will be adjusted in the future as needed for different styles of documents

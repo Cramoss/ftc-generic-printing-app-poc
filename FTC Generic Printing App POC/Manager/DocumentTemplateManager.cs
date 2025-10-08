@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FTC_Generic_Printing_App_POC.Templates;
+using FTC_Generic_Printing_App_POC.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FTC_Generic_Printing_App_POC.Services
+namespace FTC_Generic_Printing_App_POC.Manager
 {
     public class DocumentTemplateManager
     {

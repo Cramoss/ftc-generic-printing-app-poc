@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FTC_Generic_Printing_App_POC.Templates
+namespace FTC_Generic_Printing_App_POC.Interfaces
 {
     // Test document template for verifying printer functionality
     // Based on the Porcentaje template but with fake hardcoded data and additional ESC/POS commands

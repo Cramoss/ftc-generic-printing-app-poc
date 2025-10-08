@@ -117,6 +117,8 @@ namespace FTC_Generic_Printing_App_POC
 
         private void ExitApplication(object sender, EventArgs e)
         {
+            FTC_Generic_Printing_App_POC.Manager.DebugConsoleManager.Instance.Dispose();
+
             if (FirebaseListenerManager.Instance.IsListening)
             {
                 FirebaseListenerManager.Instance.StopListening();
@@ -151,6 +153,8 @@ namespace FTC_Generic_Printing_App_POC
         {
             if (disposing)
             {
+                FTC_Generic_Printing_App_POC.Manager.DebugConsoleManager.Instance.Dispose();
+
                 if (FirebaseListenerManager.Instance.IsListening)
                 {
                     FirebaseListenerManager.Instance.StopListening();

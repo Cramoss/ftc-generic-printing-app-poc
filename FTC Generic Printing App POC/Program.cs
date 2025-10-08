@@ -38,6 +38,12 @@ namespace FTC_Generic_Printing_App_POC
                     FirebaseService firebaseService = new FirebaseService();
                     FirebaseListenerManager.Instance.Initialize(firebaseService);
 
+                    // Initialize the debug console manager
+                    var debugConsoleManager = FTC_Generic_Printing_App_POC.Manager.DebugConsoleManager.Instance;
+
+                    // Flag the debug console as initialized
+                    typeof(AppLogger).GetField("debugConsoleInitialized", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)?.SetValue(null, true);
+
                     TrayContext = new TrayApplicationContext();
                     TrayContext.FirebaseService = firebaseService;
 

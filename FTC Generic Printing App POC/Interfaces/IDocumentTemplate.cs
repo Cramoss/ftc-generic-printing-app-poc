@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace FTC_Generic_Printing_App_POC.Templates
+namespace FTC_Generic_Printing_App_POC.Interfaces
 {
     // Interface defining the contract for all document templates
     public interface IDocumentTemplate

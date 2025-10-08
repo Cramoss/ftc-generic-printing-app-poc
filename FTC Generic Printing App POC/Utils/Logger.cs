@@ -1,9 +1,9 @@
-﻿using NLog;
-using NLog.Config;
-using NLog.Targets;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace FTC_Generic_Printing_App_POC
 {
@@ -12,6 +12,7 @@ namespace FTC_Generic_Printing_App_POC
         #region Fields
         private static readonly Logger logger;
         private static readonly string appName = "FTC Generic Printing App POC"; // TODO: Remove POC on final version
+        private static bool debugConsoleInitialized = false;
         #endregion
 
         #region Properties
@@ -105,34 +106,61 @@ namespace FTC_Generic_Printing_App_POC
         public static void LogInfo(string message)
         {
             logger.Info(message);
+            ForwardToDebugConsole($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} INFO {message}");
         }
 
         public static void LogError(string message, Exception ex = null)
         {
             if (ex != null)
+            {
                 logger.Error(ex, message);
+                ForwardToDebugConsole($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} ERROR {message} - {ex}");
+            }
             else
+            {
                 logger.Error(message);
+                ForwardToDebugConsole($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} ERROR {message}");
+            }
         }
 
         public static void LogWarning(string message)
         {
             logger.Warn(message);
+            ForwardToDebugConsole($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} WARN {message}");
         }
 
         public static void LogDebug(string message)
         {
             logger.Debug(message);
+            ForwardToDebugConsole($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} DEBUG {message}");
         }
 
         public static void LogFirebaseEvent(string eventType, string details)
         {
             logger.Info($"FIREBASE-{eventType}: {details}");
+            ForwardToDebugConsole($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} FIREBASE-{eventType}: {details}");
         }
 
         public static void LogPrintEvent(string eventType, string details)
         {
             logger.Info($"PRINT-{eventType}: {details}");
+            ForwardToDebugConsole($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} PRINT-{eventType}: {details}");
+        }
+
+        private static void ForwardToDebugConsole(string logMessage)
+        {
+            try
+            {
+                // Prevent initialization during logging to avoid circular references
+                if (debugConsoleInitialized)
+                {
+                    Manager.DebugConsoleManager.Instance?.AppendLog(logMessage);
+                }
+            }
+            catch
+            {
+                // Ignore errors in debug console forwarding
+            }
         }
         #endregion
     }

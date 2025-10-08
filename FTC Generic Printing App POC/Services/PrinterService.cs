@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using FTC_Generic_Printing_App_POC.Manager;
 using Newtonsoft.Json.Linq;
 
 namespace FTC_Generic_Printing_App_POC.Services
