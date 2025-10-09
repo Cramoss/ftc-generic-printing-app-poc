@@ -28,25 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugConsoleForm));
             this.logTextBox = new System.Windows.Forms.RichTextBox();
             this.copyClipboardButton = new System.Windows.Forms.Button();
             this.openLogFolderButton = new System.Windows.Forms.Button();
             this.clearLogsButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.logGroupBox = new System.Windows.Forms.GroupBox();
             this.buttonsGroupBox = new System.Windows.Forms.GroupBox();
-            this.autoScrollCheckBox = new System.Windows.Forms.CheckBox();
             this.logLevelComboBox = new System.Windows.Forms.ComboBox();
+            this.autoScrollCheckBox = new System.Windows.Forms.CheckBox();
+            this.logGroupBox = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1.SuspendLayout();
-            this.logGroupBox.SuspendLayout();
             this.buttonsGroupBox.SuspendLayout();
+            this.logGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // logTextBox
             // 
             this.logTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logTextBox.Location = new System.Drawing.Point(3, 16);
-            this.logTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.Size = new System.Drawing.Size(472, 352);
             this.logTextBox.TabIndex = 0;
@@ -55,7 +56,7 @@
             // copyClipboardButton
             // 
             this.copyClipboardButton.Location = new System.Drawing.Point(5, 48);
-            this.copyClipboardButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.copyClipboardButton.Margin = new System.Windows.Forms.Padding(2);
             this.copyClipboardButton.Name = "copyClipboardButton";
             this.copyClipboardButton.Size = new System.Drawing.Size(130, 25);
             this.copyClipboardButton.TabIndex = 1;
@@ -66,7 +67,7 @@
             // openLogFolderButton
             // 
             this.openLogFolderButton.Location = new System.Drawing.Point(171, 48);
-            this.openLogFolderButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.openLogFolderButton.Margin = new System.Windows.Forms.Padding(2);
             this.openLogFolderButton.Name = "openLogFolderButton";
             this.openLogFolderButton.Size = new System.Drawing.Size(130, 25);
             this.openLogFolderButton.TabIndex = 2;
@@ -77,7 +78,7 @@
             // clearLogsButton
             // 
             this.clearLogsButton.Location = new System.Drawing.Point(345, 48);
-            this.clearLogsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.clearLogsButton.Margin = new System.Windows.Forms.Padding(2);
             this.clearLogsButton.Name = "clearLogsButton";
             this.clearLogsButton.Size = new System.Drawing.Size(130, 25);
             this.clearLogsButton.TabIndex = 3;
@@ -100,17 +101,6 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(484, 461);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
-            // logGroupBox
-            // 
-            this.logGroupBox.Controls.Add(this.logTextBox);
-            this.logGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.logGroupBox.Name = "logGroupBox";
-            this.logGroupBox.Size = new System.Drawing.Size(478, 371);
-            this.logGroupBox.TabIndex = 5;
-            this.logGroupBox.TabStop = false;
-            this.logGroupBox.Text = "Logs";
-            // 
             // buttonsGroupBox
             // 
             this.buttonsGroupBox.Controls.Add(this.logLevelComboBox);
@@ -126,6 +116,14 @@
             this.buttonsGroupBox.TabStop = false;
             this.buttonsGroupBox.Text = "Controles";
             // 
+            // logLevelComboBox
+            // 
+            this.logLevelComboBox.FormattingEnabled = true;
+            this.logLevelComboBox.Location = new System.Drawing.Point(345, 15);
+            this.logLevelComboBox.Name = "logLevelComboBox";
+            this.logLevelComboBox.Size = new System.Drawing.Size(130, 21);
+            this.logLevelComboBox.TabIndex = 5;
+            // 
             // autoScrollCheckBox
             // 
             this.autoScrollCheckBox.AutoSize = true;
@@ -136,13 +134,16 @@
             this.autoScrollCheckBox.Text = "Desplazamiento automático";
             this.autoScrollCheckBox.UseVisualStyleBackColor = true;
             // 
-            // logLevelComboBox
+            // logGroupBox
             // 
-            this.logLevelComboBox.FormattingEnabled = true;
-            this.logLevelComboBox.Location = new System.Drawing.Point(345, 15);
-            this.logLevelComboBox.Name = "logLevelComboBox";
-            this.logLevelComboBox.Size = new System.Drawing.Size(130, 21);
-            this.logLevelComboBox.TabIndex = 5;
+            this.logGroupBox.Controls.Add(this.logTextBox);
+            this.logGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.logGroupBox.Name = "logGroupBox";
+            this.logGroupBox.Size = new System.Drawing.Size(478, 371);
+            this.logGroupBox.TabIndex = 5;
+            this.logGroupBox.TabStop = false;
+            this.logGroupBox.Text = "Logs";
             // 
             // DebugConsoleForm
             // 
@@ -150,14 +151,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(484, 461);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "DebugConsoleForm";
-            this.Text = "Consola - FTC Generic Printing App";
+            this.Text = "Consola - FTC Generic Printing App POC";
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.logGroupBox.ResumeLayout(false);
             this.buttonsGroupBox.ResumeLayout(false);
             this.buttonsGroupBox.PerformLayout();
+            this.logGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

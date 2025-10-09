@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             this.editTotemSettingsButton = new System.Windows.Forms.Button();
             this.currentStoreId = new System.Windows.Forms.Label();
             this.currentStore = new System.Windows.Forms.Label();
@@ -112,7 +113,7 @@
             // 
             this.editTotemSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.editTotemSettingsButton.Location = new System.Drawing.Point(426, 2);
-            this.editTotemSettingsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.editTotemSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.editTotemSettingsButton.Name = "editTotemSettingsButton";
             this.editTotemSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.editTotemSettingsButton.TabIndex = 19;
@@ -246,7 +247,7 @@
             this.exitSettingsButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.exitSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.exitSettingsButton.Location = new System.Drawing.Point(437, 427);
-            this.exitSettingsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.exitSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.exitSettingsButton.Name = "exitSettingsButton";
             this.exitSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.exitSettingsButton.TabIndex = 20;
@@ -307,7 +308,7 @@
             // 
             this.refreshCurrentTotemSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.refreshCurrentTotemSettingsButton.Location = new System.Drawing.Point(426, 31);
-            this.refreshCurrentTotemSettingsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.refreshCurrentTotemSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentTotemSettingsButton.Name = "refreshCurrentTotemSettingsButton";
             this.refreshCurrentTotemSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.refreshCurrentTotemSettingsButton.TabIndex = 20;
@@ -332,7 +333,7 @@
             // 
             this.showStoresApiInfoButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.showStoresApiInfoButton.Location = new System.Drawing.Point(424, 89);
-            this.showStoresApiInfoButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.showStoresApiInfoButton.Margin = new System.Windows.Forms.Padding(2);
             this.showStoresApiInfoButton.Name = "showStoresApiInfoButton";
             this.showStoresApiInfoButton.Size = new System.Drawing.Size(100, 25);
             this.showStoresApiInfoButton.TabIndex = 24;
@@ -344,7 +345,7 @@
             // 
             this.testStoresApiConnectivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.testStoresApiConnectivityButton.Location = new System.Drawing.Point(424, 60);
-            this.testStoresApiConnectivityButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.testStoresApiConnectivityButton.Margin = new System.Windows.Forms.Padding(2);
             this.testStoresApiConnectivityButton.Name = "testStoresApiConnectivityButton";
             this.testStoresApiConnectivityButton.Size = new System.Drawing.Size(100, 25);
             this.testStoresApiConnectivityButton.TabIndex = 22;
@@ -504,7 +505,7 @@
             // 
             this.refreshCurrentStoresApiSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.refreshCurrentStoresApiSettingsButton.Location = new System.Drawing.Point(424, 31);
-            this.refreshCurrentStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.refreshCurrentStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentStoresApiSettingsButton.Name = "refreshCurrentStoresApiSettingsButton";
             this.refreshCurrentStoresApiSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.refreshCurrentStoresApiSettingsButton.TabIndex = 20;
@@ -516,7 +517,7 @@
             // 
             this.editStoresApiSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.editStoresApiSettingsButton.Location = new System.Drawing.Point(424, 3);
-            this.editStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.editStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.editStoresApiSettingsButton.Name = "editStoresApiSettingsButton";
             this.editStoresApiSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.editStoresApiSettingsButton.TabIndex = 19;
@@ -561,7 +562,7 @@
             // 
             this.showFirebaseInfoButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.showFirebaseInfoButton.Location = new System.Drawing.Point(424, 89);
-            this.showFirebaseInfoButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.showFirebaseInfoButton.Margin = new System.Windows.Forms.Padding(2);
             this.showFirebaseInfoButton.Name = "showFirebaseInfoButton";
             this.showFirebaseInfoButton.Size = new System.Drawing.Size(100, 25);
             this.showFirebaseInfoButton.TabIndex = 23;
@@ -573,7 +574,7 @@
             // 
             this.testFirebaseConnectivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.testFirebaseConnectivityButton.Location = new System.Drawing.Point(424, 60);
-            this.testFirebaseConnectivityButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.testFirebaseConnectivityButton.Margin = new System.Windows.Forms.Padding(2);
             this.testFirebaseConnectivityButton.Name = "testFirebaseConnectivityButton";
             this.testFirebaseConnectivityButton.Size = new System.Drawing.Size(100, 25);
             this.testFirebaseConnectivityButton.TabIndex = 22;
@@ -706,7 +707,7 @@
             // 
             this.refreshCurrentFirebaseSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.refreshCurrentFirebaseSettingsButton.Location = new System.Drawing.Point(424, 31);
-            this.refreshCurrentFirebaseSettingsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.refreshCurrentFirebaseSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentFirebaseSettingsButton.Name = "refreshCurrentFirebaseSettingsButton";
             this.refreshCurrentFirebaseSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.refreshCurrentFirebaseSettingsButton.TabIndex = 20;
@@ -718,7 +719,7 @@
             // 
             this.editFirebaseSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.editFirebaseSettingsButton.Location = new System.Drawing.Point(424, 4);
-            this.editFirebaseSettingsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.editFirebaseSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.editFirebaseSettingsButton.Name = "editFirebaseSettingsButton";
             this.editFirebaseSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.editFirebaseSettingsButton.TabIndex = 19;
@@ -751,7 +752,7 @@
             // 
             this.testDocumentPrintButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.testDocumentPrintButton.Location = new System.Drawing.Point(426, 31);
-            this.testDocumentPrintButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.testDocumentPrintButton.Margin = new System.Windows.Forms.Padding(2);
             this.testDocumentPrintButton.Name = "testDocumentPrintButton";
             this.testDocumentPrintButton.Size = new System.Drawing.Size(100, 25);
             this.testDocumentPrintButton.TabIndex = 22;
@@ -803,7 +804,7 @@
             // 
             this.refreshCurrentPrinterButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.refreshCurrentPrinterButton.Location = new System.Drawing.Point(426, 2);
-            this.refreshCurrentPrinterButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.refreshCurrentPrinterButton.Margin = new System.Windows.Forms.Padding(2);
             this.refreshCurrentPrinterButton.Name = "refreshCurrentPrinterButton";
             this.refreshCurrentPrinterButton.Size = new System.Drawing.Size(100, 25);
             this.refreshCurrentPrinterButton.TabIndex = 20;
@@ -834,7 +835,7 @@
             // 
             this.testNetworkConnectivityButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.testNetworkConnectivityButton.Location = new System.Drawing.Point(426, 4);
-            this.testNetworkConnectivityButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.testNetworkConnectivityButton.Margin = new System.Windows.Forms.Padding(2);
             this.testNetworkConnectivityButton.Name = "testNetworkConnectivityButton";
             this.testNetworkConnectivityButton.Size = new System.Drawing.Size(100, 25);
             this.testNetworkConnectivityButton.TabIndex = 22;
@@ -854,7 +855,7 @@
             this.networkTableLayoutPanel.Name = "networkTableLayoutPanel";
             this.networkTableLayoutPanel.RowCount = 1;
             this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.networkTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.networkTableLayoutPanel.Size = new System.Drawing.Size(418, 33);
             this.networkTableLayoutPanel.TabIndex = 21;
             // 
@@ -902,7 +903,7 @@
             this.tabPage1.Controls.Add(this.printLabel);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(542, 392);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
@@ -916,7 +917,7 @@
             this.tabPage2.Controls.Add(this.storesApiLabel);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(542, 392);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Opciones Avanzadas";
@@ -943,10 +944,11 @@
             this.Controls.Add(this.debugConsoleButton);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.exitSettingsButton);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Configuración General";
+            this.Text = "Configuración General - FTC Generic Printing App POC";
             this.Load += new System.EventHandler(this.Settings_Load);
             this.totemPanel.ResumeLayout(false);
             this.totemTableLayoutPanel.ResumeLayout(false);

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StoresApiSettingsForm));
             this.editStoresApiSettingsLabel = new System.Windows.Forms.Label();
             this.editStoresApiSettingsPanel = new System.Windows.Forms.Panel();
             this.storesApiTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -51,10 +52,9 @@
             // 
             this.editStoresApiSettingsLabel.AutoSize = true;
             this.editStoresApiSettingsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
-            this.editStoresApiSettingsLabel.Location = new System.Drawing.Point(9, 14);
-            this.editStoresApiSettingsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.editStoresApiSettingsLabel.Location = new System.Drawing.Point(6, 9);
             this.editStoresApiSettingsLabel.Name = "editStoresApiSettingsLabel";
-            this.editStoresApiSettingsLabel.Size = new System.Drawing.Size(440, 51);
+            this.editStoresApiSettingsLabel.Size = new System.Drawing.Size(224, 26);
             this.editStoresApiSettingsLabel.TabIndex = 13;
             this.editStoresApiSettingsLabel.Text = "Configurar Stores API";
             // 
@@ -62,9 +62,10 @@
             // 
             this.editStoresApiSettingsPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.editStoresApiSettingsPanel.Controls.Add(this.storesApiTableLayoutPanel);
-            this.editStoresApiSettingsPanel.Location = new System.Drawing.Point(15, 92);
+            this.editStoresApiSettingsPanel.Location = new System.Drawing.Point(10, 60);
+            this.editStoresApiSettingsPanel.Margin = new System.Windows.Forms.Padding(2);
             this.editStoresApiSettingsPanel.Name = "editStoresApiSettingsPanel";
-            this.editStoresApiSettingsPanel.Size = new System.Drawing.Size(672, 246);
+            this.editStoresApiSettingsPanel.Size = new System.Drawing.Size(449, 161);
             this.editStoresApiSettingsPanel.TabIndex = 22;
             // 
             // storesApiTableLayoutPanel
@@ -81,23 +82,23 @@
             this.storesApiTableLayoutPanel.Controls.Add(this.storesApiClientIdLabel, 0, 2);
             this.storesApiTableLayoutPanel.Controls.Add(this.storesApiUrlTextBox, 1, 0);
             this.storesApiTableLayoutPanel.Controls.Add(this.storesApiClientSecretTextBox, 1, 3);
-            this.storesApiTableLayoutPanel.Location = new System.Drawing.Point(4, 5);
-            this.storesApiTableLayoutPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.storesApiTableLayoutPanel.Location = new System.Drawing.Point(3, 3);
             this.storesApiTableLayoutPanel.Name = "storesApiTableLayoutPanel";
             this.storesApiTableLayoutPanel.RowCount = 4;
             this.storesApiTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.storesApiTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.storesApiTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.storesApiTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.storesApiTableLayoutPanel.Size = new System.Drawing.Size(660, 231);
+            this.storesApiTableLayoutPanel.Size = new System.Drawing.Size(440, 150);
             this.storesApiTableLayoutPanel.TabIndex = 26;
             // 
             // storesApiAuthUrlTextBox
             // 
             this.storesApiAuthUrlTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.storesApiAuthUrlTextBox.Location = new System.Drawing.Point(204, 74);
+            this.storesApiAuthUrlTextBox.Location = new System.Drawing.Point(137, 45);
+            this.storesApiAuthUrlTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.storesApiAuthUrlTextBox.Name = "storesApiAuthUrlTextBox";
-            this.storesApiAuthUrlTextBox.Size = new System.Drawing.Size(445, 26);
+            this.storesApiAuthUrlTextBox.Size = new System.Drawing.Size(298, 20);
             this.storesApiAuthUrlTextBox.TabIndex = 26;
             // 
             // storesApiUrlLabel
@@ -105,9 +106,10 @@
             this.storesApiUrlLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.storesApiUrlLabel.AutoSize = true;
             this.storesApiUrlLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.storesApiUrlLabel.Location = new System.Drawing.Point(6, 11);
+            this.storesApiUrlLabel.Location = new System.Drawing.Point(5, 9);
+            this.storesApiUrlLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.storesApiUrlLabel.Name = "storesApiUrlLabel";
-            this.storesApiUrlLabel.Size = new System.Drawing.Size(89, 37);
+            this.storesApiUrlLabel.Size = new System.Drawing.Size(46, 20);
             this.storesApiUrlLabel.TabIndex = 0;
             this.storesApiUrlLabel.Text = "URL:";
             this.storesApiUrlLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -117,18 +119,20 @@
             this.storesApiClientSecretLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.storesApiClientSecretLabel.AutoSize = true;
             this.storesApiClientSecretLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.storesApiClientSecretLabel.Location = new System.Drawing.Point(6, 182);
+            this.storesApiClientSecretLabel.Location = new System.Drawing.Point(5, 119);
+            this.storesApiClientSecretLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.storesApiClientSecretLabel.Name = "storesApiClientSecretLabel";
-            this.storesApiClientSecretLabel.Size = new System.Drawing.Size(158, 37);
+            this.storesApiClientSecretLabel.Size = new System.Drawing.Size(79, 20);
             this.storesApiClientSecretLabel.TabIndex = 3;
             this.storesApiClientSecretLabel.Text = "C. Secret:";
             // 
             // storesApiClientIdTextBox
             // 
             this.storesApiClientIdTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.storesApiClientIdTextBox.Location = new System.Drawing.Point(204, 131);
+            this.storesApiClientIdTextBox.Location = new System.Drawing.Point(137, 81);
+            this.storesApiClientIdTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.storesApiClientIdTextBox.Name = "storesApiClientIdTextBox";
-            this.storesApiClientIdTextBox.Size = new System.Drawing.Size(445, 26);
+            this.storesApiClientIdTextBox.Size = new System.Drawing.Size(298, 20);
             this.storesApiClientIdTextBox.TabIndex = 22;
             // 
             // storesApiAuthUrlLabel
@@ -136,9 +140,10 @@
             this.storesApiAuthUrlLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.storesApiAuthUrlLabel.AutoSize = true;
             this.storesApiAuthUrlLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.storesApiAuthUrlLabel.Location = new System.Drawing.Point(6, 68);
+            this.storesApiAuthUrlLabel.Location = new System.Drawing.Point(5, 45);
+            this.storesApiAuthUrlLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.storesApiAuthUrlLabel.Name = "storesApiAuthUrlLabel";
-            this.storesApiAuthUrlLabel.Size = new System.Drawing.Size(165, 37);
+            this.storesApiAuthUrlLabel.Size = new System.Drawing.Size(84, 20);
             this.storesApiAuthUrlLabel.TabIndex = 1;
             this.storesApiAuthUrlLabel.Text = "Auth URL:";
             // 
@@ -147,34 +152,38 @@
             this.storesApiClientIdLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.storesApiClientIdLabel.AutoSize = true;
             this.storesApiClientIdLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.storesApiClientIdLabel.Location = new System.Drawing.Point(6, 125);
+            this.storesApiClientIdLabel.Location = new System.Drawing.Point(5, 81);
+            this.storesApiClientIdLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.storesApiClientIdLabel.Name = "storesApiClientIdLabel";
-            this.storesApiClientIdLabel.Size = new System.Drawing.Size(147, 37);
+            this.storesApiClientIdLabel.Size = new System.Drawing.Size(74, 20);
             this.storesApiClientIdLabel.TabIndex = 2;
             this.storesApiClientIdLabel.Text = "Client ID:";
             // 
             // storesApiUrlTextBox
             // 
             this.storesApiUrlTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.storesApiUrlTextBox.Location = new System.Drawing.Point(204, 17);
+            this.storesApiUrlTextBox.Location = new System.Drawing.Point(137, 9);
+            this.storesApiUrlTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.storesApiUrlTextBox.Name = "storesApiUrlTextBox";
-            this.storesApiUrlTextBox.Size = new System.Drawing.Size(445, 26);
+            this.storesApiUrlTextBox.Size = new System.Drawing.Size(298, 20);
             this.storesApiUrlTextBox.TabIndex = 18;
             // 
             // storesApiClientSecretTextBox
             // 
             this.storesApiClientSecretTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.storesApiClientSecretTextBox.Location = new System.Drawing.Point(204, 188);
+            this.storesApiClientSecretTextBox.Location = new System.Drawing.Point(137, 119);
+            this.storesApiClientSecretTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.storesApiClientSecretTextBox.Name = "storesApiClientSecretTextBox";
-            this.storesApiClientSecretTextBox.Size = new System.Drawing.Size(445, 26);
+            this.storesApiClientSecretTextBox.Size = new System.Drawing.Size(298, 20);
             this.storesApiClientSecretTextBox.TabIndex = 24;
             // 
             // saveStoresApiSettingsButton
             // 
             this.saveStoresApiSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.saveStoresApiSettingsButton.Location = new System.Drawing.Point(16, 346);
+            this.saveStoresApiSettingsButton.Location = new System.Drawing.Point(11, 225);
+            this.saveStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.saveStoresApiSettingsButton.Name = "saveStoresApiSettingsButton";
-            this.saveStoresApiSettingsButton.Size = new System.Drawing.Size(150, 38);
+            this.saveStoresApiSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.saveStoresApiSettingsButton.TabIndex = 18;
             this.saveStoresApiSettingsButton.Text = "Guardar";
             this.saveStoresApiSettingsButton.UseVisualStyleBackColor = true;
@@ -183,9 +192,10 @@
             // cleanStoresApiSettingsButton
             // 
             this.cleanStoresApiSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.cleanStoresApiSettingsButton.Location = new System.Drawing.Point(172, 346);
+            this.cleanStoresApiSettingsButton.Location = new System.Drawing.Point(115, 225);
+            this.cleanStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.cleanStoresApiSettingsButton.Name = "cleanStoresApiSettingsButton";
-            this.cleanStoresApiSettingsButton.Size = new System.Drawing.Size(150, 38);
+            this.cleanStoresApiSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.cleanStoresApiSettingsButton.TabIndex = 23;
             this.cleanStoresApiSettingsButton.Text = "Limpiar";
             this.cleanStoresApiSettingsButton.UseVisualStyleBackColor = true;
@@ -194,9 +204,10 @@
             // restoreDefaultStoresApiSettingsButton
             // 
             this.restoreDefaultStoresApiSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.restoreDefaultStoresApiSettingsButton.Location = new System.Drawing.Point(328, 346);
+            this.restoreDefaultStoresApiSettingsButton.Location = new System.Drawing.Point(219, 225);
+            this.restoreDefaultStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.restoreDefaultStoresApiSettingsButton.Name = "restoreDefaultStoresApiSettingsButton";
-            this.restoreDefaultStoresApiSettingsButton.Size = new System.Drawing.Size(150, 38);
+            this.restoreDefaultStoresApiSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.restoreDefaultStoresApiSettingsButton.TabIndex = 24;
             this.restoreDefaultStoresApiSettingsButton.Text = "Restaurar";
             this.restoreDefaultStoresApiSettingsButton.UseVisualStyleBackColor = true;
@@ -206,32 +217,33 @@
             // 
             this.cancelStoresApiSettingsButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancelStoresApiSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.cancelStoresApiSettingsButton.Location = new System.Drawing.Point(538, 346);
+            this.cancelStoresApiSettingsButton.Location = new System.Drawing.Point(359, 225);
+            this.cancelStoresApiSettingsButton.Margin = new System.Windows.Forms.Padding(2);
             this.cancelStoresApiSettingsButton.Name = "cancelStoresApiSettingsButton";
-            this.cancelStoresApiSettingsButton.Size = new System.Drawing.Size(150, 38);
+            this.cancelStoresApiSettingsButton.Size = new System.Drawing.Size(100, 25);
             this.cancelStoresApiSettingsButton.TabIndex = 25;
             this.cancelStoresApiSettingsButton.Text = "Cancelar";
             this.cancelStoresApiSettingsButton.UseVisualStyleBackColor = true;
             this.cancelStoresApiSettingsButton.Click += new System.EventHandler(this.cancelStoresApiSettingsButton_Click);
             // 
-            // StoresApiSettings
+            // StoresApiSettingsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelStoresApiSettingsButton;
-            this.ClientSize = new System.Drawing.Size(705, 402);
+            this.ClientSize = new System.Drawing.Size(470, 261);
             this.Controls.Add(this.cancelStoresApiSettingsButton);
             this.Controls.Add(this.restoreDefaultStoresApiSettingsButton);
             this.Controls.Add(this.cleanStoresApiSettingsButton);
             this.Controls.Add(this.saveStoresApiSettingsButton);
             this.Controls.Add(this.editStoresApiSettingsPanel);
             this.Controls.Add(this.editStoresApiSettingsLabel);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "StoresApiSettings";
+            this.Name = "StoresApiSettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Configuración de Stores API";
+            this.Text = "Configuración de Stores API - FTC Generic Printing App POC";
             this.editStoresApiSettingsPanel.ResumeLayout(false);
             this.storesApiTableLayoutPanel.ResumeLayout(false);
             this.storesApiTableLayoutPanel.PerformLayout();

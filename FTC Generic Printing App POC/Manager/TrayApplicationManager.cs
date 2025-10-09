@@ -33,11 +33,10 @@ namespace FTC_Generic_Printing_App_POC.Manager
             trayMenu.Items.Add("-");
             trayMenu.Items.Add("Salir", null, ExitApplication);
 
-            // TODO: Update default Windows icon.
             // Create the tray icon
             trayIcon = new NotifyIcon()
             {
-                Icon = SystemIcons.Application,
+                Icon = Properties.Resources.app_icon,
                 ContextMenuStrip = trayMenu,
                 Text = "FTC Generic Printing App POC", // TODO: Remove POC on final version
                 Visible = true
