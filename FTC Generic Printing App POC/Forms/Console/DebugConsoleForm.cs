@@ -11,27 +11,46 @@ namespace FTC_Generic_Printing_App_POC.Forms
 {
     public partial class DebugConsoleForm : Form
     {
+        #region Fields
         private const int MaxLogEntries = 1000;
-        // Store logs in memory for filtering
-        private List<LogEntry> logEntries = new List<LogEntry>();
-        // Show all logs by default
-        private LogLevel currentFilterLevel = LogLevel.Debug;
-        // Flag to indicate if all logs should be shown
-        private bool showAllLogs = true;
-        // Regex for parsing log messages
+        private const int MaxClipboardLines = 500;
+
+        private readonly List<LogEntry> logEntries = new List<LogEntry>();
         private readonly Regex logRegex = new Regex(@"(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3})\s+(\w+)\s+(.+)");
 
-        // TODO: Improve text colors for better readability.
+        private LogLevel currentFilterLevel = LogLevel.Debug;
+        private bool showAllLogs = true;
+        #endregion
+
+        #region Enums
+        public enum LogLevel
+        {
+            Debug,
+            Info,
+            Warning,
+            Error
+        }
+        #endregion
+
+        #region Initialization
         public DebugConsoleForm()
         {
             InitializeComponent();
+            ConfigureForm();
+            ConfigureControls();
+            RegisterEventHandlers();
+        }
 
-            this.Text = "FTC Generic Printing App Debug Console";
-            this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            this.ShowInTaskbar = true;
-            this.TopMost = true;
+        private void ConfigureForm()
+        {
+            Text = "FTC Generic Printing App Debug Console";
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            ShowInTaskbar = true;
+            TopMost = true;
+        }
 
-            // Log styles
+        private void ConfigureControls()
+        {
             logTextBox.ReadOnly = true;
             logTextBox.BackColor = Color.Black;
             logTextBox.ForeColor = Color.LightGray;
@@ -39,17 +58,20 @@ namespace FTC_Generic_Printing_App_POC.Forms
             logTextBox.ScrollBars = RichTextBoxScrollBars.Both;
 
             autoScrollCheckBox.Checked = true;
-            autoScrollCheckBox.CheckedChanged += AutoScrollCheckBox_CheckedChanged;
 
             SetupLogLevelComboBox();
+        }
 
-            // Form closing event to hide instead of close
-            this.FormClosing += DebugConsoleForm_FormClosing;
+        private void RegisterEventHandlers()
+        {
+            FormClosing += DebugConsoleForm_FormClosing;
+            autoScrollCheckBox.CheckedChanged += AutoScrollCheckBox_CheckedChanged;
         }
 
         private void SetupLogLevelComboBox()
         {
             logLevelComboBox.Items.Add("Por defecto");
+
             foreach (LogLevel level in Enum.GetValues(typeof(LogLevel)))
             {
                 logLevelComboBox.Items.Add(level.ToString());
@@ -57,6 +79,23 @@ namespace FTC_Generic_Printing_App_POC.Forms
 
             logLevelComboBox.SelectedIndex = 0;
             logLevelComboBox.SelectedIndexChanged += LogLevelComboBox_SelectedIndexChanged;
+        }
+        #endregion
+
+        #region Event Handlers
+        private void DebugConsoleForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Hide instead of close when user clicks X
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
+        }
+
+        private void AutoScrollCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            // Event handler registered for potential future use
         }
 
         private void LogLevelComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -77,179 +116,24 @@ namespace FTC_Generic_Printing_App_POC.Forms
             RefreshLogDisplay();
         }
 
-        private void RefreshLogDisplay()
-        {
-            // Remember the current position
-            int currentPosition = logTextBox.SelectionStart;
-            bool wasAtEnd = (currentPosition == logTextBox.TextLength);
-
-            logTextBox.Clear();
-
-            // Apply the filter and re-display logs
-            foreach (var entry in logEntries)
-            {
-                if (ShouldDisplayLog(entry.Level))
-                {
-                    DisplayLogEntry(entry);
-                }
-            }
-
-            // Restore position or scroll to end
-            if (wasAtEnd && autoScrollCheckBox.Checked)
-            {
-                logTextBox.SelectionStart = logTextBox.TextLength;
-                logTextBox.ScrollToCaret();
-            }
-            else
-            {
-                // Try to keep position similar to where it was before
-                int newPosition = Math.Min(currentPosition, logTextBox.TextLength);
-                logTextBox.SelectionStart = newPosition;
-            }
-        }
-
-        private bool ShouldDisplayLog(LogLevel level)
-        {
-            if (showAllLogs)
-                return true;
-
-            return level == currentFilterLevel;
-        }
-
-        private void AutoScrollCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            string state = autoScrollCheckBox.Checked ? "enabled" : "disabled";
-        }
-
-        private void DebugConsoleForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Hide instead of close when user clicks X
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                this.Hide();
-            }
-        }
-
-
-        public void AppendLog(string logMessage, LogLevel level = LogLevel.Info)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new Action<string, LogLevel>(AppendLog), new object[] { logMessage, level });
-                return;
-            }
-
-            var parsedLevel = ParseLogLevel(logMessage);
-            if (parsedLevel.HasValue)
-            {
-                level = parsedLevel.Value;
-            }
-
-            // Create a new log entry
-            var entry = new LogEntry
-            {
-                Message = logMessage,
-                Level = level,
-                Timestamp = DateTime.Now
-            };
-
-            // Add to our collection with size limit
-            logEntries.Add(entry);
-
-            // Keep collection size in check
-            if (logEntries.Count > MaxLogEntries)
-            {
-                // Remove oldest entries when we exceed the limit
-                int removeCount = logEntries.Count - MaxLogEntries;
-                logEntries.RemoveRange(0, removeCount);
-            }
-
-            // Only display if it passes the current filter
-            if (ShouldDisplayLog(level))
-            {
-                DisplayLogEntry(entry);
-            }
-        }
-
-        private LogLevel? ParseLogLevel(string logMessage)
-        {
-            var match = logRegex.Match(logMessage);
-            if (match.Success && match.Groups.Count >= 3)
-            {
-                string levelStr = match.Groups[2].Value.Trim().ToUpper();
-
-                // Map common log level strings to our enum
-                switch (levelStr)
-                {
-                    case "ERROR":
-                        return LogLevel.Error;
-                    case "WARN":
-                    case "WARNING":
-                        return LogLevel.Warning;
-                    case "INFO":
-                        return LogLevel.Info;
-                    case "DEBUG":
-                        return LogLevel.Debug;
-                    default:
-                        // If it contains ERROR, treat as error
-                        if (levelStr.Contains("ERROR"))
-                            return LogLevel.Error;
-                        // If it contains WARN, treat as warning
-                        else if (levelStr.Contains("WARN"))
-                            return LogLevel.Warning;
-                        break;
-                }
-            }
-
-            return null; // Could not parse level
-        }
-
-        private void DisplayLogEntry(LogEntry entry)
-        {
-            int startIndex = logTextBox.TextLength;
-            logTextBox.AppendText(entry.Message + Environment.NewLine);
-            int endIndex = logTextBox.TextLength;
-
-            logTextBox.SelectionStart = startIndex;
-            logTextBox.SelectionLength = endIndex - startIndex;
-
-            // Set color based on log level
-            switch (entry.Level)
-            {
-                case LogLevel.Error:
-                    logTextBox.SelectionColor = Color.Red;
-                    break;
-                case LogLevel.Warning:
-                    logTextBox.SelectionColor = Color.Yellow;
-                    break;
-                case LogLevel.Info:
-                    logTextBox.SelectionColor = Color.LightGreen;
-                    break;
-                case LogLevel.Debug:
-                    logTextBox.SelectionColor = Color.LightGray;
-                    break;
-            }
-
-            // Reset selection
-            logTextBox.SelectionStart = endIndex;
-            logTextBox.SelectionLength = 0;
-
-            if (autoScrollCheckBox.Checked)
-            {
-                logTextBox.ScrollToCaret();
-            }
-        }
-
-        public enum LogLevel
-        {
-            Debug,
-            Info,
-            Warning,
-            Error
-        }
-
         private void copyClipboardButton_Click(object sender, EventArgs e)
+        {
+            CopyLogsToClipboard();
+        }
+
+        private void openLogFolderButton_Click(object sender, EventArgs e)
+        {
+            OpenLogFolder();
+        }
+
+        private void clearLogsButton_Click(object sender, EventArgs e)
+        {
+            ClearLogs();
+        }
+        #endregion
+
+        #region Core Methods
+        private void CopyLogsToClipboard()
         {
             try
             {
@@ -257,48 +141,53 @@ namespace FTC_Generic_Printing_App_POC.Forms
 
                 if (string.IsNullOrEmpty(allText))
                 {
-                    MessageBox.Show("No hay contenido para copiar.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("No hay contenido para copiar.",
+                        "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                // Split the text into lines
+                // Get the last MaxClipboardLines lines
                 string[] lines = allText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-                // Get last 500 lines
-                string[] lastLines = lines.Length <= 500 ?
+                string[] lastLines = lines.Length <= MaxClipboardLines ?
                     lines :
-                    lines.Skip(Math.Max(0, lines.Length - 500)).ToArray();
+                    lines.Skip(Math.Max(0, lines.Length - MaxClipboardLines)).ToArray();
 
-                // Join the lines
                 string clipboardText = string.Join(Environment.NewLine, lastLines);
 
-                var staThread = new System.Threading.Thread(() =>
-                {
-                    try
-                    {
-                        Clipboard.SetText(clipboardText);
-                    }
-                    catch (Exception ex)
-                    {
-                        AppLogger.LogError($"Error in clipboard thread: {ex.Message}", ex);
-                    }
-                });
+                // Copy text to clipboard in STA thread
+                CopyTextToClipboardInStaThread(clipboardText);
 
-                // Set thread to STA mode
-                staThread.SetApartmentState(System.Threading.ApartmentState.STA);
-                staThread.Start();
-                staThread.Join(); // Wait for the thread to complete
-
-                AppLogger.LogInfo("Copied last 500 lines into clipboard.");
+                AppLogger.LogInfo($"Copied last {MaxClipboardLines} lines into clipboard.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al copiar al portapapeles: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al copiar al portapapeles: {ex.Message}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 AppLogger.LogError("Error copiando logs al portapapeles", ex);
             }
         }
 
-        private void openLogFolderButton_Click(object sender, EventArgs e)
+        private void CopyTextToClipboardInStaThread(string text)
+        {
+            var staThread = new System.Threading.Thread(() =>
+            {
+                try
+                {
+                    Clipboard.SetText(text);
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogError($"Error in clipboard thread: {ex.Message}", ex);
+                }
+            });
+
+            staThread.SetApartmentState(System.Threading.ApartmentState.STA);
+            staThread.Start();
+            // Wait for thread completion
+            staThread.Join();
+        }
+
+        private void OpenLogFolder()
         {
             try
             {
@@ -323,7 +212,7 @@ namespace FTC_Generic_Printing_App_POC.Forms
             }
         }
 
-        private void clearLogsButton_Click(object sender, EventArgs e)
+        private void ClearLogs()
         {
             try
             {
@@ -337,13 +226,156 @@ namespace FTC_Generic_Printing_App_POC.Forms
                 AppLogger.LogError("Error clearing console logs", ex);
             }
         }
+        public void AppendLog(string logMessage, LogLevel level = LogLevel.Info)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action<string, LogLevel>(AppendLog), new object[] { logMessage, level });
+                return;
+            }
 
-        // Class to store log entries for filtering
+            // Get actual log level
+            var parsedLevel = ParseLogLevel(logMessage);
+            if (parsedLevel.HasValue)
+            {
+                level = parsedLevel.Value;
+            }
+
+            StoreLogEntry(logMessage, level);
+
+            // Show it if it passes the current level filter
+            if (ShouldDisplayLog(level))
+            {
+                DisplayLogEntry(logEntries.Last());
+            }
+        }
+        #endregion
+
+        #region Private Methods
+        private void StoreLogEntry(string message, LogLevel level)
+        {
+            var entry = new LogEntry
+            {
+                Message = message,
+                Level = level,
+                Timestamp = DateTime.Now
+            };
+
+            logEntries.Add(entry);
+
+            // Maintain max size limit
+            if (logEntries.Count > MaxLogEntries)
+            {
+                int removeCount = logEntries.Count - MaxLogEntries;
+                logEntries.RemoveRange(0, removeCount);
+            }
+        }
+
+        private LogLevel? ParseLogLevel(string logMessage)
+        {
+            var match = logRegex.Match(logMessage);
+            if (match.Success && match.Groups.Count >= 3)
+            {
+                string levelStr = match.Groups[2].Value.Trim().ToUpper();
+
+                switch (levelStr)
+                {
+                    case "ERROR":
+                        return LogLevel.Error;
+                    case "WARN":
+                    case "WARNING":
+                        return LogLevel.Warning;
+                    case "INFO":
+                        return LogLevel.Info;
+                    case "DEBUG":
+                        return LogLevel.Debug;
+                    default:
+                        if (levelStr.Contains("ERROR"))
+                            return LogLevel.Error;
+                        else if (levelStr.Contains("WARN"))
+                            return LogLevel.Warning;
+                        break;
+                }
+            }
+
+            return null;
+        }
+
+        private bool ShouldDisplayLog(LogLevel level)
+        {
+            return showAllLogs || level == currentFilterLevel;
+        }
+
+        private void RefreshLogDisplay()
+        {
+            // Save current state
+            int currentPosition = logTextBox.SelectionStart;
+            bool wasAtEnd = (currentPosition == logTextBox.TextLength);
+
+            // Clear and repopulate
+            logTextBox.Clear();
+            foreach (var entry in logEntries)
+            {
+                if (ShouldDisplayLog(entry.Level))
+                {
+                    DisplayLogEntry(entry);
+                }
+            }
+
+            // Restore position or auto-scroll (if checked)
+            if (wasAtEnd && autoScrollCheckBox.Checked)
+            {
+                logTextBox.SelectionStart = logTextBox.TextLength;
+                logTextBox.ScrollToCaret();
+            }
+            else
+            {
+                int newPosition = Math.Min(currentPosition, logTextBox.TextLength);
+                logTextBox.SelectionStart = newPosition;
+            }
+        }
+
+        private void DisplayLogEntry(LogEntry entry)
+        {
+            int startIndex = logTextBox.TextLength;
+            logTextBox.AppendText(entry.Message + Environment.NewLine);
+            int endIndex = logTextBox.TextLength;
+
+            // Apply color formatting
+            logTextBox.SelectionStart = startIndex;
+            logTextBox.SelectionLength = endIndex - startIndex;
+            logTextBox.SelectionColor = GetColorForLogLevel(entry.Level);
+
+            // Reset selection
+            logTextBox.SelectionStart = endIndex;
+            logTextBox.SelectionLength = 0;
+
+            if (autoScrollCheckBox.Checked)
+            {
+                logTextBox.ScrollToCaret();
+            }
+        }
+
+        private Color GetColorForLogLevel(LogLevel level)
+        {
+            switch (level)
+            {
+                case LogLevel.Error: return Color.Red;
+                case LogLevel.Warning: return Color.Yellow;
+                case LogLevel.Info: return Color.LightGreen;
+                case LogLevel.Debug:
+                default: return Color.LightGray;
+            }
+        }
+        #endregion
+
+        #region Helper Classes
         private class LogEntry
         {
             public string Message { get; set; }
             public LogLevel Level { get; set; }
             public DateTime Timestamp { get; set; }
         }
+        #endregion
     }
 }
