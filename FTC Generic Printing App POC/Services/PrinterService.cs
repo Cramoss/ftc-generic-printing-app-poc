@@ -97,6 +97,13 @@ namespace FTC_Generic_Printing_App_POC.Services
             {
                 throw new InvalidOperationException("No default printer is configured on this system");
             }
+
+            // TODO: Improved this evaluation
+            if (settings.PrinterName.Equals("Default printer is not set."))
+            {
+                return "No impresora principal";
+            }
+
             return settings.PrinterName;
         }
         #endregion
