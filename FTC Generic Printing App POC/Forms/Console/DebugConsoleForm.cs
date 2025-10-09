@@ -43,10 +43,16 @@ namespace FTC_Generic_Printing_App_POC.Forms
 
         private void ConfigureForm()
         {
-            Text = "FTC Generic Printing App Debug Console";
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.Sizable;  // Use Sizable, not SizableToolWindow
             ShowInTaskbar = true;
-            TopMost = true;
+            
+            // Set to false if you don't want it always on top,
+            // or true if you want it to stay on top of other windows
+            TopMost = false;
+            
+            MinimizeBox = true;
+            MaximizeBox = true;
         }
 
         private void ConfigureControls()
