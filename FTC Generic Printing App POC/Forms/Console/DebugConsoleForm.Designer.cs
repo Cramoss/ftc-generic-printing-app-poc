@@ -32,21 +32,31 @@
             this.copyClipboardButton = new System.Windows.Forms.Button();
             this.openLogFolderButton = new System.Windows.Forms.Button();
             this.clearLogsButton = new System.Windows.Forms.Button();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.logGroupBox = new System.Windows.Forms.GroupBox();
+            this.buttonsGroupBox = new System.Windows.Forms.GroupBox();
+            this.autoScrollCheckBox = new System.Windows.Forms.CheckBox();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.logGroupBox.SuspendLayout();
+            this.buttonsGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // logTextBox
             // 
-            this.logTextBox.Location = new System.Drawing.Point(12, 12);
+            this.logTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logTextBox.Location = new System.Drawing.Point(3, 16);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.logTextBox.Name = "logTextBox";
-            this.logTextBox.Size = new System.Drawing.Size(750, 505);
+            this.logTextBox.Size = new System.Drawing.Size(472, 352);
             this.logTextBox.TabIndex = 0;
             this.logTextBox.Text = "";
             // 
             // copyClipboardButton
             // 
-            this.copyClipboardButton.Location = new System.Drawing.Point(12, 524);
+            this.copyClipboardButton.Location = new System.Drawing.Point(5, 48);
+            this.copyClipboardButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.copyClipboardButton.Name = "copyClipboardButton";
-            this.copyClipboardButton.Size = new System.Drawing.Size(177, 23);
+            this.copyClipboardButton.Size = new System.Drawing.Size(130, 25);
             this.copyClipboardButton.TabIndex = 1;
             this.copyClipboardButton.Text = "Copiar al portapapeles";
             this.copyClipboardButton.UseVisualStyleBackColor = true;
@@ -54,9 +64,10 @@
             // 
             // openLogFolderButton
             // 
-            this.openLogFolderButton.Location = new System.Drawing.Point(196, 524);
+            this.openLogFolderButton.Location = new System.Drawing.Point(273, 48);
+            this.openLogFolderButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.openLogFolderButton.Name = "openLogFolderButton";
-            this.openLogFolderButton.Size = new System.Drawing.Size(169, 23);
+            this.openLogFolderButton.Size = new System.Drawing.Size(130, 25);
             this.openLogFolderButton.TabIndex = 2;
             this.openLogFolderButton.Text = "Abrir carpeta de logs";
             this.openLogFolderButton.UseVisualStyleBackColor = true;
@@ -64,25 +75,79 @@
             // 
             // clearLogsButton
             // 
-            this.clearLogsButton.Location = new System.Drawing.Point(372, 524);
+            this.clearLogsButton.Location = new System.Drawing.Point(139, 48);
+            this.clearLogsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.clearLogsButton.Name = "clearLogsButton";
-            this.clearLogsButton.Size = new System.Drawing.Size(102, 23);
+            this.clearLogsButton.Size = new System.Drawing.Size(130, 25);
             this.clearLogsButton.TabIndex = 3;
             this.clearLogsButton.Text = "Limpiar";
             this.clearLogsButton.UseVisualStyleBackColor = true;
             this.clearLogsButton.Click += new System.EventHandler(this.clearLogsButton_Click);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.buttonsGroupBox, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.logGroupBox, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 81.96722F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 18.03279F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(484, 461);
+            this.tableLayoutPanel1.TabIndex = 4;
+            // 
+            // logGroupBox
+            // 
+            this.logGroupBox.Controls.Add(this.logTextBox);
+            this.logGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logGroupBox.Location = new System.Drawing.Point(3, 3);
+            this.logGroupBox.Name = "logGroupBox";
+            this.logGroupBox.Size = new System.Drawing.Size(478, 371);
+            this.logGroupBox.TabIndex = 5;
+            this.logGroupBox.TabStop = false;
+            this.logGroupBox.Text = "Logs";
+            // 
+            // buttonsGroupBox
+            // 
+            this.buttonsGroupBox.Controls.Add(this.autoScrollCheckBox);
+            this.buttonsGroupBox.Controls.Add(this.copyClipboardButton);
+            this.buttonsGroupBox.Controls.Add(this.clearLogsButton);
+            this.buttonsGroupBox.Controls.Add(this.openLogFolderButton);
+            this.buttonsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonsGroupBox.Location = new System.Drawing.Point(3, 380);
+            this.buttonsGroupBox.Name = "buttonsGroupBox";
+            this.buttonsGroupBox.Size = new System.Drawing.Size(478, 78);
+            this.buttonsGroupBox.TabIndex = 5;
+            this.buttonsGroupBox.TabStop = false;
+            this.buttonsGroupBox.Text = "Controles";
+            // 
+            // autoScrollCheckBox
+            // 
+            this.autoScrollCheckBox.AutoSize = true;
+            this.autoScrollCheckBox.Location = new System.Drawing.Point(9, 19);
+            this.autoScrollCheckBox.Name = "autoScrollCheckBox";
+            this.autoScrollCheckBox.Size = new System.Drawing.Size(156, 17);
+            this.autoScrollCheckBox.TabIndex = 4;
+            this.autoScrollCheckBox.Text = "Desplazamiento automático";
+            this.autoScrollCheckBox.UseVisualStyleBackColor = true;
+            // 
             // DebugConsoleForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(774, 595);
-            this.Controls.Add(this.clearLogsButton);
-            this.Controls.Add(this.openLogFolderButton);
-            this.Controls.Add(this.copyClipboardButton);
-            this.Controls.Add(this.logTextBox);
+            this.ClientSize = new System.Drawing.Size(484, 461);
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "DebugConsoleForm";
             this.Text = "Consola - FTC Generic Printing App";
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.logGroupBox.ResumeLayout(false);
+            this.buttonsGroupBox.ResumeLayout(false);
+            this.buttonsGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -93,5 +158,9 @@
         private System.Windows.Forms.Button copyClipboardButton;
         private System.Windows.Forms.Button openLogFolderButton;
         private System.Windows.Forms.Button clearLogsButton;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.GroupBox buttonsGroupBox;
+        private System.Windows.Forms.GroupBox logGroupBox;
+        private System.Windows.Forms.CheckBox autoScrollCheckBox;
     }
 }

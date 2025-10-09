@@ -10,7 +10,6 @@ namespace FTC_Generic_Printing_App_POC.Forms
     public partial class DebugConsoleForm : Form
     {
         // TODO: Add log level filtering combobox.
-        // TODO: Add Checkbox to toggle auto-scroll.
         // TODO: Improve text colors for better readability.
         public DebugConsoleForm()
         {
@@ -28,8 +27,16 @@ namespace FTC_Generic_Printing_App_POC.Forms
             logTextBox.Font = new Font("Consolas", 9F);
             logTextBox.ScrollBars = RichTextBoxScrollBars.Both;
 
+            autoScrollCheckBox.Checked = true;
+            autoScrollCheckBox.CheckedChanged += AutoScrollCheckBox_CheckedChanged;
+
             // Form closing event to hide instead of close
             this.FormClosing += DebugConsoleForm_FormClosing;
+        }
+
+        private void AutoScrollCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            string state = autoScrollCheckBox.Checked ? "enabled" : "disabled";
         }
 
         private void DebugConsoleForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -78,8 +85,10 @@ namespace FTC_Generic_Printing_App_POC.Forms
             logTextBox.SelectionStart = endIndex;
             logTextBox.SelectionLength = 0;
 
-            // Always auto-scroll
-            logTextBox.ScrollToCaret();
+            if (autoScrollCheckBox.Checked)
+            {
+                logTextBox.ScrollToCaret();
+            }
         }
 
         public enum LogLevel
