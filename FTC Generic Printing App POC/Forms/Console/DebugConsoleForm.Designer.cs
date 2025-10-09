@@ -36,6 +36,7 @@
             this.logGroupBox = new System.Windows.Forms.GroupBox();
             this.buttonsGroupBox = new System.Windows.Forms.GroupBox();
             this.autoScrollCheckBox = new System.Windows.Forms.CheckBox();
+            this.logLevelComboBox = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.logGroupBox.SuspendLayout();
             this.buttonsGroupBox.SuspendLayout();
@@ -64,7 +65,7 @@
             // 
             // openLogFolderButton
             // 
-            this.openLogFolderButton.Location = new System.Drawing.Point(273, 48);
+            this.openLogFolderButton.Location = new System.Drawing.Point(171, 48);
             this.openLogFolderButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.openLogFolderButton.Name = "openLogFolderButton";
             this.openLogFolderButton.Size = new System.Drawing.Size(130, 25);
@@ -75,7 +76,7 @@
             // 
             // clearLogsButton
             // 
-            this.clearLogsButton.Location = new System.Drawing.Point(139, 48);
+            this.clearLogsButton.Location = new System.Drawing.Point(345, 48);
             this.clearLogsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.clearLogsButton.Name = "clearLogsButton";
             this.clearLogsButton.Size = new System.Drawing.Size(130, 25);
@@ -112,6 +113,7 @@
             // 
             // buttonsGroupBox
             // 
+            this.buttonsGroupBox.Controls.Add(this.logLevelComboBox);
             this.buttonsGroupBox.Controls.Add(this.autoScrollCheckBox);
             this.buttonsGroupBox.Controls.Add(this.copyClipboardButton);
             this.buttonsGroupBox.Controls.Add(this.clearLogsButton);
@@ -133,6 +135,14 @@
             this.autoScrollCheckBox.TabIndex = 4;
             this.autoScrollCheckBox.Text = "Desplazamiento automático";
             this.autoScrollCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // logLevelComboBox
+            // 
+            this.logLevelComboBox.FormattingEnabled = true;
+            this.logLevelComboBox.Location = new System.Drawing.Point(345, 15);
+            this.logLevelComboBox.Name = "logLevelComboBox";
+            this.logLevelComboBox.Size = new System.Drawing.Size(130, 21);
+            this.logLevelComboBox.TabIndex = 5;
             // 
             // DebugConsoleForm
             // 
@@ -162,5 +172,6 @@
         private System.Windows.Forms.GroupBox buttonsGroupBox;
         private System.Windows.Forms.GroupBox logGroupBox;
         private System.Windows.Forms.CheckBox autoScrollCheckBox;
+        private System.Windows.Forms.ComboBox logLevelComboBox;
     }
 }
