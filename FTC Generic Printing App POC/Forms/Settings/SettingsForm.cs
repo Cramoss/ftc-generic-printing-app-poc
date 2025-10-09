@@ -107,6 +107,12 @@ namespace FTC_Generic_Printing_App_POC.Forms.Settings
         // Stores API
         private void editStoresApiSettingsButton_Click(object sender, EventArgs e)
         {
+            storesApiStatus.Text = "...";
+            storesApiStatus.BackColor = SystemColors.Window;
+            testStoresApiConnectivityButton.Text = "Probar conectividad";
+            testStoresApiConnectivityButton.Enabled = true;
+
+
             AppLogger.LogInfo("Opening Stores API settings panel");
             StoresApiSettingsForm storesApiSettingsForm = new StoresApiSettingsForm();
             storesApiSettingsForm.ShowDialog();
@@ -133,6 +139,11 @@ namespace FTC_Generic_Printing_App_POC.Forms.Settings
         // Firebase
         private void editFirebaseSettingsButton_Click(object sender, EventArgs e)
         {
+            firebaseStatus.Text = "...";
+            firebaseStatus.BackColor = SystemColors.Window;
+            testFirebaseConnectivityButton.Text = "Probar conectividad";
+            testFirebaseConnectivityButton.Enabled = true;
+
             AppLogger.LogInfo("Opening Firebase settings panel");
             FirebaseSettingsForm firebaseSettingsForm = new FirebaseSettingsForm();
             firebaseSettingsForm.ShowDialog();
