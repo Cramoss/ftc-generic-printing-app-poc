@@ -42,6 +42,9 @@ namespace FTC_Generic_Printing_App_POC.Manager
         {
             try
             {
+                // Set the flag to false to prevent circular calls during initialization
+                AppLogger.SetDebugConsoleInitialized(false);
+
                 consoleForm = new DebugConsoleForm();
                 hotkeyManager = new GlobalHotkeyManager();
 

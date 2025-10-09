@@ -162,7 +162,13 @@ namespace FTC_Generic_Printing_App_POC.Utils
                 // Ignore errors in debug console forwarding
             }
         }
+
+        public static void SetDebugConsoleInitialized(bool value)
+        {
+            debugConsoleInitialized = value;
+        }
         #endregion
     }
 }
+
 #endregion
