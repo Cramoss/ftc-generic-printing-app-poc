@@ -201,6 +201,10 @@ namespace FTC_Generic_Printing_App_POC.Forms.Settings
             }
 
         }
+        private void debugConsoleButton_Click(object sender, EventArgs e)
+        {
+            DebugManager.ManualToggle();
+        }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
